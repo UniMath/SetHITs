@@ -1,0 +1,210 @@
+\documentclass[9pt]{entcs} \usepackage{entcsmacro}
+\usepackage{graphicx}
+\sloppy
+% The following is enclosed to allow easy detection of differences in
+% ascii coding.
+% Upper-case    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+% Lower-case    a b c d e f g h i j k l m n o p q r s t u v w x y z
+% Digits        0 1 2 3 4 5 6 7 8 9
+% Exclamation   !           Double quote "          Hash (number) #
+% Dollar        $           Percent      %          Ampersand     &
+% Acute accent  '           Left paren   (          Right paren   )
+% Asterisk      *           Plus         +          Comma         ,
+% Minus         -           Point        .          Solidus       /
+% Colon         :           Semicolon    ;          Less than     <
+% Equals        =3D           Greater than >          Question mark ?
+% At            @           Left bracket [          Backslash     \
+% Right bracket ]           Circumflex   ^          Underscore    _
+% Grave accent  `           Left brace   {          Vertical bar  |
+% Right brace   }           Tilde        ~
+
+% A couple of exemplary definitions:
+
+\newcommand{\Nat}{{\mathbb N}}
+\newcommand{\Real}{{\mathbb R}}
+\def\lastname{Please list Your Lastname Here}
+\begin{document}
+\begin{frontmatter}
+  \title{An Example Paper} \author{My
+    Name\thanksref{ALL}\thanksref{myemail}}
+  \address{My Department\\ My University\\
+    My City, My Country} \author{My Co-author\thanksref{coemail}}
+  \address{My Co-author's Department\\My Co-author's University\\
+    My Co-author's City, My Co-author's Country} \thanks[ALL]{Thanks
+    to everyone who should be thanked} \thanks[myemail]{Email:
+    \href{mailto:myuserid@mydept.myinst.myedu} {\texttt{\normalshape
+        myuserid@mydept.myinst.myedu}}} \thanks[coemail]{Email:
+    \href{mailto:couserid@codept.coinst.coedu} {\texttt{\normalshape
+        couserid@codept.coinst.coedu}}}
+\begin{abstract} 
+  This is a short example to show the basics of using the ENTCS style
+  macro files.  Ample examples of how files should look may be found
+  among the published volumes of the series at the ENTCS Home Page
+  \texttt{http://www.elsevier.com/locate/entcs}.
+\end{abstract}
+\begin{keyword}
+  Please list keywords from your paper here, separated by commas.
+\end{keyword}
+\end{frontmatter}
+\section{Introduction}
+\label{intro}
+
+\subsection*{Preliminaries}
+
+\section{Signature of HITs}
+
+\begin{definition}
+Code for polynomials
+\end{definition}
+
+\begin{definition}
+Endpoints
+\end{definition}
+
+\begin{definition}
+Signature of a HIT
+\end{definition}
+
+\section{Algebras}
+Note: algebra structure is point constructor rule.
+
+\begin{definition}
+Semantics of a polynomial on sets
+\end{definition}
+
+\begin{definition}
+Category of prealgebras on a polynomial
+\end{definition}
+
+\begin{definition}
+Semantics of endpoints
+\end{definition}
+
+\begin{definition}
+Category of algebras
+\end{definition}
+
+\begin{proposition}
+The category of algebras is univalent.
+\end{proposition}
+
+\begin{definition}
+Semantics of a polynomial on setoids
+\end{definition}
+
+\begin{definition}
+Category of prealgebras on a polynomial (setoids)
+\end{definition}
+
+\begin{definition}
+Semantics of endpoints (setoids)
+\end{definition}
+
+\begin{definition}
+Category of algebras in setoids
+\end{definition}
+
+\section{Initial Algebra Semantics}
+
+\subsection{The Induction Principle}
+
+\begin{definition}
+Displayed algebra
+\end{definition}
+
+\begin{definition}
+Section for displayed algebra
+\end{definition}
+
+\begin{definition}
+A HIT: every displayed algebra has a section
+\end{definition}
+
+\subsection{Obtaining Induction from Initiality}
+
+\begin{definition}
+Total algebra
+\end{definition}
+
+\begin{definition}
+Projection of total algebra
+\end{definition}
+
+\begin{proposition}
+Map to total algebra which projects into identity is section.
+\end{proposition}
+
+Hence, to construct a HIT, it suffices to construct an initial object in the category of algebras.
+
+\section{Constructing the Initial Algebra}
+
+\subsection{Adjunction between Algebras}
+To construct the adjunction between the category of algebras, we use two lemmata
+
+\begin{lemma}
+Adjunction between algebras
+\end{lemma}
+
+\begin{lemma}
+Adjunction between full subcategories
+\end{lemma}
+
+\subsection{Initial Setoid Algebra}
+
+Hence, we conclude
+
+\begin{theorem}
+HITs exist
+\end{theorem}
+
+\section{Consequences}
+
+\subsection{Recursion}
+
+\subsection{Uniqueness of HITs}
+
+\begin{proposition}
+Induction implies initiality
+\end{proposition}
+
+\begin{corollary}
+HITs are initial objects
+\end{corollary}
+
+\subsection{Path Spaces of HITs}
+
+\section{Conclusion}
+
+\begin{thebibliography}{10}\label{bibliography}
+\bibitem{cy} Civin, P., and B. Yood, \emph{Involutions on Banach
+    algebras}, Pacific J. Math. \textbf{9} (1959), 415--436.
+  
+\bibitem{cp} Clifford, A. H., and G. B. Preston, ``The Algebraic
+  Theory of Semigroups,'' Math. Surveys \textbf{7}, Amer. Math. Soc.,
+  Providence, R.I., 1961.
+  
+\bibitem{f} Freyd, Peter, Peter O'Hearn, John Power, Robert Tennent
+  and Makoto Takeyama, \emph{Bireflectivity}, Electronic Notes in
+  Theoretical Computer Science {\bf 1} (1995), URL:
+  \href{https://www.sciencedirect.com/journal/electronic-notes-in-theoretical-computer-science/vol/1/suppl/C}
+  {\texttt{http://www.elsevier.com/locate/entcs/volume1.html}}.
+  
+\bibitem{em2} Easdown, D., and W. D. Munn, \emph{Trace functions on
+    inverse semigroup algebras}, U. of Glasgow, Dept. of Math.,
+  preprint 93/52.
+
+\bibitem{r} Roscoe, A. W., ``The Theory and Practice of Concurrency,''
+  Prentice Hall Series in Computer Science, Prentice Hall Publishers,
+  London, New York (1198), 565pp. With associated web site\\  
+  \href{http://www.comlab.ox.ac.uk/oucl/publications/books/concurrency/}
+  {\texttt{http://www.comlab.ox.ac.uk/oucl/publications/books/concurrency/}}.
+  
+\bibitem{s} Shehadah, A. A., ``Embedding theorems for semigroups with
+  involution, `` Ph.D.  thesis, Purdue University, Indiana, 1982.
+  
+\bibitem{w} Weyl, H., ``The Classical Groups,'' 2nd Ed., Princeton U.
+  Press, Princeton, N.J., 1946.
+
+\end{thebibliography}
+
+\end{document}
