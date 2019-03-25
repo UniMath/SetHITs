@@ -1,0 +1,31 @@
+COQC = coqc COQDEP = coqdep
+-R . "sem"
+prelude/imports.v
+prelude/adjunction_constructions.v
+prelude/prelude.v
+prelude/all.v
+
+setoids/base.v
+setoids/setoid_category.v
+
+syntax/hit_signature.v
+
+algebras/univalent_algebra.v
+algebras/set_algebra.v
+algebras/setoid_algebra.v
+
+displayed_algebras/displayed_algebra.v
+displayed_algebras/constant_display.v
+displayed_algebras/total_algebra.v
+displayed_algebras/total_algebra_map.v
+
+syntax/hit.v
+syntax/hit_properties.v
+
+existence/initial_prealgebra.v
+existence/free_congruence.v
+existence/algebra_adjunction.v
+existence/initial_setoid_algebra.v
+existence/hit_existence.v
+
+examples/groups.v
