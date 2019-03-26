@@ -1,6 +1,6 @@
 (**
-Here we define the adjunction between set and setoid algebras.
-We first construct an adjunction between the prealgebras and then we factor it through the full subcategory.
+To define the initial algebra in setoids, we first define the initial prealgebra in sets.
+We use Adamek's theorem for this.
  *)
 Require Import prelude.all.
 
@@ -8,6 +8,9 @@ Require Import syntax.hit_signature.
 Require Import algebras.set_algebra.
 Require Import algebras.univalent_algebra.
 
+(**
+Polynomial functors are omega cocontinuous.
+ *)
 Definition poly_is_omega_cocont
            (P : poly_code)
   : is_omega_cocont (⦃ P ⦄).
@@ -32,6 +35,9 @@ Proof.
     + exact IHP₂.
 Defined.
 
+(**
+By Adamek, they have an initial algebra.
+ *)
 Definition initial_prealgebra
            (P : poly_code)
   : Initial (set_prealgebras P).

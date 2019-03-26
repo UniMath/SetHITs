@@ -1,3 +1,7 @@
+(**
+In this file, ew define the notion of a HIT for a HIT signature.
+We make use of the category of algebras and the notion of displayed algebras. 
+ *)
 Require Import prelude.all.
 
 Require Import syntax.hit_signature.
@@ -6,12 +10,21 @@ Require Import displayed_algebras.displayed_algebra.
 
 Open Scope cat.
 
+(**
+To be a HIT of a HIT signature, requires introduction, elimination, and computation rule.
+The introduction rules follow from the algebra structure.
+The elimination and computation rules follow from the fact that for each displayed algebra (data for elimination rule), we get a displayed algebra map.
+This requires both the existence of a dependent map (elimination) and the commutation of certain diagrams (computation).
+ *)
 Definition is_a_HIT
            {Σ : hit_signature}
            (X : set_algebra Σ)
   : UU
   := ∏ (Y : disp_algebra X), disp_algebra_map Y.
 
+(**
+Projections of HITs
+ *)
 Definition HIT
            (Σ : hit_signature)
   : UU

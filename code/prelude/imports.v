@@ -1,3 +1,4 @@
+(** Global imports from UniMath *)
 Require Export UniMath.Foundations.All.
 Require Export UniMath.MoreFoundations.All.
 

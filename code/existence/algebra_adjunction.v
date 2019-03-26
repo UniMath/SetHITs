@@ -116,8 +116,8 @@ Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - apply identity.
   - apply identity.
-  - exact (coprod_maps setoid_cat_bicoproducts IHP₁ IHP₂ · sum_path_setoid _ _).
-  - exact (prod_maps setoid_cat_biproducts IHP₁ IHP₂ · prod_path_setoid _ _).
+  - exact (coprod_maps setoid_cat_bincoproducts IHP₁ IHP₂ · sum_path_setoid _ _).
+  - exact (prod_maps setoid_cat_binproducts IHP₁ IHP₂ · prod_path_setoid _ _).
 Defined.
 
 Definition path_setoid_commute_is_nat_trans
@@ -159,8 +159,8 @@ Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - apply identity.
   - apply identity.
-  - exact (path_setoid_sum _ _ · coprod_maps setoid_cat_bicoproducts IHP₁ IHP₂).
-  - exact (path_setoid_prod _ _ · prod_maps setoid_cat_biproducts IHP₁ IHP₂).
+  - exact (path_setoid_sum _ _ · coprod_maps setoid_cat_bincoproducts IHP₁ IHP₂).
+  - exact (path_setoid_prod _ _ · prod_maps setoid_cat_binproducts IHP₁ IHP₂).
 Defined.
 
 Definition path_setoid_commute_is_inverse
@@ -175,10 +175,10 @@ Proof.
   - exact (is_inverse_in_precat_identity (path_setoid T)).
   - exact (is_inverse_in_precat_identity (path_setoid X)).
   - exact (is_inverse_in_precat_comp
-             (coprod_maps_inverse setoid_cat_bicoproducts IHP₁ IHP₂)
+             (coprod_maps_inverse setoid_cat_bincoproducts IHP₁ IHP₂)
              (path_setoid_sum_is_inverse (⦃ P₁ ⦄ X) (⦃ P₂ ⦄ X))).
   - exact (is_inverse_in_precat_comp
-             (prod_maps_inverse setoid_cat_biproducts IHP₁ IHP₂)
+             (prod_maps_inverse setoid_cat_binproducts IHP₁ IHP₂)
              (path_setoid_prod_is_inverse (⦃ P₁ ⦄ X) (⦃ P₂ ⦄ X))).
 Qed.
 
@@ -694,7 +694,7 @@ Definition prod_quotient_help
         functor_on_morphisms quotient (path_setoid_commute_comp P₂ X) z₂)
     =
     functor_on_morphisms quotient
-     (prod_maps setoid_cat_biproducts
+     (prod_maps setoid_cat_binproducts
                 (path_setoid_commute_comp P₁ X)
                 (path_setoid_commute_comp P₂ X))
      (prod_quotient ((path_setoid ∙ ⟨ P₁ ⟩) X) ((path_setoid ∙ ⟨ P₂ ⟩) X) (z₁ ,, z₂)).
@@ -757,7 +757,7 @@ Proof.
     refine (eqtohomot
               (functor_comp
                  quotient
-                 (prod_maps setoid_cat_biproducts
+                 (prod_maps setoid_cat_binproducts
                             (path_setoid_commute P₁ X)
                             (path_setoid_commute P₂ X))
                  (prod_path_setoid _ _))
