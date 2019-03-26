@@ -144,7 +144,7 @@ Proof.
     + exact (map_eq g p).
 Defined.
 
-Definition sum_setoid_is_bicoproduct
+Definition sum_setoid_is_bincoproduct
            (X₁ X₂ : setoid_cat)
   : isBinCoproduct
       setoid_cat X₁ X₂
@@ -168,13 +168,13 @@ Proof.
         reflexivity.
 Defined.
 
-Definition setoid_cat_bicoproducts
+Definition setoid_cat_bincoproducts
   : BinCoproducts setoid_cat.
 Proof.
   intros X₁ X₂.
   use tpair.
   - exact (sum_setoid X₁ X₂ ,, setoid_inl X₁ X₂ ,, setoid_inr X₁ X₂).
-  - exact (sum_setoid_is_bicoproduct X₁ X₂).
+  - exact (sum_setoid_is_bincoproduct X₁ X₂).
 Defined.
 
 (** The category of setoids has binary products *)
@@ -224,7 +224,7 @@ Proof.
   - exact (λ _ _ p, (map_eq f p ,, map_eq g p)).
 Defined.
 
-Definition prod_setoid_is_biproduct
+Definition prod_setoid_is_binproduct
            (X₁ X₂ : setoid_cat)
   : isBinProduct
       setoid_cat X₁ X₂
@@ -248,13 +248,13 @@ Proof.
         reflexivity.
 Defined.
 
-Definition setoid_cat_biproducts
+Definition setoid_cat_binproducts
   : BinProducts setoid_cat.
 Proof.
   intros X₁ X₂.
   use tpair.
   - exact (prod_setoid X₁ X₂ ,, setoid_pr1 X₁ X₂ ,, setoid_pr2 X₁ X₂).
-  - exact (prod_setoid_is_biproduct X₁ X₂).
+  - exact (prod_setoid_is_binproduct X₁ X₂).
 Defined.
 
 (** Exponentials of setoids *)
@@ -314,7 +314,7 @@ Definition setoid_exp_unit
            (X : setoid)
   : (functor_identity setoid_precat)
       ⟹
-      constprod_functor1 setoid_cat_biproducts X ∙ setoid_exp_functor X.
+      constprod_functor1 setoid_cat_binproducts X ∙ setoid_exp_functor X.
 Proof.
   use mk_nat_trans.
   - intros Y.
@@ -334,7 +334,7 @@ Defined.
 
 Definition setoid_exp_counit
            (X : setoid)
-  : (setoid_exp_functor X ∙ constprod_functor1 setoid_cat_biproducts X)
+  : (setoid_exp_functor X ∙ constprod_functor1 setoid_cat_binproducts X)
       ⟹
       functor_identity setoid_precat.
 Proof.
@@ -351,7 +351,7 @@ Proof.
 Defined.
 
 Definition setoid_cat_has_exponentials
-  : Exponentials setoid_cat_biproducts.
+  : Exponentials setoid_cat_binproducts.
 Proof.
   intro X.
   use tpair.
@@ -503,7 +503,8 @@ Proof.
   - exact (setquotpr _).
   - exact (quotient_counit_is_inverse X).
 Defined.
-  
+
+(** The quotient is a left adjoint *)
 Definition quotient_adjunction
   : are_adjoints quotient path_setoid.
 Proof.
@@ -643,7 +644,7 @@ Definition idtoiso_setoid_cat
            (X Y : setoid_cat)
   : X = Y ≃ iso X Y
   := (factor_idtoiso_3 X Y ∘ factor_idtoiso_2 X Y ∘ factor_idtoiso_1 X Y)%weq.
-    
+
 Definition setoid_cat_is_univalent
   : is_univalent setoid_cat.
 Proof.

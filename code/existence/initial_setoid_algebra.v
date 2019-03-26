@@ -1,4 +1,8 @@
-(** Our goal is to construct the initial setoid algebra *)
+(**
+Here we define the initial setoid algebra.
+The carrier of this setoid is the initial prealgebra of the point constructor.
+The equivalence relation is the freely generated congruence relation.
+ *)
 Require Import prelude.all.
 
 Require Import setoids.base.
@@ -22,13 +26,16 @@ Section InitialSetoidAlgebra.
     : Initial (set_prealgebras P)
     := initial_prealgebra P.
 
+  (** The carrier *)
   Local Definition carrier
     : set_prealgebras P
     := pr1 carrier_initial.
 
+  (** The equivalence relation *)
   Definition initial_setoid_algebra_carrier
     := mod_congruence carrier.
 
+  (** Proof of initiality *)
   Definition initial_setoid_algebra_is_initial
     : isInitial _ initial_setoid_algebra_carrier.
   Proof.

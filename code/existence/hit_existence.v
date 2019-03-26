@@ -14,6 +14,9 @@ Require Import syntax.hit.
 Require Import existence.initial_setoid_algebra.
 Require Import existence.algebra_adjunction.
 
+(**
+First, we conclude that initiality is sufficient to be a HIT
+ *)
 Definition is_initial_is_a_HIT
            {Σ : hit_signature}
            (H : set_algebra Σ)
@@ -36,6 +39,11 @@ Proof.
     apply H.
 Defined.
 
+(**
+We conclude that HITs exist.
+To construct an initial object, we use the quotient adjunction.
+Note that we have an initial algebra in setoids.
+ *)
 Definition HIT_exists
       (Σ : hit_signature)
   : HIT Σ.
