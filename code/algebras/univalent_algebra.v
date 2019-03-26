@@ -1,5 +1,5 @@
 (**
-Here we define the category of algebras.
+Here we show how to interpret the syntactic data in univalent categories.
  *)
 Require Import prelude.all.
 Require Import syntax.hit_signature.
@@ -23,8 +23,7 @@ Section Semantics.
     : C ⟶ C.
   Proof.
     induction P as [T | | P IHP Q IHQ | P IHP Q IHQ].
-    - apply constant_functor.
-      exact (F T).
+    - exact (constant_functor _ _ (F T)).
     - exact (functor_identity C).
     - exact (BinCoproduct_of_functors _ _ coprod_C IHP IHQ).
     - exact (BinProduct_of_functors _ _ prod_C IHP IHQ).
@@ -34,11 +33,8 @@ Section Semantics.
 
   Definition prealgebras
              (P : poly_code)
-    : precategory.
-  Proof.
-    refine (FunctorAlg (⟦ P ⟧) _).
-    apply HC.
-  Defined.
+    : precategory
+    := FunctorAlg (⟦ P ⟧) HC.
 
   Definition prealgebra_carrier
              (P : poly_code)
@@ -54,18 +50,12 @@ Section Semantics.
                     | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
     - exact (nat_trans_id _).
     - exact (nat_trans_comp _ _ _ IHe₁ IHe₂).
-    - apply pre_whisker.
-      apply coproduct_nat_trans_in1.
-    - apply pre_whisker.
-      apply coproduct_nat_trans_in2.
-    - apply pre_whisker.
-      apply binproduct_nat_trans_pr1.
-    - apply pre_whisker.
-      apply binproduct_nat_trans_pr2.
-    - apply (pair_nat_trans _) ; assumption.
-    - apply pre_whisker.
-      apply el.
-      exact t.
+    - exact (pre_whisker _ (coproduct_nat_trans_in1 _ _ _ _ _)).
+    - exact (pre_whisker _ (coproduct_nat_trans_in2 _ _ _ _ _)).
+    - exact (pre_whisker _ (binproduct_nat_trans_pr1 _ _ _ _ _)).
+    - exact (pre_whisker _ (binproduct_nat_trans_pr2 _ _ _ _ _)).
+    - exact (pair_nat_trans _ IHe₁ IHe₂).
+    - exact (pre_whisker _ (el _ t _)).
     - use mk_nat_trans.
       + intro X.
         exact (alg_map _ X).
@@ -75,7 +65,7 @@ Section Semantics.
 End Semantics.
 
 (**
-We show it is univalent.
+We show this gives rise to a univalent category of prealgebras.
  *)
 Definition univalent_prealgebras
            (C : univalent_category)

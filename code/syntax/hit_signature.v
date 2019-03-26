@@ -7,27 +7,27 @@ Data type of polynomials.
 These are used for both the point constructor and the arguments of the path constructors.
  *)
 Inductive poly_code : UU :=
-| C : hSet -> poly_code
+| C : hSet → poly_code
 | I : poly_code
-| plus : poly_code -> poly_code -> poly_code
-| times : poly_code -> poly_code -> poly_code.
+| plus : poly_code → poly_code → poly_code
+| times : poly_code → poly_code → poly_code.
 
 Notation "P + Q" := (plus P Q).
 Notation "P * Q" := (times P Q).
 
 (**
-Constructor terms
+Type of endpoints
  *)
-Inductive endpoint (A : poly_code) : poly_code -> poly_code -> UU :=
+Inductive endpoint (A : poly_code) : poly_code → poly_code → UU :=
 | id_e : forall (P : poly_code), endpoint A P P
-| comp : forall (P Q R : poly_code), endpoint A P Q -> endpoint A Q R -> endpoint A P R
+| comp : forall (P Q R : poly_code), endpoint A P Q → endpoint A Q R → endpoint A P R
 | ι₁ : forall (P Q : poly_code), endpoint A P (P + Q)
 | ι₂ : forall (P Q : poly_code), endpoint A Q (P + Q)
 | π₁ : forall (P Q : poly_code), endpoint A (P * Q) P
 | π₂ : forall (P Q : poly_code), endpoint A (P * Q) Q
 | pair : forall (P Q R : poly_code),
-    endpoint A P Q -> endpoint A P R -> endpoint A P (Q * R)
-| c : forall (P : poly_code) (T : hSet), T -> endpoint A P (C T)
+    endpoint A P Q -> endpoint A P R → endpoint A P (Q * R)
+| c : forall (P : poly_code) (T : hSet), T → endpoint A P (C T)
 | constr : endpoint A A I.
 
 Arguments id {_} _.

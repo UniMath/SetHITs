@@ -233,6 +233,15 @@ Defined.
 (**
 Transport lemmata
  *)
+Definition transportf_is_transportb
+           {X : UU}
+           (Y : X → UU)
+           {x₁ x₂ : X}
+           (p : x₁ = x₂)
+           (z : Y x₂)
+  : transportb Y p z = transportf Y (!p) z
+  := idpath _.
+
 Definition sum_hset_fam
            {A B : UU}
            (Y₁ : A → hSet)
@@ -245,7 +254,7 @@ Proof.
   - exact (Y₂ x).
 Defined.
 
-Definition transport_inl
+Definition transportf_inl
            {A B : UU}
            (Y₁ : A → hSet)
            (Y₂ : B → hSet)
@@ -258,7 +267,7 @@ Proof.
   reflexivity.
 Qed.
 
-Definition transport_inr
+Definition transportf_inr
            {A B : UU}
            (Y₁ : A → hSet)
            (Y₂ : B → hSet)
@@ -278,11 +287,11 @@ Definition prod_hset_fam
   : A × B → hSet
   := (λ x, Y₁ (pr1 x) × Y₂ (pr2 x))%set.
 
-Definition transport_pr1
+Definition transportf_pr1
            {A B : UU}
-           (Y₁ : A → hSet)
-           (Y₂ : B → hSet)
-           {x₁ x₂ : A × B}
+           {Y₁ : A → hSet}
+           {Y₂ : B → hSet}
+           (x₁ x₂ : A × B)
            (p : x₁ = x₂)
            (y : Y₁ (pr1 x₁) × Y₂ (pr2 x₁))
   : pr1 (transportf (prod_hset_fam Y₁ Y₂) p y) = transportf Y₁ (maponpaths pr1 p) (pr1 y).
@@ -291,15 +300,62 @@ Proof.
   reflexivity.
 Qed.
 
-Definition transport_pr2
+Definition transportf_pr2
            {A B : UU}
-           (Y₁ : A → hSet)
-           (Y₂ : B → hSet)
-           {x₁ x₂ : A × B}
+           {Y₁ : A → hSet}
+           {Y₂ : B → hSet}
+           (x₁ x₂ : A × B)
            (p : x₁ = x₂)
            (y : Y₁ (pr1 x₁) × Y₂ (pr2 x₁))
   : pr2 (transportf (prod_hset_fam Y₁ Y₂) p y) = transportf Y₂ (maponpaths dirprod_pr2 p) (pr2 y).
 Proof.
   induction p ; simpl.
   reflexivity.
+Qed.
+
+Definition transportf_paths_2
+           {X : hSet}
+           (Y : X → UU)
+           {x₁ x₂ x₃ : X}
+           (p₁ : x₁ = x₃)
+           (p₂ : x₂ = x₃)
+           {y₁ : Y x₁}
+           {y₂ : Y x₂}
+           (q : y₁ = transportf Y (p₂ @ ! p₁) y₂)
+  : transportf Y p₁ y₁ = transportf Y p₂ y₂.
+Proof.
+  refine (!_).
+  apply transportf_transpose.
+  unfold transportb.
+  rewrite transport_f_f.
+  exact (!q).
+Qed.
+
+Definition transportf_paths_3
+           {X : hSet}
+           (Y : X → UU)
+           {x₁ x₂ : X}
+           (p₁ p₂ : x₁ = x₂)
+           {y₁ y₂ : Y x₁}
+           (q : y₁ = y₂)
+  : transportf Y p₁ y₁ = transportf Y p₂ y₂.
+Proof.
+  apply transportf_paths_2.
+  refine (q @ !(transportf_set _ _ _ _)).
+  apply X.
+Qed.
+
+(** Alternative form of `fiber_paths` *)
+Definition fiber_paths_b
+           {A : UU}
+           {B : A → UU}
+           {u v : ∑ (x : A), B x}
+           (p : u = v)
+  : pr2 u = transportb (λ x, B x) (base_paths u v p) (pr2 v).
+Proof.
+  apply transportf_transpose.
+  unfold transportb.
+  refine (_ @ fiber_paths p).
+  apply transportf_paths.
+  apply pathsinv0inv0.
 Qed.

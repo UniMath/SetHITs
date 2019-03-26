@@ -20,7 +20,7 @@ Definition is_initial_is_a_HIT
   : isInitial _ H → is_a_HIT H.
 Proof.
   intros HI Y.
-  use test2.
+  use section_to_disp_alg_map.
   - apply HI.
   - apply (isapropifcontr (HI H)).
 Defined.

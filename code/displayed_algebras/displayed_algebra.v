@@ -1,3 +1,6 @@
+(**
+For the induction principle of HITs, we use the notion of displayed algebras.
+ *)
 Require Import prelude.all.
 
 Require Import syntax.hit_signature.
@@ -20,23 +23,6 @@ Proof.
     + exact (IHP₁ x).
     + exact (IHP₂ x).
   - exact (λ x, IHP₁ (pr1 x) × IHP₂ (pr2 x))%set.
-Defined.
-
-Definition poly_dmap
-           (P : poly_code)
-           {X : hSet}
-           (Y : X → hSet)
-           (f : ∏ (x : X), Y x)
-  : ∏ (x : ⦃ P ⦄ X), poly_dact P Y x.
-Proof.
-  induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
-  - exact (idfun T).
-  - exact f.
-  - intros x.
-    induction x as [x | x].
-    + exact (IHP₁ x).
-    + exact (IHP₂ x).
-  - exact (λ x, IHP₁ (pr1 x) ,, IHP₂ (pr2 x)).
 Defined.
 
 Definition endpoint_dact
@@ -95,28 +81,28 @@ Definition disp_algebra_type_family
 
 Coercion disp_algebra_type_family : disp_algebra >-> Funclass.
 
-Definition disp_alg_operation
-           {Σ : hit_signature}
-           {X : set_algebra Σ}
-           (Y : disp_algebra X)
-  : ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier X)),
-    poly_dact (point_arg Σ) Y x → Y (alg_operation X x)
-  := pr12 Y.
+Section DispAlgebraProjections.
+  Context {Σ : hit_signature}
+          {X : set_algebra Σ}.
+  Variable (Y : disp_algebra X).
 
-Definition disp_alg_paths
-           {Σ : hit_signature}
-           {X : set_algebra Σ}
-           (Y : disp_algebra X)
-  : ∏ (j : path_index Σ)
-      (x : ⦃ path_arg Σ j ⦄ (alg_carrier X))
-      (y : poly_dact (path_arg Σ j) Y x),
-    transportf
-      (poly_dact I Y)
-      (alg_paths X j x)
-      (endpoint_dact (alg_to_prealg X) (path_lhs Σ j) (disp_alg_operation Y) y)
-    =
-    endpoint_dact (alg_to_prealg X) (path_rhs Σ j) (disp_alg_operation Y) y
+  Definition disp_alg_operation
+    : ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier X)),
+      poly_dact (point_arg Σ) Y x → Y (alg_operation X x)
+    := pr12 Y.
+
+  Definition disp_alg_paths
+    : ∏ (j : path_index Σ)
+        (x : ⦃ path_arg Σ j ⦄ (alg_carrier X))
+        (y : poly_dact (path_arg Σ j) Y x),
+      transportf
+        (poly_dact I Y)
+        (alg_paths X j x)
+        (endpoint_dact (alg_to_prealg X) (path_lhs Σ j) disp_alg_operation y)
+      =
+      endpoint_dact (alg_to_prealg X) (path_rhs Σ j) disp_alg_operation y
   := pr22 Y.
+End DispAlgebraProjections.
 
 (**
 Builder
@@ -140,7 +126,27 @@ Definition mk_disp_algebra
   := (Y ,, (c ,, p)).
 
 (**
-Maps to a displayed algebra
+Operation necessary to define sections
+ *)
+Definition poly_dmap
+           (P : poly_code)
+           {X : hSet}
+           (Y : X → hSet)
+           (f : ∏ (x : X), Y x)
+  : ∏ (x : ⦃ P ⦄ X), poly_dact P Y x.
+Proof.
+  induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  - exact (idfun T).
+  - exact f.
+  - intros x.
+    induction x as [x | x].
+    + exact (IHP₁ x).
+    + exact (IHP₂ x).
+  - exact (λ x, IHP₁ (pr1 x) ,, IHP₂ (pr2 x)).
+Defined.
+
+(**
+Maps to a displayed algebra (sections of the display map)
  *)
 Definition disp_algebra_map
            {Σ : hit_signature}
