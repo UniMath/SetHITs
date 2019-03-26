@@ -1,3 +1,6 @@
+(**
+Here we interpret HIT signatures in the category of sets.
+ *)
 Require Import prelude.all.
 Require Import syntax.hit_signature.
 Require Import algebras.univalent_algebra.
@@ -5,7 +8,7 @@ Require Import algebras.univalent_algebra.
 Open Scope cat.
 
 (**
-Algebras in sets.
+Algebras of functors in sets.
  *)
 Definition set_poly
            (P : poly_code)
@@ -40,7 +43,7 @@ Definition prealgebra_to_set
   := prealgebra_carrier HSET _ _ _ _ P.
 
 (**
-Algebras in sets
+Algebras of HIT signatures in sets.
  *)
 Definition set_endpoint
            {A P Q : poly_code}
@@ -84,7 +87,7 @@ Proof.
 Defined.
 
 (**
-Prealgebra (of sets) projections
+Projections of prealgebras
  *)
 Section PrealgebraProjections.
   Context {P : poly_code}.
@@ -128,7 +131,24 @@ Section AlgebraProjections.
 End AlgebraProjections.
 
 (**
-Builder
+Projections of algebra maps
+ *)
+Section AlgebraMapProjections.
+  Context {Σ : hit_signature}
+          {X Y : set_algebra Σ}.
+  Variable (f : X --> Y).
+
+  Definition alg_map_carrier
+    : alg_carrier X → alg_carrier Y
+    := pr11 f.
+
+  Definition alg_map_is_alg_mor
+    : is_algebra_mor (⦃ point_arg Σ ⦄) (alg_to_prealg X) (alg_to_prealg Y) alg_map_carrier
+    := pr21 f.
+End AlgebraMapProjections.
+
+(**
+Builder for algebras and algebra maps
  *)
 Definition mk_algebra
            {Σ : hit_signature}
@@ -149,9 +169,28 @@ Definition mk_algebra_map
                 f (alg_operation X x)
                 =
                 alg_operation Y (#⦃ point_arg Σ ⦄ f x))
-  : X --> Y.
+  : X --> Y
+  := ((f ,, funextsec _ _ _ p) ,, tt).
+
+(**
+Equality principle for maps beween algebras
+ *)
+Definition algebra_map_eq
+           {Σ : hit_signature}
+           {X Y : set_algebra Σ}
+           {f g : X --> Y}
+           (e : ∏ (x : alg_carrier X), alg_map_carrier f x = alg_map_carrier g x)
+  : f = g.
 Proof.
-  refine ((f ,, _) ,, tt).
+  use subtypeEquality.
+  {
+    intro ; exact isapropunit.
+  }
+  use subtypeEquality.
+  {
+    intro ; simpl.
+    apply SET.
+  }
   use funextsec.
-  exact p.
-Defined.
+  exact e.
+Qed.

@@ -1,3 +1,7 @@
+(**
+Here we define the total algebra of a displayed algebra.
+The object of this algebra are dependent pairs.
+ *)
 Require Import prelude.all.
 
 Require Import syntax.hit_signature.
@@ -5,18 +9,14 @@ Require Import algebras.set_algebra.
 Require Import displayed_algebras.displayed_algebra.
 
 (**
-Definition of the total algebra. We first need two lemmata.
+We first look at the first and second projection of a polynomial applied to a total type
  *)
 Definition poly_pr1
            (P : poly_code)
            {X : hSet}
            {Y : X → hSet}
-  : ⦃ P ⦄ (total2_hSet Y) → ⦃ P ⦄ X.
-Proof.
-  intro x.
-  refine (#⦃ P ⦄ _ x).
-  exact pr1.
-Defined.
+  : ⦃ P ⦄ (total2_hSet Y) → ⦃ P ⦄ X
+  := #⦃ P ⦄ (pr1 : HSET⟦ total2_hSet Y , X ⟧).
 
 Definition poly_pr1_I
            {X : hSet}
@@ -43,15 +43,6 @@ Proof.
     + apply IHP₂.
 Defined.
 
-Definition transportf_is_transportb
-           {X : UU}
-           (Y : X → UU)
-           {x₁ x₂ : X}
-           (p : x₁ = x₂)
-           (z : Y x₂)
-  : transportb Y p z = transportf Y (!p) z
-  := idpath _.
-
 Definition endpoint_dact_transportf
            {P Q A : poly_code}
            (e : endpoint A P Q)
@@ -73,6 +64,9 @@ Proof.
   reflexivity.
 Qed.
 
+(**
+Now we define the total algebra
+ *)
 Section TotalAlgebra.
   Context {Σ : hit_signature}
           {X : set_algebra Σ}.
@@ -88,7 +82,7 @@ Section TotalAlgebra.
     intro x.
     simple refine (alg_operation X (#⦃ point_arg Σ ⦄ _ x) ,, _).
     - exact pr1.
-    - apply (pr12 Y (#⦃ point_arg Σ ⦄ _ x)).
+    - apply (disp_alg_operation Y (#⦃ point_arg Σ ⦄ _ x)).
       apply poly_pr2.
   Defined.
 
@@ -100,6 +94,7 @@ Section TotalAlgebra.
     - exact operation.
   Defined.
 
+  (** For the paths, we first need to look at the first and second projections of endpoints *)
   Local Definition pr1_endpoint
         {P Q : poly_code}
         (e : endpoint (point_arg Σ) P Q)
@@ -109,16 +104,10 @@ Section TotalAlgebra.
       poly_pr1 Q (set_endpoint e total_prealgebra x).
   Proof.
     induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
-    - apply idpath.
+                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+    ; try (apply idpath).
     - exact (maponpaths _ (IHe₁ _) @ IHe₂ _).
-    - apply idpath.
-    - apply idpath.
-    - apply idpath.
-    - apply idpath.
     - exact (pathsdirprod (IHe₁ x) (IHe₂ x)).
-    - apply idpath.
-    - apply idpath.
   Defined.
 
   Local Definition pr2_endpoint
@@ -134,7 +123,7 @@ Section TotalAlgebra.
   Proof.
     induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
                     | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
-    ; try apply idpath.
+    ; try (apply idpath).
     - simpl.
       refine (_ @ _).
       {
@@ -143,21 +132,18 @@ Section TotalAlgebra.
       }
       refine (_ @ transportf_is_transportb (poly_dact R Y) (_ @ _) _).
       rewrite <- transport_b_b.
-      unfold transportb.
       refine (!(_ @ _)).
       {
         apply maponpaths.
         exact (!(IHe₂ _)).
       }
       refine (!_).
-      refine (_ @ transportf_is_transportb (poly_dact R Y) _ _).
-      unfold transportb.
       refine (endpoint_dact_transportf _ _ _ _ _ @ _).
       apply (transportf_paths (poly_dact R Y)).
       exact (maponpathsinv0 ((set_endpoint e₂) (alg_to_prealg X)) (pr1_endpoint e₁ x)).
     - use dirprod_paths.
       + refine (IHe₁ x @ _).
-        pose (@transport_pr1
+        pose (@transportf_pr1
                 _
                 _
                 (poly_dact Q Y) (poly_dact R Y)
@@ -172,7 +158,7 @@ Section TotalAlgebra.
         apply (transportf_paths (poly_dact Q Y)).
         apply (⦃ Q ⦄ _).
       + refine (IHe₂ x @ _).
-        pose (@transport_pr2
+        pose (@transportf_pr2
                 _
                 _
                 (poly_dact Q Y) (poly_dact R Y)
@@ -240,6 +226,9 @@ Section TotalAlgebra.
   Defined.
 End TotalAlgebra.
 
+(**
+We can project the total algebra on `X`.
+ *)
 Section Projection.
   Context {Σ : hit_signature}
           {X : set_algebra Σ}.

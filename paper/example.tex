@@ -1,5 +1,11 @@
-\documentclass[9pt]{entcs} \usepackage{entcsmacro}
+\documentclass[9pt]{entcs}
+
+\usepackage{entcsmacro}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+
 \sloppy
 % The following is enclosed to allow easy detection of differences in
 % ascii coding.
@@ -18,10 +24,66 @@
 % Grave accent  `           Left brace   {          Vertical bar  |
 % Right brace   }           Tilde        ~
 
-% A couple of exemplary definitions:
 
-\newcommand{\Nat}{{\mathbb N}}
-\newcommand{\Real}{{\mathbb R}}
+\newenvironment{bprooftree}
+{\leavevmode\hbox\bgroup}
+{\DisplayProof\egroup}
+
+\newcommand{\type}[1]{#1}
+\newcommand{\constructor}[1]{#1}
+\newcommand{\category}[1]{#1}
+\newcommand{\functortxt}[1]{#1}
+\newcommand{\nattranstxt}[1]{#1}
+
+\newcommand{\hset}{\type{hSet}} % sets
+\newcommand{\1}{\type{1}} % sets
+
+% Category theory
+\newcommand{\setoids}{\category{Setoid}}
+\newcommand{\functor}[2]{#1 \rightarrow #2} % functors
+\newcommand{\idf}{\functortxt{id}} % identity functor
+\newcommand{\compf}[2]{#1 \circ #2} % composition of functors
+\newcommand{\prodf}[2]{#1 \times #2} % product of functors
+\newcommand{\sumf}[2]{#1 + #2} % sum of functors
+\newcommand{\nattrans}[2]{#1 \Rightarrow #2} % natural transfomations
+\newcommand{\idt}[1]{\nattranstxt{id}} % identity transformation
+\newcommand{\compt}[2]{#1 \circ #2} % composition of natural transformations
+\newcommand{\lwhisker}[2]{#1 \vartriangleleft #2} % left whiskering of transformations
+\newcommand{\inlt}{\nattranstxt{inl}} %left inclusion of transformations
+\newcommand{\inrt}{\nattranstxt{inr}} % right inclusion of transformations
+\newcommand{\prlt}{\nattranstxt{pr}_1} % first projection of transformations
+\newcommand{\prrt}{\nattranstxt{pr}_2} % second projection of transformations
+\newcommand{\pairt}[2]{(#1 , #2)} % pairing of transformations
+
+% Polynomials
+\newcommand{\poly}{\mathcal{P}} % type of polynomials
+\newcommand{\C}{\constructor{C}} % constant polynomial
+\newcommand{\I}{\constructor{I}} % identity polynomial
+\newcommand{\sumP}[2]{#1 + #2} % sum of polynomials
+\newcommand{\prodP}[2]{#1 \times #2} % product of polynomials
+
+% Endpoints
+\newcommand{\ep}[3]{\mathcal{E}_{#1}(#2,#3)} % type of endpoinst
+\newcommand{\id}[1]{\constructor{id}_{#1}} % identity endpoints
+\newcommand{\comp}[2]{#1 \cdot #2} % composition of endpoints
+\newcommand{\inle}{\constructor{inl}} %left inclusion of endpoints
+\newcommand{\inre}{\constructor{inr}} % right inclusion of endpoints
+\newcommand{\prle}{\constructor{pr}_1} % first projection of endpoints
+\newcommand{\prre}{\constructor{pr}_2} % second projection of endpoints
+\newcommand{\pair}[2]{(#1 , #2)} % pairing of endpoints
+\newcommand{\Ce}{\constructor{c}} % constant endpoint
+\newcommand{\constr}{\constructor{constr}} % constructor endpoint
+
+% Algebras
+\newcommand{\semP}[1]{\llbracket #1 \rrbracket} % semantics of polynomials
+\newcommand{\prealg}[1]{\category{PreAlg}(#1)} % category of prealgebras
+\newcommand{\forget}[1]{F_{#1}} % forgetful functor
+\newcommand{\semE}[1]{\llbracket #1 \rrbracket} % semantics of endpoints
+
+% Algebras in setoids
+\newcommand{\semPT}[1]{\langle #1 \rangle} % semantics of polynomials in setoids
+\newcommand{\semET}[1]{\langle #1 \rangle} % semantics of endpoints in setoids
+
 \def\lastname{Please list Your Lastname Here}
 \begin{document}
 \begin{frontmatter}
@@ -54,62 +116,198 @@
 \section{Signature of HITs}
 
 \begin{definition}
-Code for polynomials
+We define the type $\mathcal{\poly}$ inductively by the following rules
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$X : \hset$}
+\UnaryInfC{$\C \> X : \poly$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\I : \poly$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$Q : \poly$}
+\BinaryInfC{$\sumP{P}{Q} : \poly$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$Q : \poly$}
+\BinaryInfC{$\prodP{P}{Q} : \poly$}
+\end{bprooftree}
+\end{center}
 \end{definition}
 
 \begin{definition}
-Endpoints
+Given polynomials, $A, P, Q : \poly$, we define the type $\ep{A}{P}{Q}$ of endpoints inductively by the following rules
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\UnaryInfC{$\id{A} : \ep{A}{P}{P}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q, R : \poly$}
+\AxiomC{$e_1 : \ep{A}{P}{Q}$}
+\AxiomC{$e_2 : \ep{A}{Q}{R}$}
+\TrinaryInfC{$\comp{e_1}{e_2} : \ep{A}{P}{R}$}
+\end{bprooftree}
+\end{center}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\inle : \ep{A}{P}{\sumP{P}{Q}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\inre : \ep{A}{Q}{\sumP{P}{Q}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\prle : \ep{A}{\prodP{P}{Q}}{P}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\prre : \ep{A}{\prodP{P}{Q}}{Q}$}
+\end{bprooftree}
+\end{center}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\constr : \ep{A}{A}{\I}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$X : \hset$}
+\AxiomC{$x : X$}
+\TrinaryInfC{$\Ce \> x : \ep{A}{P}{\C \> X}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q, R: \poly$}
+\AxiomC{$e_1 : \ep{A}{P}{Q}$}
+\AxiomC{$e_2 : \ep{A}{P}{R}$}
+\TrinaryInfC{$\pair{e_1}{e_2} : \ep{A}{P}{\prodP{Q}{R}}$}
+\end{bprooftree}
+\end{center}
 \end{definition}
 
 \begin{definition}
-Signature of a HIT
+A signature of a higher inductive type consists of
+\begin{enumerate}
+	\item A polynomial $P : \poly$;
+	\item A type $J$;
+	\item A family $Q : J \rightarrow \poly$;
+	\item For each $j : J$, endpoints $l, r : \ep{P}{Q \> j}{I}$.
+\end{enumerate}
 \end{definition}
+
+\begin{example}
+Set with assocative operation.
+\end{example}
+
+Similarly, one can define signatures for groups or finite sets.
+Note that signatures can also depend on types.
+
+\begin{example}
+Propositional truncation of a type
+\end{example}
 
 \section{Algebras}
 Note: algebra structure is point constructor rule.
 
 \begin{definition}
-Semantics of a polynomial on sets
+For each $P : \poly$, we define a functor $\semP{P} : \functor{\hset}{\hset}$. On the objects, they act as follows
+\begin{itemize}
+	\item $\semP{\C \> X} \> Z = X$;
+	\item $\semP{\I} \> Z = Z$;
+	\item $\semP{\sumP{P}{Q}} \> Z = \semP{P} \> Z + \semP{Q} \> Z$;
+	\item $\semP{\sumP{P}{Q}} \> Z = \semP{P} \> Z \times \semP{Q} \> Z$.
+\end{itemize}
 \end{definition}
 
 \begin{definition}
-Category of prealgebras on a polynomial
+For each $P : \poly$, we define $\prealg{P}$ as the category on algebras on $\semP{P}$.
+\end{definition}
+
+Note that we have a functor $\forget{P} : \functor{\semP{P}}{\hset}$.
+
+To define the interpretation of endpoints, we first note that for every two functors $F, G$ we have a natural transformation $\inlt : \nattrans{F}{\sumf{F}{G}}$, and we also have operations representing the other inclusion and the projections.
+In addition, given $\eta_1 : \nattrans{\compf{F}{G_1}}{\compf{F}{G_2}}$ and $\eta_2 : : \nattrans{\compf{F}{G_1}}{\compf{F}{G_3}}$, we get $\pairt{\eta_1}{\eta_2} : \nattrans{\compf{F}{G_1}}{\compf{F}{\prodf{G_2}{G_3}}}$.
+
+\begin{definition}
+For each endpoint $e : \ep{A}{P}{Q}$, we define a natural transformation $\semE{e} : \nattrans{\compf{\forget{A}}{\semP{P}}} {\compf{\forget{A}}{\semP{Q}}}$
+\begin{itemize}
+	\item $\semE{\id{P}} = \idt{\compf{\forget{A}}{\semP{P}}}$;
+	\item $\semE{\comp{e_1}{e_2}} = \compt{\semE{e_1}}{\semE{e_2}}$;
+	\item $\semE{\inle} = \lwhisker{\forget{A}}{\inlt}$;
+	\item $\semE{\inre} = \lwhisker{\forget{A}}{\inrt}$;
+	\item $\semE{\prle} = \lwhisker{\forget{A}}{\prlt}$;
+	\item $\semE{\prre} = \lwhisker{\forget{A}}{\prrt}$;
+	\item $\semE{\pair{e_1}{e_2}} = \pairt{\semE{e_1}}{\semE{e_2}}$;
+	\item $\semE{\Ce \> t} = $;
+	\item $\semE{\constr} = $.
+\end{itemize}
 \end{definition}
 
 \begin{definition}
-Semantics of endpoints
+Let $\Sigma$ be a HIT signature.
+Then we define the category of \emph{$\Sigma$-algebras} as the full subcategory of $\prealg{}$ with respect to
 \end{definition}
 
-\begin{definition}
-Category of algebras
-\end{definition}
+Since the category of prealgebra is univalent and univalence is preserved under taking subcategories, we conclude that this category is univalent.
 
 \begin{proposition}
 The category of algebras is univalent.
 \end{proposition}
 
+Next we define algebras in setoids.
+For these, we take a slightly different approach.
+Instead of defining the interpretation of the polynomial $P$ inductively making use of binary sums and products in $\setoids$, we define an equivalence relation on $\semP{P}$, and show this action is functorial.
+
 \begin{definition}
-Semantics of a polynomial on setoids
+Let $R$ be an equivalence relation on a set $X$ and let $P : \poly$ be a polynomial.
+By induction, we define an equivalence relation $P \> R$ on $\semP{P} \> X$.
+\begin{itemize}
+	\item
+	\item
+	\item
+	\item
+\end{itemize}
+Now we define a functor $\semPT{P} : \functor{\setoids}{\setoids}$ for which $\semPT{P}(X,R) = (\semP{P} \> X, P \> R)$.
+\end{definition}
+
+Again this gives rise to a category $\prealg{P}$
+
+\begin{definition}
+Let $e : \ep{A}{P}{Q}$ be an endpoint and let $X$ be a setoid prealgebra on $A$.
+Then we define $\semE{e}$ to be the setoid morphism from $\semE{P}(X)$ to $\semE{Q}(X)$ whose carrier is $\semP{e}$.
 \end{definition}
 
 \begin{definition}
-Category of prealgebras on a polynomial (setoids)
+Let $\Sigma$ be a HIT signature.
+Then we define the category of \emph{$\Sigma$-setoid-algebras} as the full subcategory of $\prealg{}$ with respect to
 \end{definition}
 
-\begin{definition}
-Semantics of endpoints (setoids)
-\end{definition}
-
-\begin{definition}
-Category of algebras in setoids
-\end{definition}
+\begin{proposition}
+The category of $\Sigma$-setoid-algebras is unvialent.
+\end{proposition}
 
 \section{Initial Algebra Semantics}
 
 \subsection{The Induction Principle}
 
 \begin{definition}
+Action of polynomials on families.
+\end{definition}
+
+\begin{definition}
+Dependent action of endpoints
+\end{definition}
+
+\begin{definition}
 Displayed algebra
+\end{definition}
+
+\begin{definition}
+Action of polynomials on dependent maps
 \end{definition}
 
 \begin{definition}
@@ -121,14 +319,24 @@ A HIT: every displayed algebra has a section
 \end{definition}
 
 \subsection{Obtaining Induction from Initiality}
+Now suppose that we have some displayed algebra.
+Our goal is to construct an algebra whose objects are dependent pairs.
 
-\begin{definition}
-Total algebra
-\end{definition}
+Give the carrier and operation in plain text
 
-\begin{definition}
-Projection of total algebra
-\end{definition}
+\begin{lemma}
+pr1 endpoint
+\end{lemma}
+
+\begin{lemma}
+pr2 endpoint
+\end{lemma}
+
+All in all, we get the following construction.
+
+\begin{theorem}
+Total algebra and projection
+\end{theorem}
 
 \begin{proposition}
 Map to total algebra which projects into identity is section.
@@ -136,18 +344,28 @@ Map to total algebra which projects into identity is section.
 
 Hence, to construct a HIT, it suffices to construct an initial object in the category of algebras.
 
+\begin{corollary}
+	
+\end{corollary}
+
 \section{Constructing the Initial Algebra}
 
 \subsection{Adjunction between Algebras}
 To construct the adjunction between the category of algebras, we use two lemmata
 
 \begin{lemma}
-Adjunction between algebras
+Adjunction between prealgebras
 \end{lemma}
 
 \begin{lemma}
 Adjunction between full subcategories
 \end{lemma}
+
+All in all, we get
+
+\begin{proposition}
+We have an adjunction
+\end{proposition}
 
 \subsection{Initial Setoid Algebra}
 

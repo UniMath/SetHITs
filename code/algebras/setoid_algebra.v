@@ -1,3 +1,6 @@
+(**
+Here we interpret HIT signatures in the category of setoids.
+ *)
 Require Import prelude.all.
 Require Import syntax.hit_signature.
 Require Import setoids.base.
@@ -8,6 +11,9 @@ Require Import algebras.set_algebra.
 
 Open Scope cat.
 
+(**
+Action of polynomials on equivalence relations.
+ *)
 Definition poly_eq_rel
            (P : poly_code)
            (X : setoid)
@@ -21,7 +27,7 @@ Proof.
 Defined.
 
 (**
-Algebras in setoids.
+Action of polynomials on setoids
  *)
 Definition setoid_poly_obj
            (P : poly_code)
@@ -33,6 +39,9 @@ Proof.
   - exact (poly_eq_rel P X).
 Defined.
 
+(**
+This gives rises to a functor
+ *)
 Definition setoid_poly_mor
            (P : poly_code)
            {X Y : setoid_cat}
@@ -115,15 +124,21 @@ Notation "⟨ P ⟩" := (setoid_poly P) (at level 10). (* \< \>} *)
 Notation "⟨ P ⟩ X" := (setoid_poly P X : setoid) (at level 10).
 Notation "# ⟨ P ⟩" := (#(setoid_poly P)) (at level 10).
 
+(**
+Univalent category of setoid prealgebras
+ *)
 Definition setoid_prealgebras
            (P : poly_code)
-  : category.
+  : univalent_category.
 Proof.
-  use tpair.
+  use mk_category.
   - exact (FunctorAlg (⟨ P ⟩) (homset_property _)).
-  - apply has_homsets_FunctorAlg.
+  - exact (is_univalent_FunctorAlg (⟨ P ⟩) setoid_cat_is_univalent).
 Defined.
 
+(**
+The carrier of a setoid prealgebra is a set prealgebra
+ *)
 Definition setoid_prealgebra_to_set_prealgebra
            (P : poly_code)
   : setoid_prealgebras P → set_prealgebras P.
@@ -134,11 +149,17 @@ Proof.
   - exact (pr12 X).
 Defined.
 
+(**
+Forgetful functor of setoid prealgebras
+ *)
 Definition prealgebra_setoid
            (P : poly_code)
   : setoid_prealgebras P ⟶ setoid_cat
   := forget_algebras _ _.
 
+(**
+Interpretation of endpoins
+ *)
 Definition setoid_endpoint
            {A P Q : poly_code}
            (e : endpoint A P Q)
@@ -162,7 +183,10 @@ Proof.
     + exact (map_eq _ p).
 Defined.
 
-Definition is_setoid_prealgebra
+(**
+Definition of algebras of HIT signatures in setoids
+ *)
+Definition is_setoid_algebra
            (Σ : hit_signature)
   : hsubtype (setoid_prealgebras (point_arg Σ)).
 Proof.
@@ -171,28 +195,26 @@ Proof.
             (x : ⟨ path_arg Σ j ⟩ (prealgebra_setoid _ X)),
              _).
   simple refine (hProppair _ _).
-  + pose @setoid_endpoint.
-    simpl in p.
-    exact (
+  + exact (
         (pr1 (setoid_endpoint (path_lhs Σ j) X) x)
           ≡
           pr1 (setoid_endpoint (path_rhs Σ j) X) x).
   + apply isaprop_setoid_eq.
 Defined.
 
+(**
+Univalent category of setoid algebras
+ *)
 Definition setoid_algebra
            (Σ : hit_signature)
-  : category.
+  : univalent_category.
 Proof.
-  use tpair.
+  use mk_category.
   - use (full_sub_precategory _).
     + exact (setoid_prealgebras (point_arg Σ)).
-    + exact (is_setoid_prealgebra Σ).
-  - intros X Y.
-    apply isaset_total2.
-    + apply homset_property.
-    + intro.
-      apply isasetunit.
+    + exact (is_setoid_algebra Σ).
+  - use is_univalent_full_subcat.
+    apply univalent_category_is_univalent.
 Defined.
 
 (**
@@ -222,6 +244,23 @@ Section AlgebraProjections.
       pr1 (setoid_endpoint (path_rhs Σ j) alg_to_prealg) x
     := pr2 X j x.
 End AlgebraProjections.
+
+(**
+Projections of algebra maps
+ *)
+Section AlgebraMapProjections.
+  Context {Σ : hit_signature}
+          {X Y : setoid_algebra Σ}.
+  Variable (f : X --> Y).
+
+  Definition alg_map_carrier
+    : setoid_morphism (alg_carrier X) (alg_carrier Y)
+    := pr11 f.
+
+  Definition alg_map_is_alg_mor
+    : is_algebra_mor (⟨ point_arg Σ ⟩) (alg_to_prealg X) (alg_to_prealg Y) alg_map_carrier
+    := pr21 f.
+End AlgebraMapProjections.
 
 (**
 Builder
@@ -269,3 +308,25 @@ Proof.
       exact p.
   - exact tt.
 Defined.
+
+(**
+Equality principle for maps beween algebras
+ *)
+Definition algebra_map_eq
+           {Σ : hit_signature}
+           {X Y : setoid_algebra Σ}
+           {f g : X --> Y}
+           (e : ∏ (x : alg_carrier X), alg_map_carrier f x = alg_map_carrier g x)
+  : f = g.
+Proof.
+  use subtypeEquality.
+  {
+    intro ; exact isapropunit.
+  }
+  use subtypeEquality.
+  {
+    intro ; simpl.
+    apply setoid_cat.
+  }
+  exact (setoid_morphism_eq _ _ e).
+Qed.

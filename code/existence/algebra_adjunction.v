@@ -844,7 +844,7 @@ Definition set_algebra_is_setoid_algebra
            (X : set_prealgebras (point_arg Σ))
   : is_set_algebra Σ X
     →
-    is_setoid_prealgebra Σ ((path_setoid_prealgebras (point_arg Σ)) X).
+    is_setoid_algebra Σ ((path_setoid_prealgebras (point_arg Σ)) X).
 Proof.
   intros HX j x.
   simpl in x.
@@ -867,13 +867,6 @@ Proof.
   - exact (set_algebra_is_setoid_algebra Σ).
 Defined.
 
-Definition isaset_hset
-           (X : hSet)
-  : isaset X.
-Proof.
-  apply X.
-Qed.
-
 Definition quotient_endpoint
            {A P Q : poly_code}
            (e : endpoint A P Q)
@@ -889,7 +882,7 @@ Proof.
   use (setquotunivprop' (λ z , _)).
   {
     intro.
-    apply isaset_hset.
+    apply setproperty.
   }
   intro x.
   simpl. cbn.
@@ -940,7 +933,7 @@ Qed.
 Definition setoid_algebra_is_set_algebra
            (Σ : hit_signature)
            (X : setoid_prealgebras (point_arg Σ))
-  : is_setoid_prealgebra Σ X
+  : is_setoid_algebra Σ X
     →
     is_set_algebra Σ ((quotient_prealgebras (point_arg Σ)) X).
 Proof.
