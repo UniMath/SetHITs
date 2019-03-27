@@ -1,4 +1,4 @@
-.*.aux
+*.aux
 *.a
 *.cma
 *.cmi
@@ -28,3 +28,9 @@ lia.cache
 nia.cache
 nlia.cache
 nra.cache
+Makefile
+Makefile.conf
+*.d
+*.pdf
+*.log
+*.gz

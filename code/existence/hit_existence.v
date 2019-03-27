@@ -11,8 +11,12 @@ Require Import displayed_algebras.constant_display.
 Require Import displayed_algebras.total_algebra_map.
 Require Import syntax.hit.
 
+Require Import existence.free_congruence.
+Require Import existence.initial_prealgebra.
 Require Import existence.initial_setoid_algebra.
 Require Import existence.algebra_adjunction.
+
+Require Import setoids.base.
 
 (**
 First, we conclude that initiality is sufficient to be a HIT
@@ -54,3 +58,25 @@ Proof.
   - refine (adj_initial (quotient_algebra_adjunction Σ) _ _).
     apply initial_setoid_algebra_is_initial.
 Defined.
+
+(**
+From this construction, we get a characterization of the path space of a HIT as inductive type.
+ *)
+Section HITPathSpace.
+  Context {Σ : hit_signature}.
+
+  Local Notation H := (pr111 (HIT_exists Σ) : hSet).
+  
+  Definition hit_path_space
+             {x₁ x₂ : prealg_carrier (InitialObject (initial_prealgebra (point_arg Σ)))}
+    : (generated_eqrel
+                (pr11 (initial_prealgebra (point_arg Σ)))
+                (pr21 (initial_prealgebra (point_arg Σ)))
+                (rel Σ _ (pr21 (initial_prealgebra (point_arg Σ))))
+                x₁ x₂)
+        ≃
+        (setquotpr _ x₁ : H) = setquotpr _ x₂.
+  Proof.
+    apply weqpathsinsetquot.
+  Defined.
+End HITPathSpace.

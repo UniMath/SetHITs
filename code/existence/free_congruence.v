@@ -1,4 +1,6 @@
-(** Our goal is to construct the initial setoid algebra *)
+(**
+Here we define the freely generated congruence relation.
+ *)
 Require Import prelude.all.
 
 Require Import setoids.base.
@@ -263,7 +265,8 @@ Section GeneratedAlgebra.
 End GeneratedAlgebra.
 
 (**
-Maps on `mod_congruence
+Let `Xalg` be a set prealgebra.
+The mapping principle on `mod_congruence` says that whenever we have a prealgebra from `Xalg` to the carrier of some setoid algebra `Y`, then we can lift it to `mod_congruence X`.
  *)
 Section MapModCongruence.
   Context {Σ : hit_signature}

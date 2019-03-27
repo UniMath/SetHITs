@@ -31,11 +31,11 @@ Definition endpoint_dact
            {P Q : poly_code}
            (e : endpoint A P Q)
            {Y : prealg_carrier X → hSet}
-           {z : ⦃ P ⦄ (prealg_carrier X)}
            (c : ∏ (x : ⦃ A ⦄ (prealg_carrier X)),
                    poly_dact A Y x → Y (prealg_operation X x))
-  : poly_dact P Y z → poly_dact Q Y (set_endpoint e X z).
+  : ∏ {z : ⦃ P ⦄ (prealg_carrier X)}, poly_dact P Y z → poly_dact Q Y (set_endpoint e X z).
 Proof.
+  intros z.
   induction e as [ | P Q R e₁ IHe₁ e₂ IHe₂ | | | | | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
   - exact (idfun _).
   - exact (λ x, IHe₂ (set_endpoint e₁ X z) (IHe₁ z x)).
