@@ -789,10 +789,8 @@ Definition quotient_prealgebas_adjunction
 Proof.
   use prealgebra_adjunction.
   - exact quotient_adjunction.
-  - intros X.
-    exact (quotient_prealgebras_counit_help P X).
-  - intros X.
-    exact (quotient_prealgebras_unit_help P X).
+  - exact (quotient_prealgebras_counit_help P).
+  - exact (quotient_prealgebras_unit_help P).
 Defined.
 
 (**
@@ -812,14 +810,7 @@ Proof.
   use setoid_morphism_eq.
   intro x.
   induction e ; try reflexivity.
-  - simpl.
-    unfold compose ; simpl.
-    refine (_ @ _).
-    {
-      apply maponpaths.
-      exact (IHe1 x).
-    }
-    apply IHe2.
+  - exact (maponpaths (set_endpoint e2 X) (IHe1 x) @ IHe2 _).
   - apply dirprod_paths.
     + exact (IHe1 x).
     + exact (IHe2 x).
@@ -835,8 +826,8 @@ Definition path_setoid_hit_endpoint
     =
     pr1 (setoid_endpoint e (path_setoid_prealgebras A X)) x.
 Proof.
-  rewrite (path_setoid_endpoint e X).
-  reflexivity.
+  apply maponpaths_2.
+  exact (path_setoid_endpoint e X).
 Qed.
 
 Definition set_algebra_is_setoid_algebra
@@ -849,7 +840,6 @@ Proof.
   intros HX j x.
   simpl in x.
   specialize (HX j).
-  simpl in *.
   refine (!(path_setoid_hit_endpoint (path_lhs Σ j) X) x @ _).
   refine (_ @ path_setoid_hit_endpoint (path_rhs Σ j) X x).
   apply maponpaths_2.
@@ -885,15 +875,13 @@ Proof.
     apply setproperty.
   }
   intro x.
-  simpl. cbn.
+  simpl ; cbn.
   induction e ; try (apply idpath).
-  - specialize (IHe1 x).
-    specialize (IHe2 (pr1 (setoid_endpoint e1 X) x)).
-    exact (IHe2 @ maponpaths _ IHe1).
+  - exact (IHe2 _ @ maponpaths _ (IHe1 _)).
   - apply dirprod_paths.
     + apply IHe1.
     + apply IHe2.
-  - cbn.
+  - simpl ; cbn.
     pose (eqtohomot (pr1 (quotient_commute_is_inverse A (pr1 X)))) as p.
     cbn in p.
     rewrite p.
@@ -939,9 +927,7 @@ Definition setoid_algebra_is_set_algebra
 Proof.
   intros HX j x.
   specialize (HX j).
-  simpl in x.
-  simpl in HX.
-  simpl.
+  simpl in *.
   refine (eqtohomot (!(quotient_hit_endpoint (path_lhs Σ j) X)) _ @ _).
   refine (_ @ eqtohomot (quotient_hit_endpoint (path_rhs Σ j) X) x).
   apply maponpaths_2.
@@ -951,7 +937,6 @@ Proof.
   { intro. apply isasetsetquot. }
   intros z.
   specialize (HX z).
-  simpl.
   apply iscompsetquotpr.
   exact HX.
 Qed.

@@ -29,3 +29,4 @@ existence/initial_setoid_algebra.v
 existence/hit_existence.v
 
 examples/groups.v
+examples/truncation.v
