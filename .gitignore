@@ -34,3 +34,4 @@ Makefile.conf
 *.pdf
 *.log
 *.gz
+*.out

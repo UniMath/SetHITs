@@ -41,6 +41,16 @@ Section Semantics.
     : prealgebras P ⟶ C
     := forget_algebras (⟦ P ⟧) _.
 
+  Definition constr_nat_trans
+             (P : poly_code)
+    : prealgebra_carrier P ∙ (⟦ P ⟧) ⟹ prealgebra_carrier P ∙ (⟦ I ⟧).
+  Proof.
+    use mk_nat_trans.
+    - exact (alg_map _).
+    - intros X Y f ; cbn in *.
+      exact (!(pr2 f)).
+  Defined.
+
   Definition sem_endpoint
              {A P Q : poly_code}
              (e : endpoint A P Q)
@@ -56,11 +66,7 @@ Section Semantics.
     - exact (pre_whisker _ (binproduct_nat_trans_pr2 _ _ _ _ _)).
     - exact (pair_nat_trans _ IHe₁ IHe₂).
     - exact (pre_whisker _ (el _ t _)).
-    - use mk_nat_trans.
-      + intro X.
-        exact (alg_map _ X).
-      + intros X Y f ; cbn in *.
-        exact (!(pr2 f)).
+    - exact (constr_nat_trans A).
   Defined.
 End Semantics.
 
