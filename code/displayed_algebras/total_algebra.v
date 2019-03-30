@@ -31,16 +31,16 @@ Definition poly_pr2
            (Y : X → hSet)
   : ∏ (x : ⦃ P ⦄ (total2_hSet Y)), poly_dact P Y (poly_pr1 P x).
 Proof.
-  intros x.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂] ; simpl in *.
-  - exact x.
-  - exact (pr2 x).
+  - exact (λ x, x).
+  - exact (λ x, pr2 x).
   - induction x as [x | x] ; simpl.
-    + apply IHP₁.
-    + apply IHP₂.
-  - refine (_ ,, _).
-    + apply IHP₁.
-    + apply IHP₂.
+    + exact (IHP₁ x).
+    + exact (IHP₂ x).
+  - intros x.
+    refine (_ ,, _).
+    + exact (IHP₁ (pr1 x)).
+    + exact (IHP₂ (pr2 x)).
 Defined.
 
 Definition endpoint_dact_transportf
@@ -77,14 +77,11 @@ Section TotalAlgebra.
     := total2_hSet Y.
 
   Local Definition operation
-    : ⦃ point_arg Σ ⦄ carrier → carrier.
-  Proof.
-    intro x.
-    simple refine (alg_operation X (#⦃ point_arg Σ ⦄ _ x) ,, _).
-    - exact pr1.
-    - apply (disp_alg_operation Y (#⦃ point_arg Σ ⦄ _ x)).
-      apply poly_pr2.
-  Defined.
+    : ⦃ point_arg Σ ⦄ carrier → carrier
+    := λ x,
+       ((alg_operation X (poly_pr1 (point_arg Σ) x))
+          ,,
+          disp_alg_operation Y (poly_pr1 (point_arg Σ) x) (poly_pr2 (point_arg Σ) Y x)).
 
   Local Definition total_prealgebra
     : set_prealgebras (point_arg Σ).
@@ -99,7 +96,7 @@ Section TotalAlgebra.
         {P Q : poly_code}
         (e : endpoint (point_arg Σ) P Q)
         (x : ⦃ P ⦄ carrier)
-    : set_endpoint e _ (poly_pr1 P x)
+    : set_endpoint e (alg_to_prealg X) (poly_pr1 P x)
       =
       poly_pr1 Q (set_endpoint e total_prealgebra x).
   Proof.
@@ -114,7 +111,7 @@ Section TotalAlgebra.
         {P Q : poly_code}
         (e : endpoint (point_arg Σ) P Q)
         (x : ⦃ P ⦄ carrier)
-    : endpoint_dact _ e (disp_alg_operation Y) (poly_pr2 P Y x)
+    : endpoint_dact (alg_to_prealg X) e (disp_alg_operation Y) (poly_pr2 P Y x)
       =
       transportf
         (poly_dact Q Y)
