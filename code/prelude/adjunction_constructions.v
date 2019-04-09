@@ -225,9 +225,9 @@ Section PreAlgebraAdjunction.
                   _ _ _
                   (post_whisker nL R)
                   (nat_trans_functor_assoc _ _ _)))).
-
-  Variable (H₁ : ∏ X : St, counit_θ X · ε (A₂ X) = # A₂ (ε X))
-           (H₂ : ∏ X : Std, η (A₁ X) = # A₁ (η X) · unit_θ X).
+  
+  Variable (H₁ : ∏ (X : St), nL (R X) · #L (nR X) · ε (A₂ X) = # A₂ (ε X))
+           (H₂ : ∏ (X : Std), η (A₁ X) = # A₁ (η X) · nR (L X) · #R (nL X)).
   
   Definition lift_L := algebra_functor A₁ A₂ L nL.
 
@@ -241,14 +241,16 @@ Section PreAlgebraAdjunction.
         X
         (ε (pr1 X)).
   Proof.
-    pose (nat_trans_is_algebra_mor_counit_help A₂ counit_θ ε H₁ X) as p.
-    unfold is_algebra_mor, alg_map in *.
-    refine (_ @ p).
-    simpl.
-    rewrite functor_comp.
-    rewrite !assoc.
-    rewrite id_left, !id_right.
-    reflexivity.
+    refine (_ @ nat_trans_is_algebra_mor_counit_help A₂ counit_θ ε _ X).
+    - simpl.
+      rewrite functor_comp.
+      rewrite !assoc.
+      rewrite id_left, !id_right.
+      reflexivity.
+    - intros Z.
+      simpl.
+      rewrite !id_left, !id_right.
+      exact (H₁ Z).
   Qed.
 
   Definition nat_trans_is_algebra_mor_unit
@@ -259,14 +261,15 @@ Section PreAlgebraAdjunction.
         (algebra_functor A₂ A₁ R nR (algebra_functor A₁ A₂ L nL X))
         (η (pr1 X)).
   Proof.
-    pose (nat_trans_is_algebra_mor_unit_help A₁ unit_θ η H₂ X) as p.
-    unfold is_algebra_mor, alg_map in *.
-    refine (p @ _).
-    simpl.
-    rewrite functor_comp.
-    rewrite !assoc.
-    rewrite !id_right.
-    reflexivity.
+    refine (nat_trans_is_algebra_mor_unit_help A₁ unit_θ η _ X @ _).
+    - intros Z ; simpl.
+      rewrite !id_left, id_right, assoc.
+      exact (H₂ Z).
+    - simpl.
+      rewrite functor_comp.
+      rewrite !assoc.
+      rewrite !id_right.
+      reflexivity.
   Qed.
 
   Definition lift_η_data
