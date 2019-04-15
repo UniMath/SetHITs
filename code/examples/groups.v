@@ -144,7 +144,7 @@ Section GroupProjections.
     : group_carrier → group_carrier
     := λ g, pr21 G (inl(inr g)).
 
-  Local Notation "g ^-1" := (group_inverse g) (at level 70).
+  Local Notation "g ^-1" := (group_inverse g).
 
   Definition group_unit
     : group_carrier
