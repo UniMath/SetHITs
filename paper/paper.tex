@@ -1,9 +1,9 @@
 \documentclass[9pt]{entcs}
 
-\usepackage{cleveref}
 \usepackage{entcsmacro}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{cleveref}
 \usepackage{bussproofs}
 \usepackage{stmaryrd}
 \usepackage{cleveref}
@@ -965,6 +965,7 @@ We have an adjunction $\adj{\quotF}{\pathF}$.
 
 \subsection{The Adjunction on Prealgebras}
 With this adjunction in place, our first step is to lift it to the level of prealgebras.
+For this, we use a result from Hermida and Jacobs \cite{hermida1998structural}.
 The first step, is to lift the functors for which we use the following lemma.
 
 \begin{lemma}
@@ -998,13 +999,13 @@ The main idea is to show that the unit and counit are algebra homormophisms.
 \begin{proposition}
 \label{lem:prealgadjconstr}
 Given are categories $\mathcal{C}$ and $\mathcal{D}$, functors $A_1 : \functor{\mathcal{C}}{\mathcal{C}}$, $A_2 : \functor{\mathcal{D}}{\mathcal{D}}$, and $L : \functor{\mathcal{C}}{\mathcal{D}}$, and a natural transformation $n : \nattrans{\compf{L}{A_2}}{\compf{A_1}{L}}$.
-In addition, suppose we a functor $R : \functor{\mathcal{D}}{\mathcal{C}}$ together with a natural transformation $m : \nattrans{\compf{R}{A_1}}{\compf{A_2}{L}}$ and an adjunction $\adj{L}{R}$ with unit $\eta$ and counit $\varepsilon$.
+In addition, suppose we a functor $R : \functor{\mathcal{D}}{\mathcal{C}}$ together with a natural transformation $m : \nattrans{\compf{R}{A_1}}{\compf{A_2}{R}}$ and an adjunction $\adj{L}{R}$ with unit $\eta$ and counit $\varepsilon$.
 We also assume that for each $X : \mathcal{C}$ and $Y : \mathcal{D}$ the following diagrams commute
 \[
 \xymatrix
 {	
 	A_2 (L(R \> X)) \ar[ddrr]^{\epsilon \> X} \ar[d]_{n(R \> X)} \\
-	L(A_2(R \> X)) \ar[d]_{L(m \> X} \\
+	L(A_2(R \> X)) \ar[d]_{L(m \> X)} \\
 	R(L(A_2 \> X)) \ar[rr]_-{\epsilon(A_2 \> X)} & & A_2 \> X
 }
 \quad \quad \quad
@@ -1344,6 +1345,11 @@ In this setting, Corollary \ref{cor:hit_path} is more interesting, because the c
 	\emph{{Finite Sets in Homotopy Type Theory}}, Proceedings of the 7th {ACM}
 	{SIGPLAN} International Conference on Certified Programs and Proofs, {CPP}
 	2018, Los Angeles, CA, USA, January 8-9, 2018, 2018, pp.~201--214.
+	
+	\bibitem{hermida1998structural}
+	C.~Hermida and B.~Jacobs.
+	\newblock Structural induction and coinduction in a fibrational setting.
+	\newblock {\em Information and computation}, 145(2):107--152, 1998.
 	
 	\bibitem{HofmannS94}
 	Martin Hofmann and Thomas Streicher, \emph{{The Groupoid Model Refutes
