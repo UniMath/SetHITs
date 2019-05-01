@@ -15,7 +15,7 @@ Definition poly_dact
            (Y : X → hSet)
   : ⦃ P ⦄ X → hSet.
 Proof.
-  induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].kjbkjbdslibgsdilgibiu
   - exact (λ _, T).
   - exact Y.
   - intro x.
@@ -102,7 +102,7 @@ Section DispAlgebraProjections.
       endpoint_dact (alg_to_prealg X) (path_rhs Σ j) disp_alg_operation y
   := pr22 Y.
 End DispAlgebraProjections.
-
+fjdhfjd
 (**
 Builder
  *)
