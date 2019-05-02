@@ -7,10 +7,12 @@ Require Import syntax.hit.
 Require Import syntax.hit_properties.
 Require Import algebras.univalent_algebra.
 Require Import algebras.set_algebra.
+Require Import displayed_algebras.displayed_algebra.
+Require Import displayed_algebras.constant_display.
 Require Import existence.hit_existence.
 
-Definition TODO {A : UU} : A.
-Admitted.
+Opaque hit_rec.
+Opaque HIT_exists.
 
 (**
 Construction of the free algebra
@@ -24,102 +26,145 @@ Section FreeAlgebra.
   Local Notation l j := (path_lhs Σ j).
   Local Notation r j := (path_rhs Σ j).
 
-  (** The signature *)  
-  Definition free_point_arg
-             (A : hSet)
+  (** The signature *)
+  Section Signature.
+    Variable (A : hSet).
+    
+    Definition free_point_arg
     : poly_code
-    := C A + P.
+      := C A + P.
 
-  Definition free_endpoint
-             {R₁ R₂ : poly_code}
-             (e : endpoint P R₁ R₂)
-             (A : hSet)
-    : endpoint (free_point_arg A) R₁ R₂.
-  Proof.
-    induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
-    - exact (id_e _ P).
-    - exact (comp IHe₁ IHe₂).
-    - exact (ι₁ P Q).
-    - exact (ι₂ P Q).
-    - exact (π₁ P Q).
-    - exact (π₂ P Q).
-    - exact (pair IHe₁ IHe₂).
-    - exact (c P t).
-    - exact (comp (ι₂ (C A) P) constr).
-  Defined.
+    Definition free_endpoint
+               {R₁ R₂ : poly_code}
+               (e : endpoint P R₁ R₂)
+      : endpoint free_point_arg R₁ R₂.
+    Proof.
+      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
+      - exact (id_e _ P).
+      - exact (comp IHe₁ IHe₂).
+      - exact (ι₁ P Q).
+      - exact (ι₂ P Q).
+      - exact (π₁ P Q).
+      - exact (π₂ P Q).
+      - exact (pair IHe₁ IHe₂).
+      - exact (c P t).
+      - exact (comp (ι₂ (C A) P) constr).
+    Defined.
 
-  Definition free_signature (A : hSet)
-    : hit_signature.
-  Proof.
-    use tpair.
-    - exact (free_point_arg A).
-    - use tpair.
-      + apply Σ.
-      + use tpair.
-        * exact (λ j, Q j).
-        * split.
-          ** exact (λ j, free_endpoint (l j) A).
-          ** exact (λ j, free_endpoint (r j) A).
-  Defined.
-
+    Definition free_signature
+      : hit_signature.
+    Proof.
+      use tpair.
+      - exact free_point_arg.
+      - use tpair.
+        + apply Σ.
+        + use tpair.
+          * exact (λ j, Q j).
+          * split.
+            ** exact (λ j, free_endpoint (l j)).
+            ** exact (λ j, free_endpoint (r j)).
+    Defined.
+  End Signature.
+  
   (** Projections *)
-  Definition free_alg_to_alg_carrier
-             {A : hSet}
-             (X : set_algebra (free_signature A))
-    : hSet
-    := alg_carrier X.
+  Section Projections.
+    Context {A : hSet}.
+    Variable (X : set_algebra (free_signature A)).
 
-  Definition free_alg_to_alg_operation
-             {A : hSet}
-             (X : set_algebra (free_signature A))
-    : ⦃ point_arg Σ ⦄ (free_alg_to_alg_carrier X) → free_alg_to_alg_carrier X
-    := λ x, alg_operation X (inr x).
+    Definition free_alg_to_alg_carrier
+      : hSet
+      := alg_carrier X.
 
-  Definition free_alg_to_alg_prealg
-             {A : hSet}
-             (X : set_algebra (free_signature A))
-    : set_prealgebras (point_arg Σ).
-  Proof.
-    use tpair.
-    - exact (free_alg_to_alg_carrier X).
-    - exact (free_alg_to_alg_operation X).
-  Defined.
+    Definition free_alg_to_alg_operation
+      : ⦃ point_arg Σ ⦄ free_alg_to_alg_carrier → free_alg_to_alg_carrier
+      := λ x, alg_operation X (inr x).
 
-  (** Lemma to get underlying `Σ`-algebra *)
-  Definition free_alg_to_alg_endpoint
-             {A : hSet}
-             (X : set_algebra (free_signature A))
-             {R₁ R₂ : poly_code}
-             (e : endpoint (point_arg Σ) R₁ R₂)
-             (x : ⦃ R₁ ⦄ (free_alg_to_alg_carrier X))
-    : set_endpoint e (free_alg_to_alg_prealg X) x
-      =
-      set_endpoint (free_endpoint e A) (alg_to_prealg X) x.
-  Proof.
-    induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
-    ; try reflexivity ; simpl ; cbn.
-    - exact (maponpaths _ (IHe₁ x) @ IHe₂ _).
-    - apply pathsdirprod.
-      + apply IHe₁.
-      + apply IHe₂.
-  Qed.
+    Definition free_alg_to_alg_prealg
+      : set_prealgebras P.
+    Proof.
+      use tpair.
+      - exact free_alg_to_alg_carrier.
+      - exact free_alg_to_alg_operation.
+    Defined.
 
-  Definition free_alg_to_alg
-             {A : hSet}
-             (X : set_algebra (free_signature A))
-    : set_algebra Σ.
-  Proof.
-    use mk_algebra.
-    - exact (free_alg_to_alg_carrier X).
-    - exact (free_alg_to_alg_operation X).
-    - intros j x ; simpl.
-      exact ((free_alg_to_alg_endpoint X (l j) x)
-               @ alg_paths X j x
-               @ !(free_alg_to_alg_endpoint X (r j) x)).
-  Defined.
+    (** Lemma to get underlying `Σ`-algebra *)
+    Definition free_alg_to_alg_endpoint
+               {R₁ R₂ : poly_code}
+               (e : endpoint (point_arg Σ) R₁ R₂)
+               (x : ⦃ R₁ ⦄ free_alg_to_alg_carrier)
+      : set_endpoint e free_alg_to_alg_prealg x
+        =
+        set_endpoint (free_endpoint A e) (alg_to_prealg X) x.
+    Proof.
+      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+      ; try reflexivity ; simpl ; cbn.
+      - exact (maponpaths _ (IHe₁ x) @ IHe₂ _).
+      - apply pathsdirprod.
+        + apply IHe₁.
+        + apply IHe₂.
+    Qed.
+  
+    Definition free_alg_to_alg
+      : set_algebra Σ.
+    Proof.
+      use mk_algebra.
+      - exact free_alg_to_alg_carrier.
+      - exact free_alg_to_alg_operation.
+      - intros j x ; simpl.
+        exact ((free_alg_to_alg_endpoint (l j) x)
+                 @ alg_paths X j x
+                 @ !(free_alg_to_alg_endpoint (r j) x)).
+    Defined.
+  End Projections.
+  
+  (** Builder *)
+  Section Builder.
+    Context {A : SET}
+            {X : set_algebra Σ}.
+    Variable (f : A --> alg_carrier X).
 
+    Definition alg_to_free_prealg
+      : set_prealgebras (free_point_arg A).
+    Proof.
+      use tpair.
+      - exact (alg_carrier X).
+      - intros z.
+        induction z as [a | z].
+        + exact (f a).
+        + exact (alg_operation X z).
+    Defined.
+
+    Definition alg_to_free_alg_endpoint
+               {R₁ R₂ : poly_code}
+               (e : endpoint P R₁ R₂)
+               (x : ⦃ R₁ ⦄ (alg_carrier X))
+      : set_endpoint (free_endpoint A e) alg_to_free_prealg x
+        =
+        set_endpoint e (alg_to_prealg X) x.
+    Proof.
+      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+      ; try reflexivity ; simpl ; cbn.
+      - exact (maponpaths _ (IHe₁ x) @ IHe₂ _).
+      - apply pathsdirprod.
+        + apply IHe₁.
+        + apply IHe₂.
+    Qed.
+
+    Definition mk_free_alg
+      : set_algebra (free_signature A).
+    Proof.
+      use tpair.
+      - exact alg_to_free_prealg.
+      - intros j x ; simpl.
+        exact ((alg_to_free_alg_endpoint (l j) x)
+                  @ alg_paths X j x
+                  @ !(alg_to_free_alg_endpoint (r j) x)).
+    Defined.
+  End Builder.
+    
   (** Next we show this gives rise to a functor *)
   Definition free_algebra_help
              (A : hSet)
@@ -131,9 +176,14 @@ Section FreeAlgebra.
     : set_algebra Σ
     := free_alg_to_alg (free_algebra_help A).
 
+  Definition free_algebra_inc
+             (A : SET)
+    : A --> alg_carrier (free_algebra A)
+    := λ a, @alg_operation (free_signature A) _ (inl a).
+
   (** Projections of maps on the free signature *)
   Definition free_signature_map
-             (A : hSet)
+             {A : hSet}
              {X Y : set_algebra (free_signature A)}
              (f : X --> Y)
     : free_alg_to_alg X --> free_alg_to_alg Y.
@@ -144,7 +194,17 @@ Section FreeAlgebra.
       exact (eqtohomot (pr21 f) (inr x)).
   Defined.
 
-  (** Action of free algebra functo on maps. *)
+  (** Properties of `free_signature_map` *)
+  Definition free_signature_map_id
+             (A : hSet)
+             {X : set_algebra (free_signature A)}
+    : free_signature_map (identity X) = identity (free_alg_to_alg X).
+  Proof.
+    use algebra_map_eq.
+    reflexivity.
+  Qed.
+
+  (** Action of free algebra functor on maps. *)
   Section FreeAlgebraMap.
     Context {A B : hSet}.
     Variable (f : A → B).
@@ -158,7 +218,9 @@ Section FreeAlgebra.
         := alg_carrier X.
 
       Definition free_algebra_map_lift_operation
-        : ⦃ free_point_arg A ⦄ free_algebra_map_lift_carrier → free_algebra_map_lift_carrier.
+        : ⦃ free_point_arg A ⦄ free_algebra_map_lift_carrier
+          →
+          free_algebra_map_lift_carrier.
       Proof.
         intros x.
         apply (alg_operation X).
@@ -179,14 +241,22 @@ Section FreeAlgebra.
                  {P Q : poly_code}
                  (e : endpoint (point_arg Σ) P Q)
                  (x : ⦃ P ⦄ free_algebra_map_lift_carrier)
-        : set_endpoint (free_endpoint e A) free_algebra_map_lift_prealg x
+        : set_endpoint (free_endpoint A e) free_algebra_map_lift_prealg x
           =
-          set_endpoint (free_endpoint e B) (alg_to_prealg X) x.
+          set_endpoint (free_endpoint B e) (alg_to_prealg X) x.
       Proof.
         induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
                         | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
         ; try reflexivity.
-      Admitted.
+        - simpl ; unfold compose ; simpl.
+          refine (_ @ _).
+          + apply maponpaths.
+            apply IHe₁.
+          + apply IHe₂.
+        - apply pathsdirprod.
+          + apply IHe₁.
+          + apply IHe₂.
+      Qed.
 
       Definition free_algebra_map_help
         : set_algebra (free_signature A).
@@ -202,27 +272,68 @@ Section FreeAlgebra.
     End LiftAlgebra.
 
     Definition free_algebra_map
-      : free_algebra A --> free_algebra B.
-    Proof.
-      exact (free_signature_map _ (hit_rec (HIT_exists (free_signature A)) (free_algebra_map_help (free_algebra_help B)))).
-    Defined.
+      : free_algebra A --> free_algebra B
+      := free_signature_map
+           (hit_rec (HIT_exists (free_signature A))
+                    (free_algebra_map_help (free_algebra_help B))).
   End FreeAlgebraMap.
 
-  Local Definition free_algebra_functor_id_help
-        (A : HSET)
-    : (HIT_exists (free_signature A))
-        -->
-        free_algebra_map_help (identity A) (free_algebra_help A).
+  Definition free_algebra_functor_id
+             (A : SET)
+    : free_algebra_map (identity A) = identity (free_algebra A).
   Proof.
-    use mk_algebra_map.
-    - exact (idfun _).
-    - intros x.
-      induction x as [x | x].
-      + reflexivity.
-      + unfold idfun ; simpl ; cbn.
-        unfold free_algebra_help.
-        exact (maponpaths _ (maponpaths _ (eqtohomot (!(functor_id (⦃ P ⦄) _)) _))).
-  Defined.
+    apply (@algebra_map_eq _ _ _ (free_algebra_map (identity A))).
+    use hit_ind_prop.
+    {
+      intro x.
+      apply (alg_carrier _).
+    }
+    intros z Hz.
+    cbn.
+    pose (hit_rec (HIT_exists (free_signature A))
+                  (free_algebra_map_help (λ x, x) (free_algebra_help A))) as g.
+    pose (eqtohomot (pr21 g) z) as p.
+    refine (p @ _).
+    apply (maponpaths (alg_operation _)).
+    induction z as [a | z].
+    + apply idpath.
+    + pose (poly_dact_eq _ Hz) as q.
+      refine (q @ _).
+      simpl.
+      apply (maponpaths inr).
+      apply (eqtohomot (functor_id (⦃ P ⦄) _) z).
+  Qed.
+
+  Definition free_algebra_functor_comp
+             (A B C : SET)
+             (f : A --> B)
+             (g : B --> C)
+    : free_algebra_map (f · g) = free_algebra_map f · free_algebra_map g.
+  Proof.
+    apply (@algebra_map_eq _ _ _ (free_algebra_map (f · g))).
+    use hit_ind_prop.
+    {
+      intro x.
+      apply (alg_carrier _).
+    }
+    intros z Hz.
+    cbn.
+    pose (hit_rec (HIT_exists (free_signature A))
+                  (free_algebra_map_help (λ x, g(f x)) (free_algebra_help C))) as h.
+    pose (eqtohomot (pr21 h) z) as p.
+    (*induction z as [a | z].
+    - cbn.
+      refine (p @ _).
+    cbn.
+    apply (maponpaths (alg_operation _)).
+    induction z as [a | z].
+    + apply idpath.
+    + pose (poly_dact_eq _ Hz) as q.
+      refine (q @ _).
+      simpl.
+      apply (maponpaths inr).
+      apply (eqtohomot (functor_id (⦃ P ⦄) _) z).*)
+  Admitted.
 
   Definition free_algebra_functor
     : HSET ⟶ set_algebra Σ.
@@ -232,96 +343,103 @@ Section FreeAlgebra.
       + exact free_algebra.
       + exact @free_algebra_map.
     - split.
-      + intros A.
-        pose (hit_eq
-                (HIT_exists (free_signature A))
-                (free_algebra_map_help (identity A) (free_algebra_help A))
-                (hit_rec
-                   (HIT_exists (free_signature A))
-                   (free_algebra_map_help (identity A) (free_algebra_help A)))
-                (free_algebra_functor_id_help A)) as p.
-        simpl.
-        unfold free_algebra_map.
-        refine (maponpaths (free_signature_map A) p @ _).
-        use subtypeEquality.
-        { intro ; apply isapropunit. }
-        use subtypeEquality.
-        { intro ; apply TODO. }
-        use funextsec.
-        intro z ; revert z.
-        reflexivity.
-      + apply TODO.
+      + exact free_algebra_functor_id.
+      + exact free_algebra_functor_comp.
   Defined.
 
-  Definition forgetful
-    : set_algebra Σ ⟶ HSET.
-  Proof.
-    use mk_functor.
-    - use mk_functor_data.
-      + intros X.
-        apply X.
-      + intros X Y f.
-        apply f.
-    - apply TODO.
-  Defined.
+  (** Free algebra adjunction *)
+  Definition free_algebra_hom_l
+             (A : HSET)
+             (B : set_algebra Σ)
+    : set_algebra Σ ⟦ free_algebra_functor A, B ⟧ → HSET ⟦ A, (forgetful Σ) B ⟧
+    := λ f, free_algebra_inc A · pr11 f.
 
-  Definition unit
-    : functor_identity HSET ⟹ free_algebra_functor ∙ forgetful.
+  Definition free_algebra_hom_r
+             (A : HSET)
+             (B : set_algebra Σ)
+    :  HSET ⟦ A, (forgetful Σ) B ⟧ → set_algebra Σ ⟦ free_algebra_functor A, B ⟧
+    := λ f, free_signature_map
+              (hit_rec (HIT_exists (free_signature A))
+                       (mk_free_alg f)).
+
+  Definition free_algebra_hom_left_inv
+             (A : HSET)
+             (B : set_algebra Σ)
+             (f : set_algebra Σ ⟦ free_algebra_functor A, B ⟧)
+    : free_algebra_hom_r A B (free_algebra_hom_l A B f) = f.
   Proof.
-    use mk_nat_trans.
-    - intros X ; simpl.
+    apply (@algebra_map_eq Σ _ _ _ f).
+    intros z ; cbn.
+    revert z.
+    use hit_ind_prop.
+    {
       intro x.
-      exact (alg_operation (free_algebra_help X) (inl x)).
-    - intros x y f ; simpl ; cbn.
-      use funextsec.
-      intro z.
-      apply TODO.
+      apply (alg_carrier _).
+    }
+    intros z Hz.
+    cbn.
+    pose (hit_rec (HIT_exists (free_signature A))
+                  (mk_free_alg (λ x, (pr11 f) (free_algebra_inc A x)))) as g.
+    pose (eqtohomot (pr21 g) z) as p.
+    refine (p @ _).
+    induction z as [a | z].
+    - apply idpath.
+    - refine (_ @ !(eqtohomot (pr21 f) z)).
+      simpl ; unfold compose ; simpl.
+      pose (poly_dact_eq _ Hz) as q.
+      apply (maponpaths (alg_operation B)).
+      exact (ii2_injectivity _ _ q).
+  Qed.
+
+  Definition free_algebra_hom_right_inv
+             (A : HSET)
+             (B : set_algebra Σ)
+             (f : HSET ⟦ A, (forgetful Σ) B ⟧)
+    : free_algebra_hom_l A B (free_algebra_hom_r A B f) = f.
+  Proof.
+    use funextsec.
+    intro z.
+    unfold free_algebra_inc.
+    cbn.
+    pose (hit_rec (HIT_exists (free_signature A)) (mk_free_alg f)) as g.
+    exact (eqtohomot (pr21 g) (inl z)).
+  Qed.
+
+  Definition free_algebra_hom_equiv
+             (A : HSET)
+             (B : set_algebra Σ)
+    : (set_algebra Σ ⟦ free_algebra_functor A, B ⟧)
+        ≃
+        HSET ⟦ A, (forgetful Σ) B ⟧.
+  Proof.
+    use weqpair.
+    - exact (free_algebra_hom_l A B).
+    - use gradth.
+      + exact (free_algebra_hom_r A B).
+      + exact (free_algebra_hom_left_inv A B).
+      + exact (free_algebra_hom_right_inv A B).
   Defined.
 
-  Definition counit_help
-             (X : set_algebra Σ)
-    : set_algebra (free_signature (alg_carrier X)).
+  Definition free_algebra_adjoint
+    : are_adjoints free_algebra_functor (forgetful Σ).
   Proof.
-    use mk_algebra.
-    - exact (alg_carrier X).
-    - intros x ; simpl in x.
-      induction x as [x | x].
-      + exact x.
-      + exact (alg_operation X x).
-    - apply TODO.
-  Defined.
-
-  Definition counit
-    : forgetful ∙ free_algebra_functor ⟹ functor_identity (set_algebra Σ).
-  Proof.
-    use mk_nat_trans.
-    - intros X.
-      exact (free_signature_map _ (hit_rec (HIT_exists (free_signature (pr11 X))) (counit_help X))).
-    - apply TODO.
-  Defined.
-
-  Definition test
-    : are_adjoints free_algebra_functor forgetful.
-  Proof.
+    apply adj_from_nathomweq.
     use tpair.
+    - exact free_algebra_hom_equiv.
     - split.
-      + apply unit.
-      + apply counit.
-    - split.
-      + intros X ; simpl.
-        use subtypeEquality.
-        { intro ; apply isapropunit. }
-        apply subtypeEquality.
-        { intro. apply TODO. }
+      + intros A B f X h.
         use funextsec.
+        cbn -[free_algebra_inc free_algebra_functor].
         intro z.
-        simpl. cbn.
-        simpl in z.
-        admit.
-      + intros X.
+        apply maponpaths.
+        pose ((hit_rec (HIT_exists (free_signature X))
+                       (free_algebra_map_help h (free_algebra_help A)))) as g.
+        pose (eqtohomot (pr21 g)) as p.
+        exact (p (inl z)).
+      + intros A B f Y k.
         use funextsec.
+        cbn -[free_algebra_inc free_algebra_functor].
         intro z.
-        simpl ; cbn in *.
-        admit.
-  Admitted.
+        reflexivity.
+  Defined.
 End FreeAlgebra.

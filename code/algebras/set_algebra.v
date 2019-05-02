@@ -194,3 +194,17 @@ Proof.
   use funextsec.
   exact e.
 Qed.
+
+(** Underlying *)
+Definition forgetful
+           (Σ : hit_signature)
+  : set_algebra Σ ⟶ HSET.
+Proof.
+  use mk_functor.
+  - use mk_functor_data.
+    + intros X.
+      apply X.
+    + intros X Y f.
+      apply f.
+  - split ; intro ; reflexivity.
+Defined.
