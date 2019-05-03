@@ -4,6 +4,7 @@ Here we define the category of groups using the mechanism of algebras.
 Require Import prelude.all.
 Require Import syntax.hit_signature.
 Require Import algebras.set_algebra.
+Require Import examples.free.
 
 Open Scope cat.
 
@@ -202,3 +203,9 @@ Proof.
     + exact i_l.
     + exact i_r.
 Defined.
+
+(** Free group *)
+Definition free_group
+           (X : hSet)
+  : group_cat
+  := free_algebra group_signature X.
