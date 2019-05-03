@@ -5,7 +5,6 @@ Note: rings are commutative and always have `0` and `1`.
 Require Import prelude.all.
 Require Import syntax.hit_signature.
 Require Import algebras.set_algebra.
-Require Import examples.free.
 
 Open Scope cat.
 
