@@ -33,3 +33,4 @@ examples/groups.v
 examples/truncation.v
 examples/mod2.v
 examples/rings.v
+examples/integers.v
