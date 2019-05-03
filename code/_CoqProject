@@ -28,7 +28,7 @@ existence/algebra_adjunction.v
 existence/initial_setoid_algebra.v
 existence/hit_existence.v
 
+examples/free.v
 examples/groups.v
 examples/truncation.v
 examples/mod2.v
-examples/free.v
