@@ -319,21 +319,37 @@ Section FreeAlgebra.
     intros z Hz.
     cbn.
     pose (hit_rec (HIT_exists (free_signature A))
-                  (free_algebra_map_help (λ x, g(f x)) (free_algebra_help C))) as h.
-    pose (eqtohomot (pr21 h) z) as p.
-    (*induction z as [a | z].
-    - cbn.
-      refine (p @ _).
-    cbn.
+                  (free_algebra_map_help f (free_algebra_help B))) as h₁.
+    pose (hit_rec (HIT_exists (free_signature B))
+                  (free_algebra_map_help g (free_algebra_help C))) as h₂.
+    pose (hit_rec (HIT_exists (free_signature A))
+                  (free_algebra_map_help (λ x, g(f x)) (free_algebra_help C))) as h₃.
+    pose (eqtohomot (pr21 h₃) z) as p.
+    simpl in p ; unfold compose, free_algebra_map_lift_operation in p ; simpl in p.
+    refine (p @ _) ; unfold h₃ ; simpl ; clear p h₃.
+    refine (!(_ @ _)).
+    {
+      apply maponpaths.
+      pose (eqtohomot (pr21 h₁) z) as p.
+      simpl in p ; unfold compose, free_algebra_map_lift_operation in p ; simpl in p.
+      exact p.
+    }
+    unfold h₁ ; clear h₁.
+    refine (eqtohomot (pr21 h₂) _ @ _).
+    unfold h₂ ; clear h₂.
     apply (maponpaths (alg_operation _)).
-    induction z as [a | z].
-    + apply idpath.
-    + pose (poly_dact_eq _ Hz) as q.
-      refine (q @ _).
-      simpl.
-      apply (maponpaths inr).
-      apply (eqtohomot (functor_id (⦃ P ⦄) _) z).*)
-  Admitted.
+    induction z as [a | z] ; simpl.
+    - apply idpath.
+    - refine (_ @ !_).
+      {
+        apply maponpaths.
+        apply (eqtohomot (!(functor_comp (⦃ P ⦄) _ _)) _).
+      }
+      apply maponpaths.
+      pose (poly_dact_eq _ Hz) as q.
+      pose (ii2_injectivity _ _ q) as q'.
+      apply q'.
+  Qed.
 
   Definition free_algebra_functor
     : HSET ⟶ set_algebra Σ.

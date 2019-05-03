@@ -31,3 +31,4 @@ existence/hit_existence.v
 examples/groups.v
 examples/truncation.v
 examples/mod2.v
+examples/free.v
