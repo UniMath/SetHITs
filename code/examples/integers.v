@@ -805,3 +805,206 @@ Proof.
   - exact Z_mult_com.
   - exact Z_distr.
 Defined.
+
+(** Integers form initial ring *)
+Definition ℤ_map_unique
+           {R : ring_cat}
+           (f g : ℤ_ring --> R)
+  : f = g.
+Proof.
+  use algebra_map_eq.
+  use Z_ind_prop.
+  - intros z IH ; cbn ; cbn in IH.
+    assert (Sℤ z = ℤ_plus z ℤ_one) as ->.
+    {
+      exact (maponpaths Sℤ (!(Z_plus_x0 _)) @ !(Z_plus_xS z Zℤ)).      
+    }
+    rewrite (ring_map_plus f), (ring_map_plus g).
+    rewrite !IH.
+    apply maponpaths.
+    exact (ring_map_one f @ !(ring_map_one g)).
+  - intros z IH ; cbn ; cbn in IH.
+    assert (Pℤ z = ℤ_plus z (ℤ_minus ℤ_one)) as ->.
+    {
+      refine (!(maponpaths (ℤ_plus z) (Z_minus_S Zℤ) @ _)).
+      refine (Z_plus_xP z _ @ _).
+      apply maponpaths.
+      refine (maponpaths (ℤ_plus z) Z_minus_Z @ _).
+      exact (Z_plus_x0 _).
+    }
+    rewrite (ring_map_plus f), (ring_map_plus g).
+    rewrite (ring_map_minus f), (ring_map_minus g).
+    rewrite !IH.
+    do 2 apply maponpaths.
+    exact (ring_map_one f @ !(ring_map_one g)).
+  - cbn.
+    exact (ring_map_zero f @ !(ring_map_zero g)).
+  - intro ; apply (alg_carrier R).
+Qed.
+
+Section ZMapExistence.
+  Variable (R : ring_cat).
+
+  Local Definition ℤ_to_ring_map
+    : ℤ → alg_carrier R.
+  Proof.
+    use Z_rec.
+    - exact (λ x, ring_plus R x (ring_one R)).
+    - exact (λ x, ring_plus R x (ring_minus R (ring_one R))).
+    - exact (ring_zero R).
+    - intro x ; cbn.
+      rewrite ring_plus_assoc.
+      rewrite ring_plus_min.
+      apply ring_plus_zero.
+    - intro x ; cbn.
+      rewrite ring_plus_assoc.
+      rewrite ring_min_plus.
+      apply ring_plus_zero.
+  Defined.
+
+  Local Definition Z_to_ring_map_S
+        (x : ℤ)
+    : ℤ_to_ring_map (Sℤ x)
+      =
+      ring_plus R (ℤ_to_ring_map x) (ring_one R).
+  Proof.
+    exact (Z_rec_S _ _ _ _ _ x).
+  Qed.
+
+  Local Definition Z_to_ring_map_P
+        (x : ℤ)
+    : ℤ_to_ring_map (Pℤ x)
+      =
+      ring_plus R (ℤ_to_ring_map x) (ring_minus R (ring_one R)).
+  Proof.
+    exact (Z_rec_P _ _ _ _ _ x).
+  Qed.
+
+  Local Definition Z_to_ring_map_Z
+    : ℤ_to_ring_map Zℤ = ring_zero R.
+  Proof.
+    exact (Z_rec_Z _ _ _ _ _).
+  Qed.
+
+  Local Definition Z_to_ring_map_plus
+    : ∏ (x y : ℤ),
+      ℤ_to_ring_map (ℤ_plus x y)
+      =
+      ring_plus R (ℤ_to_ring_map x) (ℤ_to_ring_map y).
+  Proof.
+    intro x.
+    use Z_ind_prop.
+    - intros z IH ; cbn in *.
+      rewrite Z_plus_xS.
+      rewrite !Z_to_ring_map_S.
+      rewrite IH.
+      rewrite ring_plus_assoc.
+      reflexivity.
+    - intros z IH ; cbn in *.
+      rewrite Z_plus_xP.
+      rewrite !Z_to_ring_map_P.
+      rewrite IH.
+      rewrite ring_plus_assoc.
+      reflexivity.
+    - cbn.
+      rewrite Z_plus_x0.
+      rewrite Z_to_ring_map_Z.
+      rewrite ring_plus_zero.
+      reflexivity.
+    - intro ; apply (alg_carrier R).
+  Qed.
+
+  Local Definition Z_to_ring_map_minus
+    : ∏ (x : ℤ),
+      ℤ_to_ring_map (ℤ_minus x)
+      =
+      ring_minus R (ℤ_to_ring_map x).
+  Proof.
+    use Z_ind_prop.
+    - intros z IH ; cbn in *.
+      rewrite Z_minus_S.
+      rewrite Z_to_ring_map_P, Z_to_ring_map_S.
+      rewrite IH.
+      rewrite ring_inv_plus.
+      reflexivity.
+    - intros z IH ; cbn in *.
+      rewrite Z_minus_P.
+      rewrite Z_to_ring_map_S, Z_to_ring_map_P.
+      rewrite IH.
+      rewrite ring_inv_plus.
+      rewrite ring_minus_minus.
+      reflexivity.
+    - cbn.
+      rewrite Z_minus_Z.
+      rewrite !Z_to_ring_map_Z.
+      rewrite ring_minus_zero.
+      reflexivity.
+    - intro ; apply (alg_carrier R).
+  Qed.
+
+  Local Definition Z_to_ring_map_mult
+    : ∏ (x y : ℤ),
+      ℤ_to_ring_map (ℤ_mult x y)
+      =
+      ring_mult R (ℤ_to_ring_map x) (ℤ_to_ring_map y).
+  Proof.
+    intro x.
+    use Z_ind_prop.
+    - intros z IH ; cbn in *.
+      rewrite Z_mult_xS.
+      rewrite Z_to_ring_map_plus.
+      rewrite Z_to_ring_map_S.
+      rewrite IH.
+      rewrite ring_left_distr.
+      rewrite ring_mult_one.
+      rewrite ring_plus_com.
+      reflexivity.
+    - intros z IH ; cbn in *.
+      rewrite Z_mult_xP ; unfold ℤ_min.
+      rewrite Z_to_ring_map_plus.
+      rewrite Z_to_ring_map_P.
+      rewrite IH.
+      rewrite ring_left_distr.
+      apply maponpaths.
+      rewrite ring_mult_minus.
+      rewrite Z_to_ring_map_minus.
+      rewrite ring_mult_one.
+      reflexivity.
+    - cbn.
+      rewrite Z_mult_x0.
+      rewrite !Z_to_ring_map_Z.
+      rewrite ring_mult_zero.
+      reflexivity.
+    - intro ; apply (alg_carrier R).
+  Qed.
+
+  Local Definition Z_to_ring_map_one
+    : ℤ_to_ring_map ℤ_one = ring_one R.
+  Proof.
+    unfold ℤ_one.
+    rewrite Z_to_ring_map_S.
+    rewrite Z_to_ring_map_Z.
+    apply ring_zero_plus.
+  Qed.
+
+  Definition ℤ_to_ring
+    : ℤ_ring --> R.
+  Proof.
+    use mk_ring_map.
+    - exact ℤ_to_ring_map.
+    - exact Z_to_ring_map_plus.
+    - exact Z_to_ring_map_mult.
+    - exact Z_to_ring_map_one.
+  Defined.
+End ZMapExistence.
+
+Definition ℤ_isInitial
+  : isInitial _ ℤ_ring.
+Proof.
+  use mk_isInitial.
+  intro R.
+  apply iscontraprop1.
+  - apply invproofirrelevance.
+    exact ℤ_map_unique.
+  - exact (ℤ_to_ring R).
+Defined.
