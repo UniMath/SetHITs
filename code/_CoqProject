@@ -30,6 +30,7 @@ existence/hit_existence.v
 
 examples/free.v
 examples/groups.v
+examples/join_semilattice.v
 examples/truncation.v
 examples/mod2.v
 examples/rings.v
