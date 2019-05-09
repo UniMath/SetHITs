@@ -45,7 +45,7 @@ Section Semantics.
              (P : poly_code)
     : prealgebra_carrier P ∙ (⟦ P ⟧) ⟹ prealgebra_carrier P ∙ (⟦ I ⟧).
   Proof.
-    use mk_nat_trans.
+    use make_nat_trans.
     - exact (alg_map _).
     - intros X Y f ; cbn in *.
       exact (!(pr2 f)).
@@ -81,7 +81,7 @@ Definition univalent_prealgebras
            (P : poly_code)
   : univalent_category.
 Proof.
-  use mk_category.
+  use make_univalent_category.
   - use (prealgebras C) ; try assumption.
     apply C.
   - exact (is_univalent_FunctorAlg _ _).

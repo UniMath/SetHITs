@@ -43,7 +43,7 @@ Section HITInd.
            (Yset : ∏ (x : alg_carrier H), isaset (Yfam x)).
 
   Local Definition Y : alg_carrier H → hSet
-    := λ X, hSetpair (Yfam X) (Yset X).
+    := λ X, make_hSet (Yfam X) (Yset X).
 
   Variable (c : ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier H)),
                 poly_dact (point_arg Σ) Y x → Y (alg_operation H x))

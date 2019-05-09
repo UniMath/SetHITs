@@ -101,9 +101,9 @@ Section Mod2Ind.
   Definition mod2_ind_disp_alg
     : disp_algebra mod2_HIT.
   Proof.
-    use mk_disp_algebra.
+    use make_disp_algebra.
     - intro x.
-      use hSetpair.
+      use make_hSet.
       + exact (Y x).
       + exact (Yset x).
     - intros x.
@@ -169,8 +169,8 @@ Section Mod2Rec.
   Definition mod2_rec_alg
     : set_algebra mod2_signature.
   Proof.
-    use mk_algebra.
-    - use hSetpair.
+    use make_algebra.
+    - use make_hSet.
       + exact Y.
       + exact Yset.
     - intros x.
@@ -260,7 +260,7 @@ Qed.
 Definition mod2_equiv_bool
   : mod2 ≃ bool.
 Proof.
-  use weqpair.
+  use make_weq.
   - exact mod2_to_bool.
   - use gradth.
     + exact bool_to_mod2.

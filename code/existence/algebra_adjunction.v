@@ -23,7 +23,7 @@ Definition path_setoid_sum
       -->
       (sum_setoid (path_setoid X) (path_setoid Y)).
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (idfun _).
   - intros x y p.
     induction p.
@@ -36,7 +36,7 @@ Definition sum_path_setoid
       -->
       path_setoid (setcoprod X Y).
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (idfun _).
   - intros x y p.
     induction x as [x | x], y as [y | y].
@@ -69,7 +69,7 @@ Definition path_setoid_prod
       -->
       (prod_setoid (path_setoid X) (path_setoid Y)).
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (idfun _).
   - intros x y p.
     induction p.
@@ -82,7 +82,7 @@ Definition prod_path_setoid
       -->
       path_setoid (X × Y)%set.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (idfun _).
   - intros x y p.
     unfold idfun ; simpl in *.
@@ -146,7 +146,7 @@ Definition path_setoid_commute
            (P : poly_code)
   : path_setoid ∙ ⟨ P ⟩ ⟹ ⦃ P ⦄ ∙ path_setoid.
 Proof.
-  use mk_nat_trans.
+  use make_nat_trans.
   - exact (path_setoid_commute_comp P).
   - exact (path_setoid_commute_is_nat_trans P).
 Defined.
@@ -263,7 +263,7 @@ Definition quotient_sum_iso
            (A B : setoid)
   : iso (quotient (sum_setoid A B)) (setcoprod (quotient A) (quotient B)).
 Proof.
-  use mk_iso.
+  use make_iso.
   - exact (quotient_sum A B).
   - use is_iso_qinv.
     + exact (sum_quotient A B).
@@ -343,7 +343,7 @@ Definition quotient_prod_iso
            (A B : setoid)
   : iso (quotient (prod_setoid A B)) (quotient A × quotient B)%set.
 Proof.
-  use mk_iso.
+  use make_iso.
   - exact (quotient_prod A B).
   - use is_iso_qinv.
     + exact (prod_quotient A B).
@@ -403,7 +403,7 @@ Definition quotient_commute
            (P : poly_code)
   : ⟨ P ⟩ ∙ quotient ⟹ quotient ∙ ⦃ P ⦄.
 Proof.
-  use mk_nat_trans.
+  use make_nat_trans.
   - exact (quotient_commute_comp P).
   - exact (quotient_commute_is_nat_trans P).
 Defined.
@@ -578,7 +578,7 @@ Definition dirprod_quotient_counit
        (((prod_quotient (path_setoid (⦃ P ⦄ X)) (path_setoid (⦃ Q ⦄ X)))
            · functor_on_morphisms quotient (prod_path_setoid _ _)) z)
      =
-     dirprodpair
+     make_dirprod
        (quotient_counit (⦃ P ⦄ X) (pr1 z))
        (quotient_counit (⦃ Q ⦄ X) (pr2 z)).
 Proof.

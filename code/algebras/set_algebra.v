@@ -52,7 +52,7 @@ Definition set_endpoint
 Proof.
   use sem_endpoint.
   - intros T t Y ; cbn in *.
-    use mk_nat_trans.
+    use make_nat_trans.
     + intros ? ?.
       exact t.
     + intro ; intros.
@@ -68,7 +68,7 @@ Proof.
   refine (∀ (j : path_index Σ)
             (x : ⦃ path_arg Σ j ⦄ (prealgebra_to_set _ X)),
              _).
-  simple refine (hProppair _ _).
+  simple refine (make_hProp _ _).
   - exact (set_endpoint (path_lhs Σ j) X x = set_endpoint (path_rhs Σ j) X x).
   - simpl in *.
     apply (prealgebra_to_set _ X).
@@ -78,7 +78,7 @@ Definition set_algebra
            (Σ : hit_signature)
   : univalent_category.
 Proof.
-  use mk_category.
+  use make_univalent_category.
   - use (full_sub_precategory _).
     + exact (set_prealgebras (point_arg Σ)).
     + exact (is_set_algebra Σ).
@@ -150,7 +150,7 @@ End AlgebraMapProjections.
 (**
 Builder for algebras and algebra maps
  *)
-Definition mk_algebra
+Definition make_algebra
            {Σ : hit_signature}
            (X : hSet)
            (c : ⦃ point_arg Σ ⦄ X → X)
@@ -161,7 +161,7 @@ Definition mk_algebra
   : set_algebra Σ
   := (X ,, c) ,, p.
 
-Definition mk_algebra_map
+Definition make_algebra_map
            {Σ : hit_signature}
            {X Y : set_algebra Σ}
            (f : alg_carrier X → alg_carrier Y)
@@ -200,8 +200,8 @@ Definition forgetful
            (Σ : hit_signature)
   : set_algebra Σ ⟶ HSET.
 Proof.
-  use mk_functor.
-  - use mk_functor_data.
+  use make_functor.
+  - use make_functor_data.
     + intros X.
       apply X.
     + intros X Y f.

@@ -6,7 +6,7 @@ Require Import prelude.all.
 (**
 Projections and builder functions of equivalence relations.
 *)
-Definition mk_eq_rel
+Definition make_eq_rel
            {X : hSet}
            (rel : hrel X)
            (isrefl_rel : isrefl rel)
@@ -29,7 +29,7 @@ Definition setoid :=
 (**
 Projections and builder functions of setoids.
  *)
-Definition mk_setoid
+Definition make_setoid
            {X : hSet}
            (R : eqrel X)
   : setoid
@@ -71,7 +71,7 @@ Definition setoid_morphism (X₁ X₂ : setoid)
 (**
 Projections and builder functions for setoid morphisms.
  *)
-Definition mk_setoid_morphism
+Definition make_setoid_morphism
            {X₁ X₂ : setoid}
            (f : X₁ → X₂)
            (Rf : ∏ (x y : X₁), x ≡ y → f x ≡ f y)

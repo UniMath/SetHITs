@@ -108,7 +108,7 @@ Definition generated_eqrel
            (R : X → X → UU)
   : eqrel X.
 Proof.
-  use mk_eq_rel.
+  use make_eq_rel.
   - intros x y.
     exact (∥ generated_rel R I Q f x y ∥).
   - intro.
@@ -143,7 +143,7 @@ Definition generated_setoid
            (f : ⦃ Q ⦄ X → X)
            (R : X → X → UU)
   : setoid
-  := mk_setoid (generated_eqrel X f R).
+  := make_setoid (generated_eqrel X f R).
 
 (**
 Next we show that we can lift `f`. For this, we need a lemma.
@@ -214,7 +214,7 @@ Definition generated_map
       (⟨ Q ⟩ (generated_setoid X f R))
       (generated_setoid X f R).
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (λ x, f x).
   - intros x y p.
     refine (factor_through_squash _ _ (cong_rel X Q f R x y p)).
@@ -299,8 +299,8 @@ Section MapModCongruence.
   Definition map_mod_congruence
     : mod_congruence Xalg --> Y.
   Proof.
-    use mk_algebra_map.
-    - use mk_setoid_morphism.
+    use make_algebra_map.
+    - use make_setoid_morphism.
       + exact (pr1 g).
       + exact pr1_g_is_setoid_morp.
     - exact (eqtohomot (pr2 g)).

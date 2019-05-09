@@ -21,7 +21,7 @@ Section HITIndProp.
            (Yprop : ∏ (x : alg_carrier H), isaprop (Yfam x)).
 
   Local Definition Y : alg_carrier H → hSet
-    := λ X, hSetpair (Yfam X) (isasetaprop (Yprop X)).
+    := λ X, make_hSet (Yfam X) (isasetaprop (Yprop X)).
 
   Variable (c : ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier H)),
                 poly_dact (point_arg Σ) Y x → Y (alg_operation H x)).
@@ -133,47 +133,3 @@ Proof.
   }
   apply initial_iso ; apply HIT_is_initial.
 Defined.
-
-
-
-
-
-
-(*
-Definition is_initial_is_a_HIT
-           {Σ : hit_signature}
-           (H : set_algebra Σ)
-  : isInitial _ H → is_a_HIT H.
-Proof.
-  admit.
-Admitted.
-
-Definition initial_to_HIT
-           {Σ : hit_signature}
-           (H : Initial (set_algebra Σ))
-  : HIT Σ.
-Proof.
-  use tpair.
-  - apply H.
-  - apply is_initial_is_a_HIT.
-    apply H.
-Defined.
-
-(**
-Projections
- *)
-
-(**
-Note that HITs can be constructed from quotients if we have an initial setoid algebra.
- *)
-Lemma HIT_existence_from_quotient
-      (Σ : hit_signature)
-      (X : Initial (setoid_algebra Σ))
-  : HIT Σ.
-Proof.
-  apply initial_to_HIT.
-  use tpair.
-  - exact (quotient_algebra Σ (InitialObject X)).
-  - exact (adj_initial (quotient_algebra_adjunction Σ) (InitialObject X) (pr2 X)).
-Defined.
-*)

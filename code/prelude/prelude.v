@@ -133,7 +133,7 @@ Section InvNatTrans.
   Definition inv_nat_trans
     : G ⟹ F.
   Proof.
-    use mk_nat_trans.
+    use make_nat_trans.
     - exact θ.
     - exact θ_is_nat_trans.
   Defined.
@@ -151,7 +151,7 @@ Definition adj_initial
            (X_initial : isInitial _ X)
   : isInitial D (L X).
 Proof.
-  use mk_isInitial.
+  use make_isInitial.
   intros Y.
   apply (iscontrweqf (invweq (pr1 (nathomweq_from_adj adj) X Y))).
   apply X_initial.
@@ -205,7 +205,7 @@ Section PairNatTrans.
   Definition pair_nat_trans
     : F ∙ G₁ ⟹ F ∙ (BinProduct_of_functors _ _ H G₂ G₃).
   Proof.
-    use mk_nat_trans.
+    use make_nat_trans.
     - exact pair_nat_trans_data.
     - exact pair_nat_trans_is_nat_trans.
   Defined.
@@ -221,7 +221,7 @@ Definition initial_iso
            (IY : isInitial _ Y)
   : iso X Y.
 Proof.
-  use mk_iso.
+  use make_iso.
   - apply IX.
   - use is_iso_qinv.
     + apply IY.
