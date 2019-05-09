@@ -507,7 +507,7 @@ Section BuildRingMap.
   Definition mk_ring_map
     : R₁ --> R₂.
   Proof.
-    use mk_algebra_map.
+    use make_algebra_map.
     - exact f.
     - intros x.
       induction x as [x | x].

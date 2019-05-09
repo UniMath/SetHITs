@@ -56,8 +56,8 @@ Section AlgebraFunctor.
   Definition algebra_functor
     : FunctorAlg A₁ (homset_property _) ⟶ FunctorAlg A₂ (homset_property _).
   Proof.
-    use mk_functor.
-    - use mk_functor_data.
+    use make_functor.
+    - use make_functor_data.
       + exact object_part.
       + intros X Y f.
         use tpair ; simpl.
@@ -296,7 +296,7 @@ Section PreAlgebraAdjunction.
   Definition lift_η
     : functor_identity _ ⟹ lift_L ∙ lift_R.
   Proof.
-    use mk_nat_trans.
+    use make_nat_trans.
     - exact lift_η_data.
     - exact lift_η_is_nat_trans.
   Defined.
@@ -325,7 +325,7 @@ Section PreAlgebraAdjunction.
   Definition lift_ε
     : lift_R ∙ lift_L ⟹ functor_identity _.
   Proof.
-    use mk_nat_trans.
+    use make_nat_trans.
     - exact lift_ε_data.
     - exact lift_ε_is_nat_trans.
   Defined.
@@ -333,7 +333,7 @@ Section PreAlgebraAdjunction.
   Definition prealgebra_adjunction
     : are_adjoints lift_L lift_R.
   Proof.
-    use mk_are_adjoints.
+    use make_are_adjoints.
     - exact lift_η.
     - exact lift_ε.
     - split.
@@ -365,7 +365,7 @@ Definition factor_functor_data
            (HF : ∏ (X : C), PC X → PD(F X))
   : functor_data (full_sub_precategory PC) (full_sub_precategory PD).
 Proof.
-  use mk_functor_data.
+  use make_functor_data.
   - intros X.
     use tpair.
     + exact (F (pr1 X)).
@@ -400,7 +400,7 @@ Definition factor_functor
            (HF : ∏ (X : C), PC X → PD(F X))
   : full_sub_precategory PC ⟶ full_sub_precategory PD.
 Proof.
-  use mk_functor.
+  use make_functor.
   - exact (factor_functor_data PC PD F HF).
   - exact (factor_functor_is_functor PC PD F HF).
 Defined.
@@ -440,7 +440,7 @@ Section FactorFunctorAdjunction.
   Definition factor_η
     : functor_identity _ ⟹ FL ∙ FR.
   Proof.
-    use mk_nat_trans.
+    use make_nat_trans.
     - exact factor_η_data.
     - exact factor_η_is_nat_trans.
   Defined.
@@ -463,7 +463,7 @@ Section FactorFunctorAdjunction.
   Definition factor_ε
     : FR ∙ FL ⟹ functor_identity _.
   Proof.
-    use mk_nat_trans.
+    use make_nat_trans.
     - exact factor_ε_data.
     - exact factor_ε_is_nat_trans.
   Defined.
@@ -471,7 +471,7 @@ Section FactorFunctorAdjunction.
   Definition factor_adjoints
     : are_adjoints FL FR.
   Proof.
-    use mk_are_adjoints.
+    use make_are_adjoints.
     - exact factor_η.
     - exact factor_ε.
     - split.

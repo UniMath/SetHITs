@@ -106,7 +106,7 @@ End DispAlgebraProjections.
 (**
 Builder
  *)
-Definition mk_disp_algebra
+Definition make_disp_algebra
            {Σ : hit_signature}
            {X : set_algebra Σ}
            (Y : alg_carrier X → hSet)

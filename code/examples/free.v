@@ -109,7 +109,7 @@ Section FreeAlgebra.
     Definition free_alg_to_alg
       : set_algebra Σ.
     Proof.
-      use mk_algebra.
+      use make_algebra.
       - exact free_alg_to_alg_carrier.
       - exact free_alg_to_alg_operation.
       - intros j x ; simpl.
@@ -188,7 +188,7 @@ Section FreeAlgebra.
              (f : X --> Y)
     : free_alg_to_alg X --> free_alg_to_alg Y.
   Proof.
-    use mk_algebra_map.
+    use make_algebra_map.
     - apply f.
     - intros x ; simpl in *.
       exact (eqtohomot (pr21 f) (inr x)).
@@ -261,7 +261,7 @@ Section FreeAlgebra.
       Definition free_algebra_map_help
         : set_algebra (free_signature A).
       Proof.
-        use mk_algebra.
+        use make_algebra.
         - exact free_algebra_map_lift_carrier.
         - exact free_algebra_map_lift_operation.
         - intros j x ; simpl.
@@ -354,8 +354,8 @@ Section FreeAlgebra.
   Definition free_algebra_functor
     : HSET ⟶ set_algebra Σ.
   Proof.
-    use mk_functor.
-    - use mk_functor_data.
+    use make_functor.
+    - use make_functor_data.
       + exact free_algebra.
       + exact @free_algebra_map.
     - split.
@@ -428,7 +428,7 @@ Section FreeAlgebra.
         ≃
         HSET ⟦ A, (forgetful Σ) B ⟧.
   Proof.
-    use weqpair.
+    use make_weq.
     - exact (free_algebra_hom_l A B).
     - use gradth.
       + exact (free_algebra_hom_r A B).

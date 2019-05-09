@@ -263,9 +263,9 @@ Section KFinite.
     Definition K_ind_disp_algebra
       : disp_algebra kuratowski_free_HIT.
     Proof.
-      use mk_disp_algebra.
+      use make_disp_algebra.
       - intros x.
-        use hSetpair.
+        use make_hSet.
         + exact (Y x).
         + exact (Yset x).
       - intros x.
@@ -357,8 +357,8 @@ Section KFinite.
     Definition K_rec_algebra
       : set_algebra (free_signature semilattice_signature X).
     Proof.
-      use mk_algebra.
-      - use hSetpair.
+      use make_algebra.
+      - use make_hSet.
         + exact A.
         + exact Aset.
       - intros a ; cbn in a.

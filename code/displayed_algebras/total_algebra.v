@@ -216,7 +216,7 @@ Section TotalAlgebra.
   Definition total_algebra
     : set_algebra Σ.
   Proof.
-    use mk_algebra.
+    use make_algebra.
     - exact carrier.
     - exact operation.
     - exact paths.
@@ -234,7 +234,7 @@ Section Projection.
   Definition projection
     : total_algebra Y --> X.
   Proof.
-    use mk_algebra_map.
+    use make_algebra_map.
     - exact pr1.
     - reflexivity.
   Defined.

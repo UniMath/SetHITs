@@ -34,7 +34,7 @@ Definition setoid_poly_obj
            (X : setoid)
   : setoid.
 Proof.
-  use mk_setoid.
+  use make_setoid.
   - exact (⦃ P ⦄ (carrier X)).
   - exact (poly_eq_rel P X).
 Defined.
@@ -72,10 +72,10 @@ Definition setoid_poly_data
            (P : poly_code)
   : functor_data setoid_cat setoid_cat.
 Proof.
-  use mk_functor_data.
+  use make_functor_data.
   - exact (setoid_poly_obj P).
   - intros X Y f.
-    use mk_setoid_morphism.
+    use make_setoid_morphism.
     + exact (setoid_poly_mor P f).
     + exact (@setoid_poly_mor_is_morphism P _ _ f).
 Defined.
@@ -115,7 +115,7 @@ Definition setoid_poly
            (P : poly_code)
   : setoid_cat ⟶ setoid_cat.
 Proof.
-  use mk_functor.
+  use make_functor.
   - exact (setoid_poly_data P).
   - exact (setoid_poly_is_functor P).
 Defined.
@@ -131,7 +131,7 @@ Definition setoid_prealgebras
            (P : poly_code)
   : univalent_category.
 Proof.
-  use mk_category.
+  use make_univalent_category.
   - exact (FunctorAlg (⟨ P ⟩) (homset_property _)).
   - exact (is_univalent_FunctorAlg (⟨ P ⟩) setoid_cat_is_univalent).
 Defined.
@@ -166,7 +166,7 @@ Definition setoid_endpoint
            (X : setoid_prealgebras A)
   : setoid_cat ⟦ ⟨ P ⟩ (pr1 X) , ⟨ Q ⟩ (pr1 X) ⟧.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (set_endpoint e (setoid_prealgebra_to_set_prealgebra A X)).
   - intros x y p.
     induction e.
@@ -194,7 +194,7 @@ Proof.
   refine (∀ (j : path_index Σ)
             (x : ⟨ path_arg Σ j ⟩ (prealgebra_setoid _ X)),
              _).
-  simple refine (hProppair _ _).
+  simple refine (make_hProp _ _).
   + exact (
         (pr1 (setoid_endpoint (path_lhs Σ j) X) x)
           ≡
@@ -209,7 +209,7 @@ Definition setoid_algebra
            (Σ : hit_signature)
   : univalent_category.
 Proof.
-  use mk_category.
+  use make_univalent_category.
   - use (full_sub_precategory _).
     + exact (setoid_prealgebras (point_arg Σ)).
     + exact (is_setoid_algebra Σ).
@@ -265,7 +265,7 @@ End AlgebraMapProjections.
 (**
 Builder
  *)
-Definition mk_prealgebra
+Definition make_prealgebra
            {P : poly_code}
            (X : setoid)
            (c : setoid_cat ⟦ ⟨ P ⟩ X , X ⟧)
@@ -276,22 +276,22 @@ Proof.
   - exact c.
 Defined.
            
-Definition mk_algebra
+Definition make_algebra
            {Σ : hit_signature}
            (X : setoid)
            (c : setoid_cat ⟦ ⟨ point_arg Σ ⟩ X , X ⟧)
            (p : ∏ (j : path_index Σ) (x : ⟨ path_arg Σ j ⟩ X),
-                pr1 (setoid_endpoint (path_lhs Σ j) (mk_prealgebra X c)) x
+                pr1 (setoid_endpoint (path_lhs Σ j) (make_prealgebra X c)) x
                 ≡
-                pr1 (setoid_endpoint (path_rhs Σ j) (mk_prealgebra X c)) x)
+                pr1 (setoid_endpoint (path_rhs Σ j) (make_prealgebra X c)) x)
   : setoid_algebra Σ.
 Proof.
   use tpair.
-  - exact (mk_prealgebra X c).
+  - exact (make_prealgebra X c).
   - exact p.
 Defined.
 
-Definition mk_algebra_map
+Definition make_algebra_map
            {Σ : hit_signature}
            {X Y : setoid_algebra Σ}
            (f : setoid_cat ⟦ alg_carrier X , alg_carrier Y ⟧)

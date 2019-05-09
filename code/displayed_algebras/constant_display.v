@@ -77,7 +77,7 @@ Definition const_disp_algebra
            (X Y : set_algebra Σ)
   : disp_algebra X.
 Proof.
-  use mk_disp_algebra.
+  use make_disp_algebra.
   - intro.
     apply Y.
   - intros x z ; simpl in *.
@@ -95,7 +95,7 @@ Definition const_disp_alg_mor_to_alg_mor
   : disp_algebra_map (const_disp_algebra X Y) → X --> Y.
 Proof.
   intros f.
-  use mk_algebra_map.
+  use make_algebra_map.
   - exact (pr1 f).
   - intros x ; simpl ; cbn.
     refine (pr2 f x @ _).

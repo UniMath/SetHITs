@@ -60,7 +60,7 @@ Definition propositonal_truncation
   : hProp.
 Proof.
   pose (H := HIT_exists (truncation_signature A)).
-  use hProppair.
+  use make_hProp.
   - apply H.
   - apply invproofirrelevance.
     intros x y.

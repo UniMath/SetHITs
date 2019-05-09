@@ -136,9 +136,9 @@ Definition Z_ind_disp_algebra
            (Yset : ∏ (x : ℤ), isaset (Y x))
   : disp_algebra Z_HIT.
 Proof.
-  use mk_disp_algebra.
+  use make_disp_algebra.
   - intros x.
-    use hSetpair.
+    use make_hSet.
     + exact (Y x).
     + exact (Yset x).
   - intros x.
@@ -247,7 +247,7 @@ Definition Z_rec_alg
            (SPA : ∏ (x : A), SA (PA x) = x)
   : set_algebra Z_signature.
 Proof.
-  use mk_algebra.
+  use make_algebra.
   - exact A.
   - intros x.
     induction x as [x | x].
@@ -1001,7 +1001,7 @@ End ZMapExistence.
 Definition ℤ_isInitial
   : isInitial _ ℤ_ring.
 Proof.
-  use mk_isInitial.
+  use make_isInitial.
   intro R.
   apply iscontraprop1.
   - apply invproofirrelevance.

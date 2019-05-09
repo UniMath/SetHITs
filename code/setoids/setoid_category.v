@@ -13,7 +13,7 @@ Open Scope cat.
 Definition setoid_cat_ob_mor
   : precategory_ob_mor.
 Proof.
-  use precategory_ob_mor_pair.
+  use make_precategory_ob_mor. 
   - exact setoid.
   - exact setoid_morphism.
 Defined.
@@ -21,7 +21,7 @@ Defined.
 Definition id_setoid_morphism (X : setoid)
   : setoid_morphism X X.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (idfun X).
   - exact (λ x y, idfun (x ≡ y)).
 Defined.
@@ -32,7 +32,7 @@ Definition comp_setoid_morphism
            (f₂ : setoid_morphism X₂ X₃)
   : setoid_morphism X₁ X₃.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (λ z, f₂(f₁ z)).
   - exact (λ x y p, map_eq f₂(map_eq f₁ p)).
 Defined.
@@ -40,7 +40,7 @@ Defined.
 Definition setoid_cat_data
   : precategory_data.
 Proof.
-  use precategory_data_pair.
+  use make_precategory_data.
   - exact setoid_cat_ob_mor.
   - exact id_setoid_morphism.
   - exact @comp_setoid_morphism.
@@ -49,7 +49,7 @@ Defined.
 Definition setoid_precat
   : precategory.
 Proof.
-  use mk_precategory.
+  use make_precategory.
   - exact setoid_cat_data.
   - repeat (use tpair) ; cbn.
     + reflexivity.
@@ -61,7 +61,7 @@ Defined.
 Definition setoid_cat
   : category.
 Proof.
-  use category_pair.
+  use make_category.
   - exact setoid_precat.
   - intros X₁ X₂ ; cbn.
     apply isaset_setoid_morphism.
@@ -74,7 +74,7 @@ Definition sum_rel
            (R₂ : eqrel Y)
   : eqrel (setcoprod X Y)%set.
 Proof.
-  use mk_eq_rel.
+  use make_eq_rel.
   - intros s₁ s₂.
     destruct s₁ as [x₁ | y₁], s₂ as [x₂ | y₂].
     + exact (R₁ x₁ x₂).
@@ -105,13 +105,13 @@ Defined.
 
 Definition sum_setoid (X Y : setoid_cat)
   : setoid_cat
-  := mk_setoid (sum_rel (carrier_eq X) (carrier_eq Y)).
+  := make_setoid (sum_rel (carrier_eq X) (carrier_eq Y)).
 
 Definition setoid_inl
            (X₁ X₂ : setoid_cat)
   : X₁ --> sum_setoid X₁ X₂.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (λ x, inl x).
   - exact (λ _ _ p, p).
 Defined.
@@ -120,7 +120,7 @@ Definition setoid_inr
            (X₁ X₂ : setoid_cat)
   : X₂ --> sum_setoid X₁ X₂.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (λ x, inr x).
   - exact (λ _ _ p, p).
 Defined.
@@ -184,7 +184,7 @@ Definition prod_rel
            (R₂ : eqrel Y)
   : eqrel (X × Y)%set.
 Proof.
-  use mk_eq_rel.
+  use make_eq_rel.
   - exact (λ z₁ z₂, (hconj (R₁ (pr1 z₁) (pr1 z₂)) (R₂ (pr2 z₁) (pr2 z₂)))).
   - exact (λ z, (id (pr1 z) ,, id (pr2 z)))%setoid.
   - exact (λ _ _ p, (! (pr1 p) ,, ! (pr2 p)))%setoid.
@@ -193,13 +193,13 @@ Defined.
 
 Definition prod_setoid (X Y : setoid_cat)
   : setoid_cat
-  := mk_setoid (prod_rel (carrier_eq X) (carrier_eq Y)).
+  := make_setoid (prod_rel (carrier_eq X) (carrier_eq Y)).
 
 Definition setoid_pr1
            (X₁ X₂ : setoid_cat)
   : prod_setoid X₁ X₂ --> X₁.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (λ z ,  pr1 z).
   - exact (λ _ _, pr1).
 Defined.
@@ -208,7 +208,7 @@ Definition setoid_pr2
            (X₁ X₂ : setoid_cat)
   : prod_setoid X₁ X₂ --> X₂.
 Proof.
-  use mk_setoid_morphism.
+  use make_setoid_morphism.
   - exact (λ z ,  pr2 z).
   - exact (λ _ _, pr2).
 Defined.
@@ -219,7 +219,7 @@ Definition setoid_pair
            (g : Y --> X₂)
   : Y --> prod_setoid X₁ X₂.
 Proof.
-  use mk_setoid_morphism ; cbn in *.
+  use make_setoid_morphism ; cbn in *.
   - exact (λ y, (f y ,, g y)).
   - exact (λ _ _ p, (map_eq f p ,, map_eq g p)).
 Defined.
@@ -261,7 +261,7 @@ Defined.
 Definition setoid_morphism_hSet (X₁ X₂ : setoid)
   : hSet.
 Proof.
-  use hSetpair.
+  use make_hSet.
   - exact (setoid_morphism X₁ X₂).
   - apply isaset_setoid_morphism.
 Defined.
@@ -270,7 +270,7 @@ Definition fun_rel
            (X₁ X₂ : setoid)
   : eqrel (setoid_morphism_hSet X₁ X₂).
 Proof.
-  use mk_eq_rel.
+  use make_eq_rel.
   - intros f g ; cbn in *.
     exact (∀ (x : X₁), f x ≡ g x).
   - exact (λ f x, id _ _)%setoid.
@@ -281,16 +281,16 @@ Defined.
 Definition setoid_exp
            (X₁ X₂ : setoid_cat)
   : setoid_cat
-  := mk_setoid (fun_rel X₁ X₂).
+  := make_setoid (fun_rel X₁ X₂).
 
 Definition setoid_exp_functor_datat
            (X : setoid)
   : functor_data setoid_cat setoid_cat.
 Proof.
-  use mk_functor_data.
+  use make_functor_data.
   - exact (setoid_exp X).
   - intros Y₁ Y₂ f ; cbn in *.
-    use mk_setoid_morphism ; cbn.
+    use make_setoid_morphism ; cbn.
     + exact (λ g, comp_setoid_morphism g f).
     + exact (λ g₁ g₂ p x, map_eq f (p x)).
 Defined.
@@ -299,7 +299,7 @@ Definition setoid_exp_functor
            (X : setoid)
   : setoid_cat ⟶ setoid_cat.
 Proof.
-  use mk_functor.
+  use make_functor.
   - exact (setoid_exp_functor_datat X).
   - split.
     + intros Y.
@@ -316,11 +316,11 @@ Definition setoid_exp_unit
       ⟹
       constprod_functor1 setoid_cat_binproducts X ∙ setoid_exp_functor X.
 Proof.
-  use mk_nat_trans.
+  use make_nat_trans.
   - intros Y.
-    use mk_setoid_morphism.
+    use make_setoid_morphism.
     + intros y.
-      use mk_setoid_morphism.
+      use make_setoid_morphism.
       * exact (λ x, x ,, y).
       * exact (λ x₁ x₂ p , p ,, id _ _)%setoid.
     + exact (λ y₁ y₂ p x , id _ _ ,, p)%setoid.
@@ -338,9 +338,9 @@ Definition setoid_exp_counit
       ⟹
       functor_identity setoid_precat.
 Proof.
-  use mk_nat_trans.
+  use make_nat_trans.
   - intros Y.
-    use mk_setoid_morphism.
+    use make_setoid_morphism.
     + intro z ; cbn in *.
       exact (pr2 z (pr1 z)).
     + intros z₁ z₂ p ; cbn in *.
@@ -356,7 +356,7 @@ Proof.
   intro X.
   use tpair.
   - exact (setoid_exp_functor X).
-  - use mk_are_adjoints.
+  - use make_are_adjoints.
     + exact (setoid_exp_unit X).
     + exact (setoid_exp_counit X).
     + split.
@@ -376,7 +376,7 @@ Defined.
 Definition path_rel
            (X : hSet)
   : eqrel X
-  := mk_eq_rel
+  := make_eq_rel
        (λ x y, eqset x y)
        idpath
        (λ _ _ p, ! p)
@@ -384,17 +384,17 @@ Definition path_rel
 
 Definition path_setoid_data : functor_data SET setoid_cat.
 Proof.
-  use mk_functor_data.
-  - exact (λ X, mk_setoid (path_rel X)).
+  use make_functor_data.
+  - exact (λ X, make_setoid (path_rel X)).
   - intros X Y f.
-    use mk_setoid_morphism.
+    use make_setoid_morphism.
     + exact f.
     + exact (λ x y p, maponpaths f p).
 Defined.
       
 Definition path_setoid : SET ⟶ setoid_cat.
 Proof.
-  use mk_functor.
+  use make_functor.
   - exact path_setoid_data.
   - split.
     + intros X ; cbn.
@@ -428,8 +428,8 @@ Defined.
 Definition quotient
   : setoid_cat ⟶ SET.
 Proof.
-  use mk_functor.
-  - use mk_functor_data.
+  use make_functor.
+  - use make_functor_data.
     + exact quotient_setoid_ob.
     + exact @quotient_setoid_mor.
   - split.
@@ -452,9 +452,9 @@ Defined.
 Definition quotient_unit
   : functor_identity setoid_cat ⟹ quotient ∙ path_setoid.
 Proof.
-  use mk_nat_trans.
+  use make_nat_trans.
   - intro X ; cbn.
-    use mk_setoid_morphism.
+    use make_setoid_morphism.
     + exact (setquotpr _).
     + exact (iscompsetquotpr _).
   - abstract
@@ -467,7 +467,7 @@ Defined.
 Definition quotient_counit
   : path_setoid ∙ quotient ⟹ functor_identity SET.
 Proof.
-  use mk_nat_trans.
+  use make_nat_trans.
   - intro X ; cbn.
     use setquotuniv.
     + exact (idfun _).
@@ -508,7 +508,7 @@ Defined.
 Definition quotient_adjunction
   : are_adjoints quotient path_setoid.
 Proof.
-  use mk_are_adjoints.
+  use make_are_adjoints.
   - exact quotient_unit.
   - exact quotient_counit.
   - split.
@@ -558,11 +558,11 @@ Definition factor_idtoiso_3_map
 Proof.
   intros f.
   use tpair.
-  - use mk_setoid_morphism.
+  - use make_setoid_morphism.
     + exact (pr1 f).
     + apply f.
   - use is_iso_qinv.
-    + use mk_setoid_morphism.
+    + use make_setoid_morphism.
       * apply (invweq (pr1 f)).
       * intros x y r ; simpl.
         apply (invweq (pr2 f (invmap (pr1 f) x) (invmap (pr1 f) y))).
@@ -587,7 +587,7 @@ Definition factor_idtoiso_3_inv
 Proof.
   intros f.
   use tpair.
-  - use weqpair.
+  - use make_weq.
     + exact (pr11 f).
     + use gradth.
       * exact (pr1 (inv_from_iso f)).
@@ -608,7 +608,7 @@ Definition factor_idtoiso_3
            (X Y : setoid)
   : (∑ (f : pr1 X ≃ pr1 Y), ∏ x y : X, x ≡ y ≃ f x ≡ f y) ≃ @iso setoid_cat X Y.
 Proof.
-  use weqpair.
+  use make_weq.
   - exact (factor_idtoiso_3_map X Y).
   - use gradth.
     + exact (factor_idtoiso_3_inv X Y).
