@@ -28,6 +28,7 @@ Inductive endpoint (A : poly_code) : poly_code → poly_code → UU :=
 | pair : forall (P Q R : poly_code),
     endpoint A P Q -> endpoint A P R → endpoint A P (Q * R)
 | c : forall (P : poly_code) (T : hSet), T → endpoint A P (C T)
+| fmap : forall {X Y : hSet} (f : X → Y), endpoint A (C X) (C Y)
 | constr : endpoint A A I.
 
 Arguments id {_} _.
@@ -38,6 +39,7 @@ Arguments π₁ {_} P Q.
 Arguments π₂ {_} P Q.
 Arguments pair {A} {P} {Q} {R} _ _.
 Arguments c {_} P {_} _.
+Arguments fmap {_} {X Y} f.
 Arguments constr {_}.
 
 (**
