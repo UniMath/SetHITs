@@ -180,6 +180,7 @@ Proof.
       * exact (IHe1 _ _ p).
       * exact (IHe2 _ _ p).
     + reflexivity.
+    + exact (maponpaths f p).
     + exact (map_eq _ p).
 Defined.
 

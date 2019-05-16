@@ -35,7 +35,8 @@ Definition endpoint_dact
                    poly_dact A Y x → Y (prealg_operation X x))
   : ∏ {z : ⦃ P ⦄ (prealg_carrier X)}, poly_dact P Y z → poly_dact Q Y (set_endpoint e X z).
 Proof.
-  induction e as [ | P Q R e₁ IHe₁ e₂ IHe₂ | | | | | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
+  induction e as [ | P Q R e₁ IHe₁ e₂ IHe₂ | | | |
+                   | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ].
   - exact (λ z, idfun _).
   - exact (λ z x, IHe₂ (set_endpoint e₁ X z) (IHe₁ z x)).
   - exact (λ z, idfun _).
@@ -44,6 +45,7 @@ Proof.
   - exact (λ z, pr2).
   - exact (λ z x, (IHe₁ z x ,, IHe₂ z x)).
   - exact (λ _ _, t).
+  - exact (λ z Hz, f Hz).
   - exact c.
 Defined.
 
