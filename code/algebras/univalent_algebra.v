@@ -57,7 +57,7 @@ Section Semantics.
     : prealgebra_carrier A ∙ (⟦ P ⟧) ⟹ prealgebra_carrier A ∙ ⟦ Q ⟧.
   Proof.
     induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
+                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | X Y f | ].
     - exact (nat_trans_id _).
     - exact (nat_trans_comp _ _ _ IHe₁ IHe₂).
     - exact (pre_whisker _ (coproduct_nat_trans_in1 _ _ _ _ _)).
@@ -66,6 +66,11 @@ Section Semantics.
     - exact (pre_whisker _ (binproduct_nat_trans_pr2 _ _ _ _ _)).
     - exact (pair_nat_trans _ IHe₁ IHe₂).
     - exact (pre_whisker _ (el _ t _)).
+    - refine (pre_whisker _ _).
+      use make_nat_trans.
+      + exact (λ _, #F f).
+      + intros Z₁ Z₂ g ; cbn.
+        exact (id_left _ @ !(id_right _)).
     - exact (constr_nat_trans A).
   Defined.
 End Semantics.

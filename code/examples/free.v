@@ -40,7 +40,7 @@ Section FreeAlgebra.
       : endpoint free_point_arg R₁ R₂.
     Proof.
       induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ].
+                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f |  ].
       - exact (id_e _ P).
       - exact (comp IHe₁ IHe₂).
       - exact (ι₁ P Q).
@@ -49,6 +49,7 @@ Section FreeAlgebra.
       - exact (π₂ P Q).
       - exact (pair IHe₁ IHe₂).
       - exact (c P t).
+      - exact (fmap f).
       - exact (comp (ι₂ (C A) P) constr).
     Defined.
 
@@ -98,7 +99,7 @@ Section FreeAlgebra.
         set_endpoint (free_endpoint A e) (alg_to_prealg X) x.
     Proof.
       induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ]
       ; try reflexivity ; simpl ; cbn.
       - exact (maponpaths _ (IHe₁ x) @ IHe₂ _).
       - apply pathsdirprod.
@@ -145,7 +146,7 @@ Section FreeAlgebra.
         set_endpoint e (alg_to_prealg X) x.
     Proof.
       induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+                      | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ g | ]
       ; try reflexivity ; simpl ; cbn.
       - exact (maponpaths _ (IHe₁ x) @ IHe₂ _).
       - apply pathsdirprod.
@@ -246,7 +247,7 @@ Section FreeAlgebra.
           set_endpoint (free_endpoint B e) (alg_to_prealg X) x.
       Proof.
         induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                        | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+                        | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ g | ]
         ; try reflexivity.
         - simpl ; unfold compose ; simpl.
           refine (_ @ _).

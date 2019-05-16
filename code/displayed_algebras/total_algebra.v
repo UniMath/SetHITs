@@ -101,7 +101,7 @@ Section TotalAlgebra.
       poly_pr1 Q (set_endpoint e total_prealgebra x).
   Proof.
     induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ]
     ; try (apply idpath).
     - exact (maponpaths _ (IHe₁ _) @ IHe₂ _).
     - exact (pathsdirprod (IHe₁ x) (IHe₂ x)).
@@ -119,7 +119,7 @@ Section TotalAlgebra.
         (poly_pr2 Q Y (set_endpoint e total_prealgebra x)).
   Proof.
     induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+                    | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ]
     ; try (apply idpath).
     - simpl.
       refine (_ @ _).

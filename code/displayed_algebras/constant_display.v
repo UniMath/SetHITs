@@ -63,7 +63,7 @@ Definition endpoint_dact_const
     set_endpoint e Y (poly_dact_const P z y).
 Proof.
   induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                  | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | ]
+                  | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ]
   ; try reflexivity.
   - simpl.
     exact (IHe₂ _ _ @ maponpaths _ (IHe₁ _ _)).
