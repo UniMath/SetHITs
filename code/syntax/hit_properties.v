@@ -36,6 +36,50 @@ Section HITIndProp.
   Defined.    
 End HITIndProp.
 
+(** The map acquired by induction is unique *)
+Definition poly_dact_eq_dep
+           {P : poly_code}
+           {X : hSet}
+           {Y : X → hSet}
+           {f g : ∏ (x : X), Y x}
+           (x : ⦃ P ⦄ X)
+           (p : poly_dact P (λ z, hProp_to_hSet (eqset (f z) (g z))) x)
+  : poly_dmap P Y f x = poly_dmap P Y g x.
+Proof.
+  induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  - reflexivity.
+  - exact p.
+  - induction x as [x | x].
+    + exact (IHP₁ x p).
+    + exact (IHP₂ x p).
+  - apply pathsdirprod.
+    + exact (IHP₁ (pr1 x) (pr1 p)).
+    + exact (IHP₂ (pr2 x) (pr2 p)).
+Qed.
+
+Definition hit_ind_unique
+           {Σ : hit_signature}
+           {H : HIT Σ}
+           {X : disp_algebra H}
+           (f g : disp_algebra_map X)
+  : f = g.
+Proof.
+  use subtypeEquality.
+  {
+    intro.
+    use impred ; intro.
+    apply (pr1 X).
+  }
+  use funextsec.
+  use hit_ind_prop.
+  - intro.
+    apply (pr1 X).
+  - intros x Hx ; cbn in *.
+    rewrite (pr2 f), (pr2 g).
+    apply maponpaths.
+    apply (poly_dact_eq_dep _ Hx).
+Qed.
+
 (**
 HIT recursion.
  *)
