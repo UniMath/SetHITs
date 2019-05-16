@@ -4,11 +4,15 @@ The propositional truncation of a set.
 Require Import prelude.all.
 Require Import syntax.hit_signature.
 Require Import syntax.hit.
+Require Import syntax.hit_properties.
 Require Import algebras.set_algebra.
+Require Import existence.hit_existence.
+Require Import displayed_algebras.displayed_algebra.
 
 Require Import existence.hit_existence.
 
 Open Scope cat.
+Opaque HIT_exists hit_ind hit_ind_prop hit_rec.
 
 (** We first define the signature. *)
 
@@ -55,14 +59,50 @@ Section Truncation.
   Defined.
 End Truncation.
 
-Definition propositonal_truncation
+Definition propositional_truncation_HIT
+           (A : hSet)
+  : HIT (truncation_signature A)
+  := HIT_exists (truncation_signature A).
+
+Definition propositional_truncation
            (A : hSet)
   : hProp.
 Proof.
-  pose (H := HIT_exists (truncation_signature A)).
   use make_hProp.
-  - apply H.
+  - apply (propositional_truncation_HIT A).
   - apply invproofirrelevance.
     intros x y.
-    exact (alg_paths H all_paths (x ,, y)).
+    exact (alg_paths (propositional_truncation_HIT A) all_paths (x ,, y)).
 Defined.
+
+Definition trunc_inc
+           {A : hSet}
+  : A → propositional_truncation A
+  := alg_operation (propositional_truncation_HIT A).
+
+Definition trunc_ind_disp_alg
+           (A : hSet)
+           {Y : propositional_truncation A → UU}
+           (Yprop : ∏ (a : propositional_truncation A), isaprop (Y a))
+           (f : ∏ (a : A), Y (trunc_inc a))
+  : disp_algebra (propositional_truncation_HIT A).
+Proof.
+  use make_disp_algebra.
+  - intro x.
+    use make_hSet.
+    + exact (Y x).
+    + apply isasetaprop.
+      exact (Yprop x).
+  - intros x Hx.
+    exact (f x).
+  - intros.
+    apply Yprop.
+Defined.
+
+Definition trunc_ind
+           {A : hSet}
+           {Y : propositional_truncation A → UU}
+           (Yprop : ∏ (a : propositional_truncation A), isaprop (Y a))
+           (f : ∏ (a : A), Y (trunc_inc a))
+  : ∏ (a : propositional_truncation A), Y a
+  := pr1 (pr2 (propositional_truncation_HIT A) (trunc_ind_disp_alg A Yprop f)).
