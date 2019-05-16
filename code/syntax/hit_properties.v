@@ -124,7 +124,7 @@ Section HITUnique.
            (Y : set_algebra Σ)
            (f₁ f₂ : H --> Y).
 
-  Definition hit_eq
+  Definition hit_map_eq
     : f₁ = f₂.
   Proof.
     use subtypeEquality.
@@ -160,7 +160,7 @@ Proof.
   use tpair.
   - exact (const_disp_alg_mor_to_alg_mor H X (pr2 H _)).
   - intro.
-    apply hit_eq.
+    apply hit_map_eq.
 Qed.
 
 (**
