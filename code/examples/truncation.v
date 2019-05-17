@@ -36,12 +36,12 @@ Section Truncation.
   (** The left hand side of each equation *)
   Definition truncation_lhs
     : ∏ (j : truncation_ax), endpoint truncation_operations (truncation_arg j) I
-    := λ _, comp (id_e _ (I * I)) (π₁ I I).
+    := λ _, π₁ I I.
 
   (** The right hand side of each equation *)
   Definition truncation_rhs
     : ∏ (j : truncation_ax), endpoint truncation_operations (truncation_arg j) I
-    := λ _, comp (id_e _ (I * I)) (π₂ I I).
+    := λ _, π₂ I I.
 
   (** The signature of the truncation as a HIT signature *)
   Definition truncation_signature
