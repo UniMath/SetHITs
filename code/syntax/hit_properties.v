@@ -80,6 +80,32 @@ Proof.
     apply (poly_dact_eq_dep _ Hx).
 Qed.
 
+(** Being a HIT is a proposition *)
+Definition isaprop_isahit
+           {Σ : hit_signature}
+           (H : set_algebra Σ)
+  : isaprop (is_a_HIT H).
+Proof.
+  apply invproofirrelevance.
+  intros H₁ H₂.
+  use funextsec.
+  intros Y.
+  use subtypeEquality.
+  {
+    intro.
+    use impred ; intro.
+    apply (pr1 Y).
+  }
+  use funextsec.
+  use (hit_ind_prop (H ,, H₁)).
+  - intro.
+    apply (pr1 Y).
+  - intros x Hx ; cbn in *.
+    rewrite (pr2 (H₁ Y)), (pr2 (H₂ Y)).
+    apply maponpaths.
+    apply (poly_dact_eq_dep _ Hx).
+Qed.
+
 (**
 HIT recursion.
  *)
