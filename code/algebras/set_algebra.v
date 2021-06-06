@@ -182,11 +182,11 @@ Definition algebra_map_eq
            (e : ∏ (x : alg_carrier X), alg_map_carrier f x = alg_map_carrier g x)
   : f = g.
 Proof.
-  use subtypeEquality.
+  use subtypePath.
   {
     intro ; exact isapropunit.
   }
-  use subtypeEquality.
+  use subtypePath.
   {
     intro ; simpl.
     apply SET.

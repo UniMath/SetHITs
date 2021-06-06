@@ -156,7 +156,7 @@ Proof.
     + exact (setoid_plus f g).
     + split ; reflexivity.
   - intros h.
-    use subtypeEquality.
+    use subtypePath.
     + intro.
       apply isapropdirprod ; apply setoid_cat.
     + use setoid_morphism_eq ; cbn.
@@ -236,7 +236,7 @@ Proof.
     + exact (setoid_pair f g).
     + split ; reflexivity.
   - intros h.
-    use subtypeEquality.
+    use subtypePath.
     + intro.
       apply isapropdirprod ; apply setoid_cat.
     + use setoid_morphism_eq ; cbn.
@@ -613,7 +613,7 @@ Proof.
   - use gradth.
     + exact (factor_idtoiso_3_inv X Y).
     + intros f.
-      use subtypeEquality.
+      use subtypePath.
       {
         intro.
         do 2 (use impred ; intro).
@@ -624,14 +624,14 @@ Proof.
           use funextsec ; intro.
           apply isaprop_setoid_eq.
       }
-      use subtypeEquality.
+      use subtypePath.
       {
         intro.
         apply isapropisweq.
       }
       reflexivity.
     + intros f.
-      use subtypeEquality.
+      use subtypePath.
       {
         intro.
         apply isaprop_is_iso.
@@ -654,7 +654,7 @@ Proof.
     + exact (idtoiso_setoid_cat X Y).
     + intros p.
       induction p.
-      use subtypeEquality.
+      use subtypePath.
       {
         intro.
         apply isaprop_is_iso.

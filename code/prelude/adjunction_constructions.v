@@ -66,7 +66,7 @@ Section AlgebraFunctor.
   - split.
     + unfold functor_idax ; simpl.
       intros X.
-      use subtypeEquality.
+      use subtypePath.
       {
         intro.
         unfold is_algebra_mor.
@@ -77,7 +77,7 @@ Section AlgebraFunctor.
       reflexivity.
     + unfold functor_compax ; simpl.
       intros X Y Z f g.
-      use subtypeEquality.
+      use subtypePath.
       {
         intro.
         unfold is_algebra_mor.
@@ -285,7 +285,7 @@ Section PreAlgebraAdjunction.
     : is_nat_trans _ _ lift_η_data.
   Proof.
     intros X Y f.
-    use subtypeEquality.
+    use subtypePath.
     {
       intro.
       apply Std.
@@ -314,7 +314,7 @@ Section PreAlgebraAdjunction.
     : is_nat_trans _ _ lift_ε_data.
   Proof.
     intros X Y f.
-    use subtypeEquality.
+    use subtypePath.
     {
       intro.
       apply St.
@@ -338,14 +338,14 @@ Section PreAlgebraAdjunction.
     - exact lift_ε.
     - split.
       + intro X.
-        use subtypeEquality.
+        use subtypePath.
         {
           intro.
           apply homset_property.
         }
         exact (pr12 adj (pr1 X)).
       + intro X.
-        use subtypeEquality.
+        use subtypePath.
         {
           intro.
           apply homset_property.
@@ -383,11 +383,11 @@ Definition factor_functor_is_functor
 Proof.
   split.
   - intros X.
-    use subtypeEquality.
+    use subtypePath.
     { intro ; apply isapropunit. }
     exact (functor_id F (pr1 X)).
   - intros X Y Z f g.
-    use subtypeEquality.
+    use subtypePath.
     { intro ; apply isapropunit. }
     exact (functor_comp F (pr1 f) (pr1 g)).
 Qed.
@@ -430,7 +430,7 @@ Section FactorFunctorAdjunction.
     : is_nat_trans _ _ factor_η_data.
   Proof.
     intros X Y f.
-    use subtypeEquality.
+    use subtypePath.
     {
       intro ; apply isapropunit.
     }
@@ -453,7 +453,7 @@ Section FactorFunctorAdjunction.
     : is_nat_trans _ _ factor_ε_data.
   Proof.
     intros X Y f.
-    use subtypeEquality.
+    use subtypePath.
     {
       intro ; apply isapropunit.
     }
@@ -476,11 +476,11 @@ Section FactorFunctorAdjunction.
     - exact factor_ε.
     - split.
       + intro X.
-        use subtypeEquality.
+        use subtypePath.
         { intro ; apply isapropunit. }
         apply adj.
       + intro X.
-        use subtypeEquality.
+        use subtypePath.
         { intro ; apply isapropunit. }
         apply adj.
   Defined.

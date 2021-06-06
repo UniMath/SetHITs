@@ -64,7 +64,7 @@ Definition hit_ind_unique
            (f g : disp_algebra_map X)
   : f = g.
 Proof.
-  use subtypeEquality.
+  use subtypePath.
   {
     intro.
     use impred ; intro.
@@ -90,7 +90,7 @@ Proof.
   intros H₁ H₂.
   use funextsec.
   intros Y.
-  use subtypeEquality.
+  use subtypePath.
   {
     intro.
     use impred ; intro.
@@ -153,9 +153,9 @@ Section HITUnique.
   Definition hit_map_eq
     : f₁ = f₂.
   Proof.
-    use subtypeEquality.
+    use subtypePath.
     { intro ; apply isapropunit. }
-    use subtypeEquality.
+    use subtypePath.
     { intro ; apply isaset_set_fun_space. }
     simpl.
     use funextsec.
