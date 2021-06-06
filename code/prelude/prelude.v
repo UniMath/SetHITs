@@ -325,7 +325,7 @@ Definition transportf_paths_2
   : transportf Y p₁ y₁ = transportf Y p₂ y₂.
 Proof.
   refine (!_).
-  apply transportf_transpose.
+  apply transportf_transpose_right.
   unfold transportb.
   rewrite transport_f_f.
   exact (!q).
@@ -353,7 +353,7 @@ Definition fiber_paths_b
            (p : u = v)
   : pr2 u = transportb (λ x, B x) (base_paths u v p) (pr2 v).
 Proof.
-  apply transportf_transpose.
+  apply transportf_transpose_right.
   unfold transportb.
   refine (_ @ fiber_paths p).
   apply transportf_paths.
