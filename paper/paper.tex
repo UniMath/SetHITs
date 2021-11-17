@@ -1,0 +1,1721 @@
+\documentclass[9pt]{entcs}
+
+\usepackage{entcsmacro}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+\usepackage{cleveref}
+\usepackage{listings}
+\usepackage{coq}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[all]{xy}
+
+\sloppy
+% The following is enclosed to allow easy detection of differences in
+% ascii coding.
+% Upper-case    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+% Lower-case    a b c d e f g h i j k l m n o p q r s t u v w x y z
+% Digits        0 1 2 3 4 5 6 7 8 9
+% Exclamation   !           Double quote "          Hash (number) #
+% Dollar        $           Percent      %          Ampersand     &
+% Acute accent  '           Left paren   (          Right paren   )
+% Asterisk      *           Plus         +          Comma         ,
+% Minus         -           Point        .          Solidus       /
+% Colon         :           Semicolon    ;          Less than     <
+% Equals        =3D           Greater than >          Question mark ?
+% At            @           Left bracket [          Backslash     \
+% Right bracket ]           Circumflex   ^          Underscore    _
+% Grave accent  `           Left brace   {          Vertical bar  |
+% Right brace   }           Tilde        ~
+
+
+\newenvironment{bprooftree}
+{\leavevmode\hbox\bgroup}
+{\DisplayProof\egroup}
+
+\crefname{lemma}{lemma}{lemmata}
+\Crefname{lemma}{lemma}{lemmata}
+
+\newtheorem{notation}[thm]{Notation}
+
+\newcommand{\ie}{\emph{i.e.,} }
+\newcommand{\cf}{\emph{c.f.} }
+\newcommand{\eg}{\emph{e.g.,} }
+\newcommand{\etal}{\emph{et~al.}}
+\newcommand{\etc}{\emph{etc.}}
+\newcommand{\wrt}{w.r.t.~}
+\newcommand{\resp}{resp.~}
+\newcommand{\loccit}{\emph{loc. cit.} }
+
+% Setting modes
+\newcommand{\type}[1]{\textsc{#1}}
+\newcommand{\term}[1]{\mathsf{#1}}
+\newcommand{\constructor}[1]{\mathbf{#1}}
+\newcommand{\category}[1]{\textsc{#1}}
+\newcommand{\functortxt}[1]{\mathsf{#1}}
+\newcommand{\nattranstxt}[1]{\mathsf{#1}}
+\newcommand{\function}[1]{\mathsf{#1}}
+\newcommand{\morphism}[1]{\mathsf{#1}}
+
+% HoTT
+\newcommand{\deprod}[3]{\prod(#1 : #2), #3} % dependent product
+%\newcommand{\deprod}[3]{\prod_{#1 : #2} #3} % dependent product
+\newcommand{\desum}[3]{\sum(#1 : #2), #3} % dependent sum
+%\newcommand{\desum}[3]{\sum_{#1 : #2} #3} % dependent sum
+\newcommand{\hset}{\type{hSet}} % sets
+\newcommand{\0}{\textbf{0}} % empty type
+\newcommand{\unitt}{\textbf{1}} % unit type
+\newcommand{\TT}{\constructor{tt}} % element of unit type
+\newcommand{\inl}{\term{inl}} %left inclusion
+\newcommand{\inr}{\term{inr}} % right inclusion
+\newcommand{\prl}{\term{pr}_1} % first projection
+\newcommand{\prr}{\term{pr}_2} % second projection
+\newcommand{\pairTm}[2]{(#1 , #2)} % pairing
+\newcommand{\weq}{\simeq} % equivalence
+\newcommand{\setquot}[2]{#1 / #2} % quotient type
+\newcommand{\transport}[2]{\function{transport}^{#1} \> #2} % transport
+\newcommand{\invP}[1]{#1^{-1}} % inverse of a path
+\newcommand{\classof}{\constructor{class}} % class construcor
+\newcommand{\classeq}{\constructor{classeq}} % path between classes
+\newcommand{\isaprop}[1]{\function{isaprop}(#1)} % a type is a set
+\newcommand{\isaset}[1]{\function{isaset}(#1)} % a type is a set
+\newcommand{\trunct}[1]{\lVert #1 \rVert} % propositional truncation
+\newcommand{\truncel}[1]{| #1 |} % constructor of truncation
+\newcommand{\depeq}[3]{#2 =_{#1} #3} % dependent equality type
+\newcommand{\Def}{:=} % symbol for definition
+
+% Category theory
+\newcommand{\idm}[1]{\morphism{id}_{#1}} % identity morphism
+\newcommand{\compm}[2]{#2 \circ #1} % composition of morphisms
+\newcommand{\iso}[2]{#1 \cong #2} % isomorphisms
+\newcommand{\setoids}{\category{Setoid}} % category of setoids
+\newcommand{\functor}[2]{#1 \longrightarrow #2} % functors
+\newcommand{\idf}[1]{\functortxt{id}_{#1}} % identity functor
+\newcommand{\Cf}[1]{\functortxt{C}_{#1}} % constant functor
+\newcommand{\compf}[2]{#2 \circ #1} % composition of functors
+\newcommand{\prodf}[2]{#1 \times #2} % product of functors
+\newcommand{\sumf}[2]{#1 + #2} % sum of functors
+\newcommand{\nattrans}[2]{#1 \Longrightarrow #2} % natural transfomations
+\newcommand{\ctrans}[1]{\nattranstxt{c}_{#1}} % constant transformation
+\newcommand{\constrt}[1]{\nattranstxt{constr}_{#1}} % constructor transformation
+\newcommand{\idt}[1]{\nattranstxt{id}} % identity transformation
+\newcommand{\compt}[2]{#2 \circ #1} % composition of natural transformations
+\newcommand{\lwhisker}[2]{#2 \vartriangleright #1} % whiskering of transformations
+\newcommand{\inlt}{\nattranstxt{inl}} %left inclusion of transformations
+\newcommand{\inrt}{\nattranstxt{inr}} % right inclusion of transformations
+\newcommand{\prlt}{\nattranstxt{pr}_1} % first projection of transformations
+\newcommand{\prrt}{\nattranstxt{pr}_2} % second projection of transformations
+\newcommand{\pairt}[2]{(#1 , #2)} % pairing of transformations
+\newcommand{\idtoiso}{\function{idtoiso}} % identity to iso
+\newcommand{\falg}[1]{\category{FAlg}(#1)} % category of algebras on a functor
+\newcommand{\adj}[2]{#1 \dashv #2} % adjunction
+\newcommand{\fullsub}[2]{\function{full}(#1,#2)} % full subcategory
+\newcommand{\factorsub}[1]{#1_{\function{sub}}} % factor through full sub
+
+% Polynomials
+\newcommand{\poly}{\mathcal{P}} % type of polynomials
+\newcommand{\C}{\constructor{C}} % constant polynomial
+\newcommand{\I}{\constructor{I}} % identity polynomial
+\newcommand{\sumP}[2]{#1 + #2} % sum of polynomials
+\newcommand{\prodP}[2]{#1 \times #2} % product of polynomials
+
+% Equivalence relations
+\newcommand{\pathR}[1]{\function{Path} \> #1} % path equivalence relation
+\newcommand{\sumR}[2]{#1 + #2} % sum of equivalence relations
+\newcommand{\prodR}[2]{#1 \times #2} % product of equivalence relations
+\newcommand{\polyR}[2]{\widehat{#1} \> #2} % action of polynomials on equivalence relations
+
+% Endpoints
+\newcommand{\ep}[3]{\mathcal{E}_{#1}(#2,#3)} % type of endpoinst
+\newcommand{\id}[1]{\constructor{id}_{#1}} % identity endpoints
+\newcommand{\comp}[2]{#1 \cdot #2} % composition of endpoints
+\newcommand{\inle}{\constructor{inl}} %left inclusion of endpoints
+\newcommand{\inre}{\constructor{inr}} % right inclusion of endpoints
+\newcommand{\prle}{\constructor{pr}_1} % first projection of endpoints
+\newcommand{\prre}{\constructor{pr}_2} % second projection of endpoints
+\newcommand{\pair}[2]{(#1 , #2)} % pairing of endpoints
+\newcommand{\Ce}{\constructor{c}} % constant endpoint
+\newcommand{\constr}{\constructor{constr}} % constructor endpoint
+\newcommand{\fmap}{\constructor{fmap}} % function endpoint
+
+% Signatures
+\newcommand{\pt}[0]{\textsf{pt}}
+\newcommand{\pthI}[0]{\textsf{pth}}
+\newcommand{\pthA}[0]{\textsf{arg}}
+\newcommand{\pthlh}[0]{\textsf{lhs}}
+\newcommand{\pthrh}[0]{\textsf{rhs}}
+\newcommand{\pointc}[1]{#1_{\pt}} % point constructor
+\newcommand{\pathI}[1]{#1_{\pthI}} % path constructor index
+\newcommand{\pathA}[1]{#1_{\pthA}} % path constructor index
+\newcommand{\pathlh}[1]{#1_{\pthlh}} % left endpoint of path constructor
+\newcommand{\pathrh}[1]{#1_{\pthrh}} % left endpoint of path constructor
+
+\newcommand{\comm}{\function{comm}} % remove
+\newcommand{\modsig}{\function{mod}} % signature for integers mod 2
+\newcommand{\trunc}{\function{trunc}} % signature for truncation
+\newcommand{\sig}{\mathcal{S}} % variable for signatures
+
+% Algebras
+\newcommand{\semP}[1]{\llbracket #1 \rrbracket} % semantics of polynomials
+\newcommand{\prealg}[1]{\category{PreAlg}_{\hset}(#1)} % category of prealgebras
+\newcommand{\forget}[1]{\functortxt{U}_{#1}} % forgetful functor
+\newcommand{\semE}[1]{\llbracket #1 \rrbracket} % semantics of endpoints
+
+\newcommand{\Alg}[1]{\category{Alg}_{\hset}(#1)} % category of algebras
+\newcommand{\constrA}[1]{\function{point}_{#1}} % point constructor of algebra
+\newcommand{\constrP}[1]{\function{path}_{#1}} % path constructor of algebra
+
+% Algebras in setoids
+\newcommand{\semPT}[1]{\langle #1 \rangle} % semantics of polynomials in setoids
+\newcommand{\semET}[1]{\langle #1 \rangle} % semantics of endpoints in setoids
+\newcommand{\prealgst}[1]{\category{PreAlg}_{\setoids}(#1)} % category of setoid prealgebras
+\newcommand{\Algst}[1]{\category{Alg}_{\setoids}(#1)} % category of algebras in setoids
+
+% Displayed algebras
+\newcommand{\polydact}[2]{\overline{#1} \> #2} % dependent action of polynomials on families
+\newcommand{\epdact}[2]{\overline{#1} \> #2} % dependent action of endpoints
+\newcommand{\polydmap}[2]{\overline{#1} \> #2} % action of polynomials on dependent maps
+\newcommand{\total}[1]{\int #1} % total algebra of displayed algebra
+\newcommand{\proj}[1]{\pi_1^{#1}} % projection homomorphism
+\newcommand{\Ppl}[1]{\pi_1^{#1}} % dependent second projection, poly_pr2
+\newcommand{\Ppr}[1]{\pi_2^{#1}} % dependent second projection, poly_pr2
+\newcommand{\Epl}{\function{epr_1}} % first projection of endpoint action
+\newcommand{\Epr}{\function{epr_2}} % first projection of endpoint action
+\newcommand{\constdisp}{\function{const}} % constant displayed algebra
+
+% Examples of HITs
+\newcommand{\Circ}{S^1} % circle
+\newcommand{\base}{\constructor{base}} % base point of circle
+\newcommand{\loopS}{\constructor{loop}} % base point of circle
+\newcommand{\modZ}{\mathbb{Z}_2} % integers modulo 2
+\newcommand{\ZZ}{\constructor{Z}} % zero
+\newcommand{\SZ}{\constructor{S}} % successor
+\newcommand{\modP}{\constructor{mod}} % n = n + 2
+\newcommand{\setZ}{\constructor{Ztrunc}} % mod 2 is a set
+\newcommand{\HIT}{\function{HIT}} % the HIT of a signature
+
+% Adjunction
+\newcommand{\quotF}{\mathcal{Q}}
+\newcommand{\pathF}{\pi_0}
+\newcommand{\quotPA}{\mathcal{Q}^{\category{PreAlg}}}
+\newcommand{\pathPA}{\pi^{\category{PreAlg}}_0}
+\newcommand{\quotAA}{\mathcal{Q}^{\category{Alg}}}
+\newcommand{\pathAA}{\pi_0^{\category{Alg}}}
+
+% Free congruence
+\newcommand{\CRC}{\mathcal{X}} % carrier
+\newcommand{\CR}{\mathcal{R}^*} % relation
+\newcommand{\CRR}{\mathcal{R}} % relation
+\newcommand{\CRrefl}{\constructor{refl}} % reflexivity
+\newcommand{\CRsym}{\constructor{sym}} % symmetry
+\newcommand{\CRtrans}{\constructor{trans}} % transitivity
+\newcommand{\CRpair}{\constructor{pair}} % pair
+\newcommand{\CRinl}{\constructor{inl}} % in left
+\newcommand{\CRinr}{\constructor{inr}} % in right
+\newcommand{\CRpath}{\constructor{path}} % path constuctors
+\newcommand{\CRcong}{\constructor{cong}} % congruence
+
+\newcommand{\remove}[1]{} % remove a part
+
+\def\lastname{Van der Weide, Geuvers}
+\begin{document}
+\begin{frontmatter}
+  \title{The Construction of Set-Truncated Higher Inductive Types} \author{Niels van der Weide
+		\thanksref{ALL}\thanksref{myemail}}
+  \address{Institute for Computation and Information Sciences\\ Radboud Universiteit\\
+  	Nijmegen, The Netherlands}
+  \author{Herman Geuvers\thanksref{coemail}}
+  \address{Institute for Computation and Information Sciences\\ Radboud Universiteit\\
+  	Nijmegen, The Netherlands}
+  \thanks[ALL]{The authors would like to thank Dan Frumin and Andrej Bauer for inspiring discussions. The authors also thank the reviewers for their helpful comments to improve the readability of this paper. Work on this article was supported by a grant from the \href{https://eutypes.cs.ru.nl/}{COST Action EUTypes CA15123}.} \thanks[myemail]{Email:
+  	\href{mailto:nweide@cs.ru.nl} {\texttt{\normalshape
+  			nweide@cs.ru.nl}}} \thanks[coemail]{Email:
+  	\href{mailto:herman@cs.ru.nl} {\texttt{\normalshape
+  			herman@cs.ru.nl}}}
+\begin{abstract} 
+  We construct finitary set-truncated higher inductive types (HITs) from quotients and the propositional truncation.
+  For that, we first define signatures as a modification of the schema by Basold \etal, and we show they give rise to univalent categories of algebras in both sets and setoids.
+  To interpret HITs, we use the well-known method of initial algebra semantics.
+  The desired algebra is obtained by lifting the quotient adjunction to the level of algebras and adapting Dybjer's and Moeneclaey's interpretation of HITs in setoids.
+  From this construction, we conclude that the equality types of HITs are freely generated and that HITs are unique.
+  The results are formalized in the UniMath library.
+\end{abstract}
+\begin{keyword}
+higher inductive types, homotopy type theory, category theory, setoids, intuitionistic type theory, Coq
+\end{keyword}
+\end{frontmatter}
+\section{Introduction}
+\label{intro}
+Homotopy type theory (HoTT) is a form of intensional type theory. 
+It has semantics in the simplicial sets model \cite{simpset}, and types represent spaces, terms represent points, and equalities represent paths, and so on.
+Furthermore, equality is proof relevant and we frequently talk about homotopies: paths between paths.
+
+One of the main features of HoTT is higher inductive types (HITs) \cite{hottbook}.
+These are types generated by constructors for their points, paths, homotopies, and so on.
+HITs have been used in numerous applications among which are homotopical patch theory \cite{AngiuliMLH16}, synthetic homotopy theory \cite{LicataF14,LicataS13,hottbook}, defining type theory within type theory \cite{AltenkirchK16,DBLP:journals/lmcs/AltenkirchK17}, constructive finiteness \cite{FruminGGW18}, and the partiality monad \cite{AltenkirchDK17}.
+To get a feeling for what HITs are, let us look at some examples.
+
+\lstset{language=Coq}
+\setlength{\tabcolsep}{30pt}	
+\begin{tabular}{ c c c }
+
+\begin{lstlisting}[mathescape=true]
+Inductive $\Circ$ :=
+| $\base$ : $\Circ$
+| $\loopS$ : $\base = \base$
+\end{lstlisting}
+&
+\begin{lstlisting}[mathescape=true]
+Inductive $\trunct{A}$ :=
+| $\truncel{\cdot}$ : $A \rightarrow \trunct{A}$
+| $p$ : $\deprod{x, y}{\trunct{A}}{x = y}$
+\end{lstlisting}
+&
+\begin{lstlisting}[mathescape=true]
+Inductive $\modZ$ :=
+| $\ZZ$ : $\modZ$
+| $\SZ$ : $\modZ \rightarrow \modZ$
+| $\modP$ : $\deprod{x}{\modZ}{\SZ(\SZ \> x) = x}$
+| $\setZ$ : $\isaset{\modZ}$
+\end{lstlisting}
+\end{tabular}
+
+The first one, $\Circ$, is the \emph{circle}.
+It has a point $\base$ and a path $\loopS : \base = \base$.
+Since neither the point nor path constructors uses arguments from $\Circ$, this HIT is \emph{non-recursive}.
+The second, $\trunct{A}$, is the \emph{propositional truncation} of $A$.
+This type is $A$ with all its points identified.
+Note that the path constructor $p$ uses arguments from $\trunct{A}$, which means this HIT is \emph{recursive}.
+The last one, $\modZ$, is the \emph{integers modulo 2} and note that both the point constructor $\SZ$ and path constructor $\modP$ are recursive.
+A HIT is called \emph{finitary} if its point constructor is described by a finitary polynomial and it is called \emph{set-truncated} if it is a set.
+
+In this paper, we show that all finitary set-truncated HITs can be constructed with quotients and propositional truncations. 
+This briefly means that all higher inductive types exist if a small number of simple ones exist.
+The main idea of the proof is to take advantage that the quotient is left adjoint functor from setoids to sets \cite{RijkeS15}.
+To relate this to HITs, we first define schemes, which are an internalized version of the schema by Basold \etal \ \cite{BasoldGW17}, and categories of algebras on them.
+Then we lift the quotient adjunction to an adjunction from algebras in setoids to algebras in sets.
+Since initiality implies induction, it suffices to construct the initial setoid algebra for which we adapt the construction by Dybjer and Moeneclaey \cite{DybjerM18,moeneclaey2016schema}.
+Note that from our construction we can conclude that all finitary set-truncated HITs can be constructed from non-recursive ones.
+Since quotients can be constructed from coequalizers and set truncations, we only need coequalizers and propositional/set truncations for this construction \cite{rijke2017join}.
+
+\subsection{Background and Related Work}
+The HITs we study in this paper, are set-truncated and recursion is allowed for both the point and path constructors.
+It is a variation of the scheme by Basold \etal \ \cite{BasoldGW17}, which does not allow constructors for higher paths.
+Other schemata of higher inductive types have already been defined.
+\emph{W-suspensions}, developed by Sojakova \cite{Sojakova15}, allow defining HITs without recursive constructors, but these are not necessarily truncated.
+The scheme by Dybjer and Moenclaey is similar to the one by Basold \etal, as it allows recursion for both the points and paths, but in addition, it supports constructors for homotopies.
+Since types are $\omega$-groupoids \cite{van2011types,lumsdaine2009weak}, a type-theoretical version of these also provide a semantic specification of HITs \cite{DBLP:conf/tlca/HirschowitzHT15}.
+At the moment, the definition which encompasses all these options, are higher inductive-inductive types (HIITs) \cite{KaposiK18} where induction-induction and paths in arbitrary dimensions are permitted.
+These are a generalization of quotient inductive-inductive types (QIITs) developed by Altenkirch \etal \ \cite{AltenkirchCDKF18}.
+Furthermore, Cavallo and Harper extend computational cubical type theory with a scheme for indexed cubical inductive types \cite{AngiuliHW17,CavalloH19}.
+
+In addition to the schemata, some meta theory also has been developed.
+Here we internally provide initial algebra semantics for our scheme meaning that we show initial implies induction.
+Awodey \etal \ showed a stronger result for inductive types in intensional type theory \cite{AwodeyGS12,dybjer1994inductive}, namely that initiality is equivalent to induction, and Sojakova proved this for W-suspensions \cite{Sojakova15}.
+For QIITs, initial algebra semantics has also been given \cite{AltenkirchCDKF18}.
+Beside initial algebra semantics, Cavallo and Harper shows that computational cubical type theory, with cubical inductive types, satisfies canonicity \cite{AngiuliHW17,CavalloH19}.
+
+The main result of this paper is about constructing a class of higher inductive types from simple ones.
+Both Kraus and Van Doorn show that the propositional truncation can be constructed from non-recursive HITs \cite{Kraus16,Doorn16} and Rijke shows that every truncation can be constructed via non-recursive HITs \cite{rijke2017join}.
+Note that these all are about truncations instead of a more general scheme.
+However, contrary to our result, they do not rely on the restriction to set-truncated types.
+Kaposi \etal \ \cite{KaposiKA19} show that can finitary QIITs can be constructed from one specific QIIT, but their construction relies on UIP.
+From our construction, we deduce that the path space of each HIT is freely generated.
+Kraus and Von Raumer obtained a similar property for the coequalizer by providing a nicer induction principle for its path types \cite{KrausRaumer}.
+
+Reducing the existence of HITs to the existence of a small number of them, gives an approach to defining the semantics of HITs.
+Other approaches to this problem have also been considered.
+Coquand \etal \ interpret various higher inductive types, such as spheres, the torus, the truncation, and the pushout, in cubical type theory \cite{BezemCH13,CohenCHM16,CoquandHM18}.
+All of these examples are not set-truncated and thus not covered by our scheme.
+On the other hand, Lumsdaine and Shulman also study the semantics of higher inductive types using a semantic scheme (cell monads with parameters) and they prove existence in sufficiently nice Quillen model categories \cite{lumsdaine2017semantics}.
+Dybjer and Moeneclaey give an interpretation of their scheme in the groupoid model \cite{DybjerM18,HofmannS94}.
+
+\subsection{Overview}
+We start in \Cref{sec:prelim} by recalling some definitions from HoTT and category theory required for the remainder of the paper.
+In \Cref{sec:signature}, we define signatures for higher inductive types and give a couple of examples.
+Next we define algebras in both the categories of sets and setoids for such signatures in \Cref{sec:algebras}.
+We define the induction principle of HITs via displayed algebras in \Cref{sec:induction} and we show that initial objects satisfy this principle.
+\Cref{sec:construction} contains the main result of this paper and there we construct an adjunction between algebras in sets and setoids, and we use it to construct the initial algebra in sets via the initial algebra in setoids.
+We study the consequences of this construction in \Cref{sec:consequences} and in \Cref{sec:conclusion}, we conclude and discuss further work.
+
+All material in this paper are formalized over the UniMath library \cite{UniMath}.
+The proof of the main theorem is 4060 lines of code and the additional examples are 3278 lines of code.
+The formalization can be found on \url{https://github.com/nmvdw/SetHITs}.
+
+\section{Preliminaries}
+\label{sec:prelim}
+We start by recalling some definitions and notations from homotopy type theory and the basics of category theory in HoTT \cite{AhrensKS15,mac2013categories,hottbook}.
+The first notion we need, is the \emph{dependent equality type}.
+
+\begin{definition}
+\label{def:depeq}
+Given a type $X$, inhabitants $x, y : X$, a type family $Y$ on $X$, and a path $p : x = y$, we define by path induction a function $\transport{Y}{p} : Y \> x \rightarrow Y \> y$, which is the identity function for the reflexivity path. 
+If we have a path $p : x = y$ and inhabitants $z_1 : Y \> x$ and $z_2 : Y \> y$, we write $\depeq{p}{z_1}{z_2}$ for $\transport{Y}{p} \ z_1 = z_2$.
+\end{definition}
+
+One of the core features of HoTT, is that equality is proof relevant.
+This means that not all inhabitants of $x = y$ are necessarily equal.
+Some types might actually have proof irrelevant equality, and we call such types \emph{sets}.
+More precisely, we define
+
+\begin{definition}
+\label{def:prop}
+\label{def:set}
+A type $X$ is a \emph{(mere) proposition} if for all $x, y : X$ we have $x = y$.
+A type $X$ is a \emph{set} if for all $x, y : X$ the type $x = y$ is a proposition.
+We write $\isaprop{X}$ and $\isaset{X}$ to say that $X$ is a proposition and set respectively.
+\end{definition}
+
+Our goal is to construct all higher inductive types from two specific ones, namely the \emph{quotient type} and the \emph{propositional truncation}.
+We only give their introduction rules here, and for their elimination and computation rules, we refer the reader to the literature \cite{hottbook}.
+
+\begin{definition}
+\label{def:quot}
+Let $X$ be a type and let $R$ be an equivalence relation on $X$.
+The \emph{quotient type} $\setquot{X}{R}$ is the higher inductive type generated by
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$x : X$}
+\UnaryInfC{$\classof \> x : \setquot{X}{R}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$x, y : X$}
+\AxiomC{$r : R \> x \> y$}
+\BinaryInfC{$\classeq \> r : \classof \> x = \classof \> y$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\isaset{\setquot{X}{R}}$}
+\end{bprooftree}
+\end{center}
+\end{definition}
+
+\begin{definition}
+\label{def:trunc}
+Let $X$ be a type.
+The \emph{propositional truncation} $\trunct{X}$ is the higher inductive type generated by
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$x : X$}
+\UnaryInfC{$\truncel{x} : \trunct{X}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\isaprop{\trunct{X}}$}
+\end{bprooftree}
+\end{center}
+\end{definition}
+
+Next we briefly discuss category theory in univalent foundations \cite{AhrensKS15,hottbook}.
+We start by recalling the definition of categories.
+This is almost the same as the usual definition in mathematics, but there is a slight discrepancy between the objects and arrows.
+While the objects can be any type, the arrows have to form a set.
+Proof relevant equality on arrows would induce the structure of a higher category instead of an ordinary one.
+
+\begin{definition}
+\label{def:cat}
+A \emph{category} $\mathcal{C}$ consists of a type $\mathcal{C}_0$ of objects and a set $X \rightarrow Y$ of morphisms for each $X, Y : \mathcal{C}_0$ together with identity morphisms $\idm{X} : X \rightarrow X$ for each $X : \mathcal{C}_0$ and a compositions $\compm{f}{g} : X \rightarrow Z$ for all mophisms $f : X \rightarrow Y$ and $g : Y \rightarrow Z$ such that the usual associativity and identity laws holds.
+\end{definition}
+
+\remove{
+\begin{definition}
+A \emph{category} $\mathcal{C}$ consists of
+\begin{itemize}
+	\item a type $\mathcal{C}_0$ of objects;
+	\item for each $X, Y : \mathcal{C}_0$ a set $X \rightarrow Y$ of morphisms;
+	\item for each $X : \mathcal{C}_0$ a morphisms $\idm{X}$;
+	\item for all objects $X, Y, Z : \mathcal{C}_0$ and morphisms $f : X \rightarrow Y$ and $g : Y \rightarrow Z$, a morphism $\compm{f}{g} : X \rightarrow Z$
+\end{itemize}
+such that the usual associativity and identity laws holds.
+\end{definition}
+}
+
+We define isomorphisms in categories the usual way and we denote the type of isomorphisms from $X$ to $Y$ by $\iso{X}{Y}$.
+In the remainder, we also make use of \emph{univalent categories}.
+These are categories in which equality on objects is equivalent to isomorphisms between them.
+For the definition of equivalence of equivalences, we refer the reader to the literature \cite{hottbook}.
+More precisely, we define
+
+\begin{definition}
+\label{def:univalent}
+Let $\mathcal{C}$ be a category.
+Note that for all objects $X$ and $Y$ we have a map $\idtoiso_{X,Y} : X = Y \rightarrow \iso{X}{Y}$ sending the reflexivity path to the identity isomorphism.
+Then we say $\mathcal{C}$ is \emph{univalent} if $\idtoiso_{X,Y}$ is an equivalence for each $X$ and $Y$.
+\end{definition}
+
+The primary example of a univalent category is $\hset$, whose objects are sets and morphisms are functions.
+Another example of a univalent category which we use frequently, is the category of \emph{setoids}.
+
+\begin{definition}
+\label{def:setoid}
+A \emph{setoid} is a set $X$ together with an equivalence relation on $X$.
+A \emph{setoid morphism} between two setoids  is a map between the underlying sets which preserves the equivalence relation.
+The \emph{category $\setoids$ of setoids} is the category with setoids and setoid morphisms as objects and morphisms.
+\end{definition}
+
+\remove{
+\begin{definition}
+We define
+\begin{itemize}
+	\item A \emph{setoid} is a set $X$ together with an equivalence relation on $X$;
+	\item A \emph{setoid morphism} between two setoids  is a map between the underlying sets which preserves the equivalence relation.
+\end{itemize}
+The \emph{category of setoids} $\setoids$ is the category with setoids and setoid morphisms as objects and morphisms.
+\end{definition}
+}
+
+Recall that, If $R$ is an equivalence relation on $X$, each $R \> x \> y$ has to be a proposition.
+Note that in the usual category of setoids, one would take a quotient of the setoid morphisms.
+However, we refrain to do so, because in our construction, we do not need any additional equality.
+If $X$ is a set and $R$ is an equivalence relation on $X$, then we write $(X, R)$ for the setoid with this data.
+If no confusion arises, we write $x \equiv y$ for $R \> x \> y$.
+
+We finish this section by giving some operations of functors and natural transformations, which we need in Definition \ref{def:semendpoint}.
+Functors and natural transformations are defined the usual way \cite{mac2013categories}, and we write $\functor{\mathcal{C}}{\mathcal{D}}$ and $\nattrans{F}{G}$ for the type of functors from $\mathcal{C}$ to $\mathcal{D}$ and transformations from $F$ to $G$ respectively.
+
+\begin{notation}
+\label{def:functor}
+We have the following functors.
+\begin{itemize}
+	\item For each category $\mathcal{C}$, we have the identity $\idf{\mathcal{C}} : \functor{\mathcal{C}}{\mathcal{C}}$.
+	\item For $F : \functor{\mathcal{C}_1}{\mathcal{C}_2}$ and $G : \functor{\mathcal{C}_2}{\mathcal{C}_3}$, we have a composition $\compf{F}{G} : \functor{\mathcal{C}_1}{\mathcal{C}_3}$;
+	\item If $\mathcal{D}$ has binary products, then for $F, G : \functor{\mathcal{C}}{\mathcal{D}}$, we have a product $\prodf{F}{G} : \functor{\mathcal{C}}{\mathcal{D}}$;
+	\item If $\mathcal{D}$ has binary sums, then for $F, G : \functor{\mathcal{C}}{\mathcal{D}}$, we have a sum $\sumf{F}{G} : \functor{\mathcal{C}}{\mathcal{D}}$;
+	\item For each object $X : \mathcal{D}$, we have a constant functor $\Cf{X} : \functor{\mathcal{C}}{\mathcal{D}}$.
+\end{itemize}
+\end{notation}
+
+\begin{notation}
+\label{def:nattrans}
+We have the following natural transformations.
+\begin{itemize}
+	\item Given $F, G : \functor{\mathcal{C}}{\mathcal{D}}$, we have
+	\[
+	\inlt : \nattrans{F}{\sumf{F}{G}}
+	\quad \quad
+	\inrt : \nattrans{G}{\sumf{F}{G}}
+	\quad \quad
+	\prlt : \nattrans{\prodf{F}{G}}{F}
+	\quad \quad
+	\prrt : \nattrans{\prodf{F}{G}}{G}
+	\]
+	\item Given two transformations $\eta_1 : \nattrans{\compf{F}{G_1}}{\compf{F}{G_2}}$ and $\eta_2 : \nattrans{\compf{F}{G_1}}{\compf{F}{G_3}}$, we have a pairing 
+	\[
+	\pairt{\eta_1}{\eta_2} : \nattrans{\compf{F}{G_1}}{\compf{F}{\prodf{G_2}{G_3}}}.
+	\]
+	\item Given functors $F : \functor{\mathcal{C}_1}{\mathcal{C}_2}$ and $G_1. G_2 : \functor{\mathcal{C}_2}{\mathcal{C}_3}$, and a transformation $\eta : \nattrans{G_1}{G_2}$, we have
+	\[
+	\lwhisker{F}{\eta} : \nattrans{\compf{F}{G_1}}{\compf{F}{G_2}}
+	\]
+	\item Given a functor $F : \functor{\mathcal{C}}{\hset}$, a set $X : \hset$, and $x : X$, we have a transformation $\ctrans{x} : \nattrans{F}{\Cf{X}}$
+\end{itemize}
+\end{notation}
+
+The type of $\pairt{\eta_1}{\eta_2}$ might seem unnatural.
+However, it is precisely this type we need for the constructions in Definition \ref{def:semendpoint}..
+
+\section{Signature of HITs}
+\label{sec:signature}
+Before we study the construction of set truncated HITs, we first give a precise definition of those.
+We describe HITs by saying how to construct points and paths.
+For example, the integers modulo 2, which we considered in the introduction, has two constructors for points, namely $\ZZ$ ad $\SZ$, and one for the paths, namely $\modP$.
+The signature of this type would thus indicate that we have one nullary and one unary operation, and a path of the required type.
+In this section, we define a type of signatures as internalized variation of the one by Basold \etal \ \cite{BasoldGW17}, and then in the upcoming sections, we define HITs for a signature.
+
+The first ingredient of the signature, is the arity of the point constructor.
+This is described by a \emph{finitary polynomial functor}, and we define those as the following type.
+
+\begin{definition}
+\label{def:poly}
+We define the type $\mathcal{\poly}$ of \emph{codes of finitary polynomials} as the inductive type generated by the following constructors.
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$X : \hset$}
+\UnaryInfC{$\C \> X : \poly$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\I : \poly$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$Q : \poly$}
+\BinaryInfC{$\sumP{P}{Q} : \poly$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$Q : \poly$}
+\BinaryInfC{$\prodP{P}{Q} : \poly$}
+\end{bprooftree}
+\end{center}
+\end{definition}
+
+In the next section, we show that each code $P : \poly$ gives rise to a functor $\semP{P} : \functor{\hset}{\hset}$.
+Each higher inductive type $H$ has a point constructor $c : \semP{P} \> H \rightarrow H$, which represents the introduction rule for points.
+
+HITs also have an introduction rule for paths, and for those, we need to give the possible endpoints of paths.
+Each path is given by a universally quantified equation, which can possibly make use of the point constructor.
+For this reason, the type of endpoint must depend on the data of the point constructor.
+We also indicate the source and target of the equation, and both of them depend polynomially on the HIT being defined.
+The type of endpoints is defined inductively.
+
+\begin{definition}
+\label{def:endpoint}
+Given polynomials, $A, P, Q : \poly$, the type $\ep{A}{P}{Q}$ of \emph{endpoints} is inductively generated by the following constructors.
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\UnaryInfC{$\id{A} : \ep{A}{P}{P}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q, R : \poly$}
+\AxiomC{$e_1 : \ep{A}{P}{Q}$}
+\AxiomC{$e_2 : \ep{A}{Q}{R}$}
+\TrinaryInfC{$\comp{e_1}{e_2} : \ep{A}{P}{R}$}
+\end{bprooftree}
+\end{center}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\inle : \ep{A}{P}{\sumP{P}{Q}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\inre : \ep{A}{Q}{\sumP{P}{Q}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\prle : \ep{A}{\prodP{P}{Q}}{P}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\prre : \ep{A}{\prodP{P}{Q}}{Q}$}
+\end{bprooftree}
+\end{center}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\constr : \ep{A}{A}{\I}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$X : \hset$}
+\AxiomC{$x : X$}
+\TrinaryInfC{$\Ce \> x : \ep{A}{P}{\C \> X}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q, R: \poly$}
+\AxiomC{$e_1 : \ep{A}{P}{Q}$}
+\AxiomC{$e_2 : \ep{A}{P}{R}$}
+\TrinaryInfC{$\pair{e_1}{e_2} : \ep{A}{P}{\prodP{Q}{R}}$}
+\end{bprooftree}
+\end{center}
+\end{definition}
+
+In the formalization, we also include for each $f : X \rightarrow Y$ an endpoint $\fmap \> f : \ep{A}{\C \> X}{\C \> Y}$, which we do not discuss here.
+The polynomial $A$ represents the point constructor and that explains the endpoint $\constr$.
+The polynomials $P$ and $Q$ represent the source and target of the equation respectively.
+If we have a set $X$ with a map $c : \semP{A} \> X \rightarrow X$, each endpoint $e : \ep{A}{P}{Q}$ gives rise to a natural morphism from the functor $\semP{P}$ to $\semP{Q}$ where $\constr$ is interpreted using $c$.
+These maps are the left- and right-hand side of  the equations.
+
+Now we put it all together to define signatures of HITs.
+Note that we index the path constructors by a type meaning that we could possibly have infinitely many path constructors.
+
+\begin{definition}
+\label{def:signature}
+A \emph{HIT signature} $\sig$ consists of
+\begin{itemize}
+	\item A polynomial $\pointc{\sig} : \poly$ representing the point constructor;
+	\item A type $\pathI{\sig}$ representing the names of path constructors;
+	\item A family $\pathA{\sig} : \pathI{\sig} \rightarrow \poly$ representing the arguments of the paths;
+	\item Maps $\pathlh{\sig}, \pathrh{\sig} : \deprod{j}{\pathI{\sig}}{\ep{\pointc{\sig}}{\pathA{\sig} \> j}{\I}}$ representing the left- and right-hand side of the equations.
+\end{itemize}
+\end{definition}
+
+Briefly, the signature $\sig$ represents the following HIT
+
+\begin{lstlisting}[mathescape=true]
+Inductive $H$ :=
+| $\constructor{c}$ : $\semP{\pointc{\sig}} \> H \rightarrow H$
+| $\constructor{p}$ : $\deprod{j}{\pathI{\sig}}{\deprod{x}{\semP{\pathA{\sig} \> j} \> H}{\semE{\pathlh{\sig} \> j} \> H \> x = \semE{\pathrh{\sig} \> j} \> H \> x}}$
+| $\constructor{s}$ : $\isaset{H}$
+\end{lstlisting}
+
+Since our goal is to interpret set-truncated HITs, we require the constructor $s$.
+To illustrate the possibilities of this definition, we define two examples from the introduction as HIT signatures.
+The first one is the integers modulo 2 and the second one is the propositional truncation of a set.
+
+\begin{example}
+\label{ex:modsig}
+Recall $\modZ$ from the introduction.
+We represent it by the signature $\modsig$ defined as follows
+\[
+\pointc{\modsig} \Def \sumP{\I}{(\C \> \unitt)}
+\quad \quad \quad
+\pathI{\modsig} \Def \unitt
+\quad \quad \quad
+\pathA{\modsig} \Def \I\]
+\[
+\pathlh{\modsig} \> j \Def \comp{\comp{\comp{\inle}{\constr}}{\inle}}{\constr}
+\quad \quad \quad
+\pathrh{\modsig} \> j \Def \id{\I}
+\]
+\remove{
+\begin{itemize}
+	\item $\pointc{\modsig} \Def \sumP{\I}{(\C \> \unitt)}$;
+	\item $\pathI{\modsig} \Def \unitt$;
+	\item $\pathA{\modsig} \Def \I$;
+	\item $\pathlh{\modsig} \> j \Def \comp{\comp{\comp{\inle}{\constr}}{\inle}}{\constr}$;
+	\item $\pathrh{\modsig} \> j \Def \id{\I}$;
+\end{itemize}
+}
+\end{example}
+
+Intuitively, this signature represents a HIT $H$ with operation $H + \unitt \rightarrow H$ representing the successor and zero.
+Note that the endpoint $\comp{\inle}{\constr}$ takes the successor, so, the equation says that $S(S \> x) = x$ for all $x : X$.
+Since signatures can depend on types, we can also define the propositional truncation.
+
+\begin{example}
+\label{ex:truncsig}
+Let $A$ be a set.
+We represent its truncation by the following signature.
+\[
+\pointc{\trunc} \Def \C \> A
+\quad \quad \quad
+\pathI{\trunc} \Def \unitt
+\quad \quad \quad
+\pathA{\trunc} \Def \prodP{\I}{\I}
+\]
+\[
+\pathlh{\trunc} \> j \Def \prle
+\quad \quad \quad
+\pathrh{\trunc} \> j \Def \prre
+\]
+\remove{
+\begin{itemize}
+	\item $\pointc{\trunc} \Def \C \> A$;
+	\item $\pathI{\trunc} \Def \unitt$;
+	\item $\pathA{\trunc} \Def \prodP{\I}{\I}$;
+	\item $\pathlh{\trunc} \> j \Def \prle$;
+	\item $\pathrh{\trunc} \> j \Def \prre$;
+\end{itemize}
+}
+\end{example}
+
+Other examples, such as the integers, free algebras, and the ring of polynomials, can be found in the formalization.
+This signature represents a HIT $H$ with a map $A \rightarrow H$ and for which all inhabitants are equal, which is precisely the propositional truncation from Definition \ref{def:trunc} for sets $A$.
+
+\section{Algebras}
+\label{sec:algebras}
+
+\subsection{Algebras in Sets}
+To define HITs on a signature, we need to give the introduction, elimination, and compuation rules.
+Let us start with the introduction rule, which we define via algebras.
+Note that this rule comes in two flavors: one for the points and one forthe paths.
+For this reason, we define algebras in two steps. 
+
+We start by saying how to interpret the point constructors.
+
+\begin{definition}
+\label{def:sempoly}
+For each $P : \poly$, we define a functor $\semP{P} : \functor{\hset}{\hset}$ as follows
+\[
+\semP{\C \> X} \Def \Cf{X}
+\quad \quad \quad
+\semP{\I} \Def \idf{\hset}
+\quad \quad \quad
+\semP{\sumP{P}{Q}} \Def \sumf{\semP{P}}{\semP{Q}}
+\quad \quad \quad
+\semP{\prodP{P}{Q}} \Def \prodf{\semP{P}}{\semP{Q}}
+\]
+\remove{
+\begin{itemize}
+	\item $\semP{\C \> X} \Def \Cf{X}$;
+	\item $\semP{\I} \Def \idf{\hset}$;
+	\item $\semP{\sumP{P}{Q}} \Def \sumf{\semP{P}}{\semP{Q}}$;
+	\item $\semP{\sumP{P}{Q}} \Def \prodf{\semP{P}}{\semP{Q}}$.
+\end{itemize}
+}
+\end{definition}
+
+We write $\falg{F}$ for the category of algebras on the functor $F : \functor{\mathcal{C}}{\mathcal{C}}$.
+Its objects are pairs $X : \mathcal{C}$ together with an arrow $\mathcal{C}_1(F \> X, X)$.
+The morphisms from $(X, f)$ to $(Y, g)$ consist of maps $h : \mathcal{C}_1(X,Y)$ such that $h \circ f = g \circ F(h)$.
+Note that we always have a forgetful functor $\forget{F} : \functor{\falg{F}}{\mathcal{C}}$.
+
+Now we define the category $\prealg{\sig}$ to be $\falg{\semP{\pointc{\sig}}}$.
+Since the objects do not satisfy the equations in $\sig$, we call this the category of \emph{prealgebras}.
+To obtain actual algebras of $\sig$, we need to interpret the equations.
+For that, we first give a semantics of endpoints as natural transformations, which are defined using the transformations from Lemma \ref{def:nattrans}.
+Besides, we use for each polynomial $P$ the transformation $\constrt{P} : \nattrans{\compf{\forget{P}}{\semP{P}}}{\compf{\forget{P}}{\semP{\I}}}$ whose  components are given by the prealgebra map.
+
+\begin{definition}
+\label{def:semendpoint}
+For each endpoint $e : \ep{A}{P}{Q}$, we define a natural transformation $\semE{e} : \nattrans{\compf{\forget{A}}{\semP{P}}} {\compf{\forget{A}}{\semP{Q}}}$
+\[
+\semE{\id{P}} \Def \idt{\compf{\forget{A}}{\semP{P}}}
+\quad \quad \quad
+\semE{\comp{e_1}{e_2}} \Def \compt{\semE{e_1}}{\semE{e_2}}
+\quad \quad \quad
+\semE{\inle} \Def \lwhisker{\forget{A}}{\inlt}
+\quad \quad \quad
+\semE{\inre} \Def \lwhisker{\forget{A}}{\inrt}
+\quad \quad \quad
+\semE{\Ce \> t} \Def \ctrans{t}
+\]
+\[
+\semE{\prle} \Def \lwhisker{\forget{A}}{\prlt}
+\quad \quad \quad
+\semE{\prre} \Def \lwhisker{\forget{A}}{\prrt}
+\quad \quad \quad
+\semE{\pair{e_1}{e_2}} \Def \pairt{\semE{e_1}}{\semE{e_2}}
+\quad \quad \quad
+\semE{\constr} \Def \constrt{A}
+\]
+\remove{
+\begin{itemize}
+	\item $\semE{\id{P}} \Def \idt{\compf{\forget{A}}{\semP{P}}}$;
+	\item $\semE{\comp{e_1}{e_2}} \Def \compt{\semE{e_1}}{\semE{e_2}}$;
+	\item $\semE{\inle} \Def \lwhisker{\forget{A}}{\inlt}$;
+	\item $\semE{\inre} \Def \lwhisker{\forget{A}}{\inrt}$;
+	\item $\semE{\prle} \Def \lwhisker{\forget{A}}{\prlt}$;
+	\item $\semE{\prre} \Def \lwhisker{\forget{A}}{\prrt}$;
+	\item $\semE{\pair{e_1}{e_2}} \Def \pairt{\semE{e_1}}{\semE{e_2}}$;
+	\item $\semE{\Ce \> t} \Def \ctrans{t}$;
+	\item $\semE{\constr} \Def \constrt{A}$.
+\end{itemize}
+}
+\end{definition}
+
+Note that $\semE{\constr}$ is required to have type $\nattrans{\compf{\forget{P}}{\semP{P}}}{\compf{\forget{P}}{\semP{\I}}}$.
+Since the functors $\compf{\forget{P}}{\semP{\I}}$ and $\forget{P}$ are only equal up to propositional equality, we defined $\constrt{A}$ to be of that type instead of the expected $\nattrans{\compf{\forget{P}}{\semP{P}}}{\forget{P}}$,
+Now we have everything in place to define algebras on $\sig$.
+An algebra on $\sig$ consists of a prealgebra together with proofs that the equations in $\sig$ are satisfied.
+Since the carrier of each prealgebra is a set, the equations form a proposition.
+Hence, we define the category of \emph{$\sig$-algebras} as a full subcategory of $\prealg{\pointc{\sig}}$.
+
+\begin{definition}
+\label{def:algebra}
+Let $\sig$ be a HIT signature.
+Then we define the category $\Alg{\sig}$ of \emph{$\sig$-algebras} as the full subcategory of $\prealg{\pointc{\sig}}$ such that each object $X$ satisfies
+\[
+\deprod{j}{\pathI{\sig}}{\deprod{x}{\semP{\pathA{\sig} \> j} \> X}{\semE{\pathlh{\sig} \> j} \> X \> x = \semE{\pathrh{\sig} \> j} \> X \> x}}.
+\]
+\end{definition}
+
+For an algebra $X$, we denote its operation by $\constrA{X} : \semP{\pointc{\sig}} \> X \rightarrow X$.
+The path witnessing the equalities of the algebra is denoted by $\constrP{X} : \deprod{j}{\pathI{\sig}}{\deprod{x}{\semP{\pathA{\sig} \> j} \> X}{\semE{\pathlh{\sig} \> j} \> x = \semE{\pathrh{\sig} \> j} \> x}}$.
+Note that the category of $\sig$-algebras is univalent.
+This follows from the fact that the category of algebras on a functor is univalent and that univalence is preserved under taking full subcategories.
+
+\begin{proposition}
+\label{prop:univalg}
+The category of $\sig$-algebras in sets is univalent.
+\end{proposition}
+
+Before we look at algebras in setoids in more detail, we recall the examples in the previous section and look what algebras on those signatures are.
+
+\begin{example}
+\label{ex:commalg}
+Recall the signature $\modsig$ from Example \ref{ex:modsig}.
+A prealgebra of $\modsig$ consists of a set $X$ and a map $f : X + \unitt \rightarrow X$.
+We define $S_X \> x \Def f(\inl \> x)$ and $Z_X = f(\inr \> \TT)$.
+An algebra of $\modsig$ consists of a prealgebra $X$ such that for all $x : X$, we have $S_X(S_X \> x) = x$.
+\end{example}
+
+\begin{example}
+\label{ex:truncalg}
+Recall $\trunc$ from Example \ref{ex:truncsig}.
+For a set $A$. an algebra of $\trunc \> A$ consists of a set $X$ and a map $f : A \rightarrow X$ such that for all $(x , y) : X \times X$, we have $x = y$.
+In particular, this means $X$ is a proposition.
+\end{example}
+
+\subsection{Algebras in Setoids}
+Our goal is to construct HITs as a quotient of a certain setoids.
+To guarantee that the resulting quotient has the right introduction rule, we require extra structure from the setoid.
+This is given by an algebra structure on the setoid.
+
+To interpret the action of $P$ on setoids, we first define its action on equivalence relations, and we need some preliminary operations for that.
+Note that for each set $T$, we have an equivalence relation $\pathR{T}$ on $T$ such that $\pathR{T} \> x \> y \Def x = y$.
+Furthermore, given types $X$ and $Y$ with equivalence relations $R_X$ and $R_Y$ on them, we can define equivalence relations $\sumR{R_X}{R_Y}$ and $\prodR{R_X}{R_Y}$ on $X + Y$ and $X \times Y$ respectively.
+These are defined as follows
+\[
+\prodR{R_X}{R_Y} \> (x_1,y_1) \> (x_2,y_2) \Def (R_X \> x_1 \> x_2) \times (R_Y \> y_1 \> y_2)
+\]
+\[
+\begin{array}{ccc}
+\sumR{R_X}{R_Y} \> (\inl \> x_1) \> (\inl \> x_2) \Def R_X \> x_1 \> x_2 & \quad & \sumR{R_X}{R_Y} \> (\inr \> y_1) \> (\inr \> y_2) \Def R_Y \> y_1 \> y_2\\
+\sumR{R_X}{R_Y} \> (\inl \> x) \> (\inr \> y) \Def \0 & \quad & \sumR{R_X}{R_Y} \> (\inr \> y) \> (\inl \> x) \Def \0\\ 
+\end{array}
+\]
+
+\begin{definition}
+Let $R$ be an equivalence relation on a set $X$ and let $P : \poly$ be a polynomial.
+By induction, we define an equivalence relation $\polyR{P}{R}$ on $\semP{P} \> X$.
+\[
+\polyR{(\C \> T)}{R} \Def \pathR{T}
+\quad \quad \quad
+\polyR{\I}{R} \Def R
+\quad \quad \quad
+\polyR{(\sumP{P}{Q})}{R} \Def \sumR{(\polyR{P}{R})}{(\polyR{Q}{R})}
+\quad \quad \quad
+\polyR{(\prodP{P}{Q})}{R} \Def \prodR{(\polyR{P}{R})}{(\polyR{Q}{R})}
+\]
+\remove{
+\begin{itemize}
+	\item $\polyR{(\C \> T)}{R} \Def \pathR{T}$;
+	\item $\polyR{\I}{R} \Def R$;
+	\item $\polyR{(\sumP{P}{Q})}{R} \Def \sumR{(\polyR{P}{R})}{(\polyR{Q}{R})}$;
+	\item $\polyR{(\prodP{P}{Q})}{R} \Def \prodR{(\polyR{P}{R})}{(\polyR{Q}{R})}$.
+\end{itemize}
+}
+Now we define the functor $\semPT{P} : \functor{\setoids}{\setoids}$ by $\semPT{P}(X,R) = (\semP{P} \> X, \polyR{P}{R})$.
+\end{definition}
+
+The functor $\semPT{P}$ could also be defined by using that the category of setoids is Cartesian closed.
+However, we chose this definition, because it was more convenient in the formalization.
+This is because the underlying set of $\semPT{P}(X)$ can be computed definitionally.
+
+With these definitions in place, we obtain a category $\prealgst{\sig}$ of \emph{setoid prealgebras on $\sig$}.
+To define algebras on $\sig$, we also need to interpret endpoints for which we use setoid morphisms instead of natural transformations.
+
+\begin{definition}
+Let $e : \ep{A}{P}{Q}$ be an endpoint and let $X$ be a setoid prealgebra on $A$.
+Then we define $\semET{e}$ to be the setoid morphism from $\semPT{P}(X)$ to $\semPT{Q}(X)$ whose carrier is $\semP{e}$.
+\end{definition}
+
+The requirement for $\semET{e}$ to be a setoid morphism, is that for $x, y : \semPT{P} \> X$ with $r : x \equiv y$, we have $\semP{e} \> x \equiv \semP{e} \> y$.
+The category of algebras on $\sig$ is defined differently for setoids than for sets.
+While for sets, the equations of algebras are witnessed by actual equalities, the equations for setoids are witnessed by the equivalence relation.
+Note that such relations are families of propositions meaning again this gives rise to a proposition and thus we define it as a full subcategory.
+
+\begin{definition}
+Let $\sig$ be a HIT signature.
+Then we define the category of \emph{$\sig$-setoid-algebras} as the full subcategory of $\prealgst{\pointc{\sig}}$ such that each object satisfies
+\[
+\deprod{j}{\pathI{\sig}}{\deprod{x}{\pathA{\sig} \> j}{\semE{\pathlh{\sig} \> j} \> x \equiv \semE{\pathrh{\sig} \> j} \> x}}.
+\]
+\end{definition}
+
+Since the category of setoids is univalent, the category of $\sig$-setoid-algebras is univalent as well.
+
+\begin{proposition}
+The category of $\sig$-setoid-algebras is univalent.
+\end{proposition}
+
+\section{The Induction Principle}
+\label{sec:induction}
+With the introduction rules covered by the algebra structure, we now take a look a the elimination and computation rules.
+For this, we use \emph{displayed algebras} \cite{KaposiK18,Sojakova15}.
+These represent the input of the elimination rule.
+For the output, we define \emph{displayed algebra maps}, also known as sections.
+The elimination rule says that we have a displayed algebra map to every displayed algebra, while the computation rule says that the algebra in place.
+Once we have this machinery in place, we define \emph{higher inductive type} on a signature.
+
+Since our goal is to construct HITs, we need to find an algebra for which the elimination rule holds, and for that, we use initial algebra semantics \cite{AltenkirchCDKF18,AwodeyGS12,Sojakova15}.
+More specifically, we show that the initial algebra satisfies the induction rule.
+Hence, to obtain a HIT, it suffices to construct the initial algebra, which is more convenient in the language of category theory.
+
+\subsection{Displayed Algebras}
+\label{ref:induction}
+A displayed algebra is the input of the elimination rule.
+This means that we have a dependent family and a dependent map over the point constructor.
+Furthermore, dependent versions of the equations in the signature need to hold.
+Displayed algebras are similar to displayed categories \cite{AhrensL19}.
+
+To formulate these requirements precisely, we need two preliminary definitions.
+The first one is the action of polynomials on families of sets while the second one interprets endpoints as dependent maps.
+
+\begin{definition}
+Given are $P : \poly$ and $Y : X \rightarrow \hset$.
+We define $\polydact{P}{Y} : \semP{P} \> X \rightarrow \hset$ by induction
+\[
+\polydact{\C \> X}{Y} \> x \Def X
+\quad \quad \quad
+\polydact{\I}{Y} \> x \Def Y \> x
+\quad \quad \quad
+\polydact{\prodP{P}{Q}}{Y} \> x \Def \polydact{P}{Y} \> (\prl \> x) \times \polydact{Q}{Y} \> (\prr \> x)
+\]
+\[
+\polydact{\sumP{P}{Q}}{Y} \> (\inl \> x) \Def \polydact{P}{Y} \> x
+\quad \quad \quad
+\polydact{\sumP{P}{Q}}{Y} \> (\inr \> x) \Def \polydact{Q}{Y} \> x
+\]
+\remove{
+\begin{itemize}
+	\item $\polydact{\C \> X}{Y} \> x \Def X$;
+	\item $\polydact{\I}{Y} \> x \Def Y \> x$;
+	\item $\polydact{\sumP{P}{Q}}{Y} \> (\inl \> x) \Def \polydact{P}{Y} \> x$;
+	\item $\polydact{\sumP{P}{Q}}{Y} \> (\inr \> x) \Def \polydact{Q}{Y} \> x$;
+	\item $\polydact{\prodP{P}{Q}}{Y} \> x \Def \polydact{P}{Y} \> (\prl \> x) \times \polydact{Q}{Y} \> (\prr \> x)$.
+\end{itemize}
+}
+\end{definition}
+
+\begin{definition}
+Let $A$ be a polynomial, $X$ be a prealgebra on $A$, and let $e : \ep{A}{P}{Q}$.
+Suppose, we have a family $Y$ on $X$ and a map $c : \deprod{z}{\semP{A}{X}}{\polydact{P}{Y} \> z \rightarrow Y \> (\constrA{X} \> z)}$.
+We define a map $\epdact{e}{c} : \deprod{z}{\semP{P}{X}}{\polydact{P}{Y} \> z \rightarrow \polydact{Q}{Y} \> (\semE{e} \> z)}$ by induction on $e$
+\[
+\epdact{\id{P}}{c} \> z \> y \Def y
+\quad \quad
+\epdact{\comp{e_1}{e_2}}{c} \> z \> y \Def \epdact{e_2}{c} \> (\semE{e_1} \> X \> z) \> (\epdact{e_1}{c} \> z \> y)
+\quad \quad
+\epdact{\inle}{c} \> z \> y \Def y
+\quad \quad
+\epdact{\inre}{c} \> z \> y \Def y
+\quad \quad
+\epdact{\Ce \> t}{c} \> z \> y \Def t
+\]
+\[
+\epdact{\prle}{c} \> z \> y \Def \prlt \> y
+\quad \quad \quad
+\epdact{\prre}{c} \> z \> y \Def \prrt \> y
+\quad \quad \quad
+\epdact{\pair{e_1}{e_2}}{c} \> z \> y \Def (\epdact{e_1}{c} \> z \> y , \epdact{e_2}{c} \> z \> y)
+\quad \quad \quad
+\epdact{\constr}{c} \Def c
+\]
+\remove{
+\begin{itemize}
+	\item $\epdact{\id{P}}{c} \> z \> y \Def y$;
+	\item $\epdact{\comp{e_1}{e_2}}{c} \> z \> y \Def \epdact{e_2}{c} \> (\semE{e} \> X \> z) \> (\epdact{e_1}{c} \> z \> y)$;
+	\item $\epdact{\inle}{c} \> z \> y \Def y$;
+	\item $\epdact{\inre}{c} \> z \> y \Def y$;
+	\item $\epdact{\prle}{c} \> z \> y \Def \prlt \> y$;
+	\item $\epdact{\prre}{c} \> z \> y \Def \prrt \> y$;
+	\item $\epdact{\pair{e_1}{e_2}}{c} \> z \> y \Def (\epdact{e_1}{c} \> z \> y , \epdact{e_2}{c} \> z \> y)$;
+	\item $\epdact{\Ce \> t}{c} \> z \> y \Def t$;
+	\item $\epdact{\constr}{c} \Def c$.
+\end{itemize}
+}
+\end{definition}
+
+With this in place, we define displayed algebras.
+Note that since we are working in a family of sets, we need to use the dependent equality type from Definition \ref{def:depeq} instead of the ordinary one.
+
+\begin{definition}
+Give are a signature $\sig$ and an algebra $X$ on $\sig$.
+Then a \emph{displayed algebra} over $X$ consists of
+\begin{itemize}
+	\item A type family $Y : X \rightarrow \hset$;
+	\item An operation $c_Y : \deprod{z}{\semP{\pointc{\sig}}{X}}{\polydact{\pointc{\sig}}{Y} \> z \rightarrow Y \> (\constrA{X} \> z)}$;
+	\item For each $j : \pathI{\sig}$, $x : \semP{\pathA{\sig}} \> X$, and $y : \polydact{\pathA{\sig}}{Y} \> x$,  a path $p_Y : \depeq{\constrP{X} \> j \> x}{\epdact{\pathlh{\sig}}{c_Y} \> x \> y}{\epdact{\pathrh{\sig}}{c_Y} \> x \> y}$.
+\end{itemize} 
+\end{definition}
+
+Now we got the input for the elimination rule in place and the next step is to look at the output.
+This is a dependent map which preserves the algebra structure.
+To state this preservation property, we need yet another operation on polynomials.
+
+\begin{definition}
+Let $P$ be a polynomial, let $X$ be a set, and let $Y$ be a family of sets on $X$.
+Given a map $f : \deprod{x}{X}{Y \> x}$, we define a map $\polydmap{P}{f} : \deprod{x}{\semP{P} \> X}{\polydact{P}{Y} \> x}$ by induction
+\[
+\polydmap{\C \> X}{f} \> x \Def x
+\quad \quad \quad
+\polydmap{\I}{f} \Def f
+\quad \quad \quad
+\polydmap{\prodP{P}{Q}}{f} \> x \Def (\polydact{P}{f} \> (\prl \> x) , \polydact{Q}{f} \> (\prr \> x))
+\]
+\[
+\polydmap{\sumP{P}{Q}}{f} \> (\inl \> x) \Def \polydmap{P}{f} \> x
+\quad \quad \quad
+\polydmap{\sumP{P}{Q}}{f} \> (\inr \> x) \Def \polydmap{Q}{f} \> x
+\]
+\remove{
+\begin{itemize}
+	\item $\polydmap{\C \> X}{f} \> x \Def x$;
+	\item $\polydmap{\I}{f} \Def f$;
+	\item $\polydmap{\sumP{P}{Q}}{f} \> (\inl \> x) \Def \polydmap{P}{f} \> x$;
+	\item $\polydmap{\sumP{P}{Q}}{f} \> (\inr \> x) \Def \polydmap{Q}{f} \> x$;
+	\item $\polydmap{\prodP{P}{Q}}{f} \> x \Def (\polydact{P}{f} \> (\prl \> x) , \polydact{Q}{f} \> (\prr \> x))$.
+\end{itemize}
+}
+\end{definition}
+
+\begin{definition}
+Let $Y$ be a displayed algebra over $X$.
+Then a \emph{displayed algebra map} to $Y$ consists of a map $f : \deprod{x}{X}{Y \> x}$ such that for each $x : \semP{\pointc{\sig}}{X}$, we have $f(\constrA{X} \> x) = c_Y \> x \> (\polydmap{\pointc{\sig}}{f} \> x)$.
+\end{definition}
+
+With all this in place, we can define the notion of a \emph{higher inductive type} on a signature.
+Note that a HIT needs to be an algebra so that we have the correct introduction rules and note that we use displayed algebras to formulate the elimination principle.
+
+\begin{definition}
+Let $\sig$ be a HIT signature.
+A \emph{higher inductive type} on $\sig$ consists of an algebra $H$ such that for each displayed algebra $Y$ on $H$, we have a displayed algebra map to $Y$.
+\end{definition}
+
+Note that HITs of $\sig$ satisfy analogous rules to those defined by Basold \etal \ \cite{BasoldGW17}.
+As usual, the induction rule only guarantees the existence of a dependent map.
+This obtained map is unique, which is again proven by induction.
+Furthermore, HITs on the signatures we discussed before, the integers modulo 2 in Example \ref{ex:modsig} and the propositional truncation in Example \ref{ex:truncsig}, satisfy the induction rule given in Basold \etal \ \cite{BasoldGW17}.
+
+There are only two differences: the computation rule only holds propositionally rather than definitionally.
+In addition, we can only map HITs into sets.
+This is because it also has constructors, which guarantee it is a set.
+The algebra structure gives the right introduction rules and the existence of the displayed algebra map gives the required elimination and computation rules.
+
+\subsection{Obtaining Induction from Initiality}
+Next we show how to obtain the induction principle from initiality.
+This way it suffices construct an initial algebra of the signature to obtain a HIT, which is more convenient in category theory.
+To this end, we first define the total algebra $\total{Y}$ of a displayed $Y$ on $X$ together a projection $\proj{Y}$ to $X$.
+
+We define the carrier of $\total{Y}$ by the dependent sum $\desum{x}{X}{Y \> x}$ and for brevity, we denote this by $\total{Y}$.
+To show this is an algebra, we first need to define a map $c_{\total{Y}} : \semP{\pointc{\sig}} \> (\total{Y}) \rightarrow \total{Y}$.
+The main idea is that we use the algebra map of $X$ for the first component and the displayed algebra map of $Y$ for the second one.
+We introduce an intermediate definition, which allows us to access the right data.
+
+\begin{definition}
+Let $P$ be a polynomial and let $Y$ be a family of sets on $X$.
+We define a map
+\[
+\Ppl{P} : \semP{P} \> (\desum{x}{X}{Y \> x}) \rightarrow \semP{P} \> X
+\quad \quad
+\Ppl{P} \> x \Def \semP{P} \> \prl \> x
+\]
+We also define a map $\Ppr{P} : \deprod{x}{\semP{P} \> (\desum{x}{X}{Y \> x})}{\polydact{P}{Y} \> (\Ppl{P} \> x)}$ by induction on $P$.
+\[
+\Ppr{\C \> T} \> x  \Def x
+\quad \quad \quad
+\Ppr{\I} \> x \Def \prr \> x
+\quad \quad \quad
+\Ppr{\prodP{P}{Q}} \> x \Def (\Ppr{P} \> (\prl \> x) , \Ppr{Q} \> (\prr \> x))
+\]
+\[
+\Ppr{\sumP{P}{Q}} \> (\inl \> x) \Def \Ppr{P} \> x
+\quad \quad \quad
+\Ppr{\sumP{P}{Q}} \> (\inr \> x) \Def \Ppr{Q} \> x
+\]
+\remove{
+\begin{itemize}
+	\item $\Ppr{\C \> T} \> x  \Def x$;
+	\item $\Ppr{\I} \> x \Def \prr \> x$;
+	\item $\Ppr{\sumP{P}{Q}} \> (\inl \> x) \Def \Ppr{P} \> x$;
+	\item $\Ppr{\sumP{P}{Q}} \> (\inr \> x) \Def \Ppr{Q} \> x$;
+	\item $\Ppr{\prodP{P}{Q}} \> x \Def (\Ppr{P} \> x , \Ppr{Q} \> (\prr \> x))$.
+\end{itemize}
+}
+\end{definition}
+
+Now let $z : \semP{\pointc{\sig}} \> (\total{Y})$.
+The first coordinate of $\constrA{\total{Y}} \> z$ is defined to be $\constrA{X}(\Ppl{\pointc{\sig}} \> x)$.
+The second coordinate of $\constrA{\total{Y}} \> z$ is defined by $c_Y \> (\Ppl{\pointc{\sig}} \> x) \> (\Ppr{\pointc{\sig}} \> x)$.
+The main challenge lies within proving the equations.
+To do so, we compute the valuation of endpoints in the total algebra via those in $X$ and $Y$.
+
+\begin{lemma}
+For every endpoint $e : \ep{\pointc{\sig}}{P}{Q}$, we have
+\[
+\Epl : \semE{e} \> X \> (\Ppl{P} \> x) = \Ppl{Q}(\semE{e} \> (\total{Y}) \> x) 
+\quad \quad \quad
+\Epr : \depeq{\Epl}{\epdact{e}{c_Y} \> (\Ppr{P} \> x)}{\Ppr{Q} \> (\semE{e} \> (\total{Y}) \> x)}
+\]
+\end{lemma}
+
+All in all, given a displayed algebra $Y$ on some algebra $X$, we get the \emph{total algebra} $\total{Y}$.
+We also define an algebra homomorphism $\proj{Y} : \total{Y} \rightarrow X$, which sends $z$ to its first projection $\prl \> z$.
+The reason why we care about this construction, is the following proposition.
+
+\begin{proposition}
+From an algebra homomorphism $f : X \rightarrow \total{Y}$ such that $\compm{f}{\proj{Y}}$ is the identity, we obtain a displayed algebra map from $X$ to $Y$.
+\end{proposition}
+
+Now suppose $X$ is an initial object in the category of algebras.
+Then, due to initiality, we always have a map $f : X \rightarrow \total{Y}$, and the composition $\compm{f}{\proj{Y}} : X \rightarrow X$ must be the identity because initiality ensures uniqueness of homomorphisms.
+Hence, we conclude
+
+\begin{corollary}
+If $X$ is an initial object in the category of algebras on $\sig$, then $X$ is a HIT for $\sig$.
+\end{corollary}
+
+\section{Constructing the Initial Algebra}
+\label{sec:construction}
+To construct the initial algebra, we first lift the quotient to a left adjoint functor from algebras in setoids to algebras in sets.
+Such functors preserve initial objects, and thus it suffices to construct the initial setoid algebra.
+For that, we use an adaption of Dybjer's and Moeneclaey's interpretation of HITs in the setoid model \cite{DybjerM18,moeneclaey2016schema}.
+In the remainder of this section, we work with a fixed signature $\sig$.
+
+\subsection{Quotient Adjunction}
+We start by defining a left adjoint functor $\quotF : \functor{\setoids}{\hset}$.
+On objects, we define $\quotF \> (X , R) = \setquot{X}{R}$ and its action on morphisms is defined by recursion on the quotient type.
+The laws are proven by quotient induction.
+The right adjoint is the path setoid functor $\pathF : \functor{\hset}{\setoids}$.
+For sets $X$, we define the functor $\pathF \> X$ to be $(X, \pathR{X})$.
+Note that this action is functorial and that this gives rise to an adjunction.
+
+\begin{lemma}[Theorem 2.20 from \cite{RijkeS15}]
+We have an adjunction $\adj{\quotF}{\pathF}$.
+\end{lemma}
+
+\subsection{The Adjunction on Prealgebras}
+With this adjunction in place, our first step is to lift it to the level of prealgebras.
+For this, we use a result from Hermida and Jacobs \cite{hermida1998structural}.
+Note that this is also related to the fact that the 2-functor from the bicategory of endofunctors to the bicategory of categories preserves adjunctions \cite{street1972formal}.
+
+The first step, is to lift the functors for which we use the following lemma.
+
+\begin{lemma}
+\label{lem:prealgadj}
+Given are categories $\mathcal{C}$ and $\mathcal{D}$, functors $A_1 : \functor{\mathcal{C}}{\mathcal{C}}$, $A_2 : \functor{\mathcal{D}}{\mathcal{D}}$, and $F : \functor{\mathcal{C}}{\mathcal{D}}$, and a natural transformation $n : \nattrans{\compf{F}{A_2}}{\compf{A_1}{F}}$.
+Then we get a functor $F^{\category{PreAlg}} : \functor{\falg{A_1}}{\falg{A_2}}$.
+\end{lemma}
+
+For algebras $(X, f) : \falg{A_1}$, we define $F^{\category{PreAlg}}(X,f) = (F \> X, \compm{n \> X}{F \> f})$.
+To lift the quotient and the path setoid, we need a lemma.
+
+\begin{lemma}
+\label{lem:comm}
+The functors $\pathF$ and $\quotF$ commute with sums and products.
+This gives rise to two natural isomorphisms $n_1^P : \nattrans{\compf{\pathF}{\semPT{P}}}{\compf{\semP{P}}{\pathF}}$ and $n_2^P : \nattrans{\compf{\quotF}{\semPT{P}}}{\compf{\semP{P}}{\quotF}}$.
+\end{lemma}
+
+Proving that $\quotF$ commutes with products makes essential use of the double recursion principle of the quotient type, which allows defining functions $\quotF \> X \times \quotF \> Y \rightarrow Z$.
+Using Lemmata \ref{lem:prealgadj} and \ref{lem:comm}, we lift both the quotient and the path setoid functors to obtain.
+\[
+\quotPA : \functor{\prealgst{\sig}}{\prealg{\sig}}
+\quad \quad
+\pathPA : \functor{\prealg{\sig}}{\prealgst{\sig}}.
+\]
+This gives the required functors for the adjunction on the level of algebras, and the next step is to obtain the new unit and counit.
+The main idea is to show that the unit and counit are algebra homormophisms.
+
+\begin{proposition}
+\label{lem:prealgadjconstr}
+Given are categories $\mathcal{C}$ and $\mathcal{D}$, functors $A_1 : \functor{\mathcal{C}}{\mathcal{C}}$, $A_2 : \functor{\mathcal{D}}{\mathcal{D}}$, and $L : \functor{\mathcal{C}}{\mathcal{D}}$, and a natural transformation $n : \nattrans{\compf{L}{A_2}}{\compf{A_1}{L}}$.
+In addition, suppose we a functor $R : \functor{\mathcal{D}}{\mathcal{C}}$ together with a natural transformation $m : \nattrans{\compf{R}{A_1}}{\compf{A_2}{R}}$ and an adjunction $\adj{L}{R}$ with unit $\eta$ and counit $\varepsilon$.
+We also assume that for each $X : \mathcal{C}$ and $Y : \mathcal{D}$ the following diagrams commute
+\[
+\xymatrix
+{	
+	A_2 (L(R \> X)) \ar[ddrr]^{A_2(\epsilon \> X)} \ar[d]_{n(R \> X)} \\
+	L(A_1(R \> X)) \ar[d]_{L(m \> X)} \\
+	R(L(A_2 \> X)) \ar[rr]_-{\epsilon(A_1 \> X)} & & A_2 \> X
+}
+\quad \quad \quad
+\xymatrix
+{
+	A_1 \> Y \ar[ddrr]_{\eta \> (A_1 \> X)} \ar[rr]^-{A_1 \> (\eta \> Y)} & & A_1(R(L \> Y)) \ar[d]^{m(L \> X)}\\
+	& & R(A_2(L \> X)) \ar[d]^{R(n \> X)}\\
+	& & R(L(A_1 \> Y))
+}
+\]
+Then the maps $\varepsilon \> X$ and $\eta \> Y$ are algebra homomorphisms for each $X : \mathcal{C}$ and $Y : \mathcal{D}$.
+Furthermore, we have an adjunction $\adj{L^{\category{PreAlg}}}{R^{\category{PreAlg}}}$.
+\end{proposition}
+
+For the verification of the conditions of this proposition for the path setoid and quotient, we refer the reader to the formalization.
+Now we conclude
+
+\begin{lemma}
+\label{lem:adjprealg}
+We have an adjunction $\adj{\quotPA}{\pathPA}$.
+\end{lemma}
+
+\subsection{Algebras}
+
+If $\mathcal{C}$ is a category and $P$ is a family of propositions on $\mathcal{C}$, then we write $\fullsub{\mathcal{C}}{P}$ for the full subcategory of $\mathcal{C}$ in which each object satisfies $P$.
+First, we look at a way to obtain adjunctions between full subcategories.
+
+\begin{lemma}
+Let $\mathcal{C}$ and $\mathcal{D}$ be categories, let $P_1$ and $P_2$ be families of propositions on $\mathcal{C}$ and $\mathcal{D}$ respectively, and suppose we have a functor $F : \functor{\mathcal{C}}{\mathcal{D}}$.
+If for each object $x : \mathcal{C}$ we have $P_1 \> x \rightarrow P_2(F \> x)$, then we get a functor $\factorsub{F} : \functor{\fullsub{\mathcal{C}}{P_1}}{\fullsub{\mathcal{D}}{P_2}}$.
+\end{lemma}
+
+\begin{proposition}
+Let $\mathcal{C}$ and $\mathcal{D}$ be categories, let $P_1$ and $P_2$ be families of propositions on $\mathcal{C}$ and $\mathcal{D}$ respectively, and suppose we have an adjunction $\adj{L}{R}$ with $L : \functor{\mathcal{C}}{\mathcal{D}}$.
+If for each object $x : \mathcal{C}$ we have $P_1 \> x \rightarrow P_2(L \> x)$ and for each $y : \mathcal{D}$ we have $P_2 \> x \rightarrow P_1(R \> x)$, then we get an adjunction $\adj{\factorsub{L}}{\factorsub{R}}$.
+\end{proposition}
+
+Now we would like to apply this proposition to the adjunction obtained from Lemma \ref{lem:adjprealg}.
+For that, we first need to calculate the action of the endpoints.
+This is done by the following lemma.
+
+\begin{lemma}
+Given is an endpoint $e : \ep{A}{P}{Q}$.
+For every set prealgebra $X$, we have the following equality
+\[
+\compm{n_1^P \> X}{\pathF \> (\semE{e} \> X)} = \compm{\semET{e} \> (\pathPA \> X)}{n_1^Q \> X}.
+\]
+For every setoid prealgebra $X$, we have the following equality.
+\[
+\compm{n_2^P \> X}{\quotF \> (\semET{e} \> X)} = \semE{e} \> (\quotPA \> X).
+\]
+\end{lemma}
+
+For the quotient, a similar lemma is required and for its precise formulation, we refer the reader the formalization.
+With all this in place, we obtain the desired adjunction.
+
+\begin{theorem}
+\label{thm:algadj}
+We have an adjunction $\adj{\quotAA}{\pathAA}$.
+\end{theorem}
+
+\subsection{Initial Setoid Algebra}
+The initial setoid is constructed in two steps.
+First we define its carrier as the initial algebra on $\pointc{\sig}$ and then we define the equivalence relation as the least congruence relation containing the equations in $\sig$ and preserving equality of the point constructor.
+
+\begin{lemma}
+The category $\prealg{\pointc{\sig}}$ has an initial object.
+\end{lemma}
+
+This follows from Ad\'amek's theorem and the fact that the functor $\semP{P}$ is $\omega$-continuous for each $P$.
+The colimits required for this theorem are constructed from quotient types.
+We denote the initial object of this category by $(\CRC , f)$.
+The carrier of the desired setoid is $\CRC$ and the next step is to define the equivalence relation on $\CRC$.
+The main difficulty of defining this relation, is that we need to be able to lift $f$ to a setoid morphism meaning that $\semP{\pointc{\sig}}{\CRC}$ must be defined correctly.
+For that reason, we first define a relation on $\semP{P} \> \CRC$ for $P : \poly$.
+
+\begin{definition}
+Given is $P : \poly$ and a signature $\sig$.
+The relation $\CR \> P$ on $\semP{P} \> \CRC$ is inductively generated by the constructors
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$x : \semP{P} \> \CRC$}
+\UnaryInfC{$\CRrefl \> x : \CR \> P \> x \> x$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$r : \CR \> P \> x \> y$}
+\UnaryInfC{$\CRsym \> r : \CR \> P \> y \> x$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$r_1 : \CR \> P \> x \> y$}
+\AxiomC{$r_2 : \CR \> P \> y \> z$}
+\BinaryInfC{$\CRtrans \> r_1 \> r_2 : \CR \> P \> x \> z$}
+\end{bprooftree}
+\end{center}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$r : \CR \> P_1 \> x \> y$}
+\UnaryInfC{$\CRinl \> r : \CR \> (\sumP{P_1}{P_2}) \> (\inl \> x) \> (\inl \> y)$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$r : \CR \> P_2 \> x \> y$}
+\UnaryInfC{$\CRinr \> r : \CR \> (\sumP{P_1}{P_2}) \> (\inr \> x) \> (\inr \> y)$}
+\end{bprooftree}
+\end{center}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$r_1 : \CR \> P_1 \> x_1 \> x_2$}
+\AxiomC{$r_2 : \CR \> P_2 \> y_1 \> y_2$}
+\BinaryInfC{$\CRpair \> r_1 \> r_2 : \CR \> (\prodP{P_1}{P_2}) \> (x_1 , x_2) \> (y_1 , y_2)$}
+\end{bprooftree}
+\end{center}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$j : \pathI{\sig}$}
+\AxiomC{$x : \semP{\pathA{\sig} \> j} \> \CRC$}
+\BinaryInfC{$\CRpath \> j \> x : \CR \> \I \> (\semE{\pathlh{\sig} \> j} \> \CRC \> x) \> (\semE{\pathrh{\sig} \> j} \> \CRC \> x)$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$r : \CR \> \pointc{\sig} \> x \> y$}
+\UnaryInfC{$\CRcong \> r : \CR \> \I \> (f \> x) \> (f \> y)$}
+\end{bprooftree}
+\end{center}
+\end{definition}
+
+The extra argument $P$ represents the sort of $x$, and we leave the signature $\sig$ implicit when talking about this relation.
+Now we define a relation on $\CRC$ by $\CRR \> x \> y = \trunct{\CR \> \I \> x \> y}$.
+Because of the truncation, each $\CRR \> x \> y$ is a proposition.
+Note that $\CRR$ is an equivalence relation, because of the constructor $\CRrefl$, $\CRsym$, and $\CRtrans$.
+In addition, all equations in $\sig$ are validated in $\CRR$ by $\CRpath$.
+Finally, with the constructors $\CRpair$, $\CRinl$, $\CRinr$, and $\CRcong$, we can show that $f$ preserves $\CRR$.
+Hence, we obtain a setoid $I \Def (\CRC, \CR)$ together with a setoid morphism $\varphi : \semPT{P} \> I \rightarrow I$.
+To show that this is the initial setoid algebra, we first need a property of $\CRR$, which allows us to construct maps from $I$ to algebras.
+
+\begin{lemma}
+\label{lem:mapcongrel}
+If $g$ is a prealgebra morphism from $\CRC$ to an algebra, then $g$ preserves $\CRR$.
+\end{lemma}
+
+Now we show that $I$ is an initial object in $\Alg{\sig}$.
+To show that we always have a homomorphism from $I$ to an algebra $X$, we use that $\CRC$ is the initial prealgebra and Lemma \ref{lem:mapcongrel}.
+Furthermore, note that two setoid morphisms are equal if their underlying carriers are equal and two algebra morphisms are also equal if their underlying carrier is equal.
+Hence, the uniqueness also follows from initiality of $\CR$.
+All in all, we get
+
+\begin{theorem}
+\label{thm:initialsetoid}
+The algebra $I$ is the initial object of $\Algst{\sig}$.
+\end{theorem}
+
+From Theorems \ref{thm:algadj} and \ref{thm:initialsetoid} we conclude
+
+\begin{corollary}
+\label{thm:hit-exist}
+For each signature $\sig$, there is a HIT on $\sig$.
+\end{corollary}
+
+\section{Consequences}
+\label{sec:consequences}
+\subsection{Uniqueness of HITs}
+Now we discuss two consequences of this construction.
+A first property of higher inductive types, is that they are unique up to equality.
+For that, we first show that higher inductives are initial algebras.
+This requires the well-known result that induction implies initiality \cite{AwodeyGS12,Sojakova15}.
+Note that in \Cref{sec:induction} we used the converse statement, namely that initiality implies induction.
+
+To show a HIT $H$ is initial, we must show that for each algebra $X$ the set of morphisms from $H$ to $X$ is contractible.
+This means that there is precisely one homomorphism from $H$ to $X$.
+To show the existence, we use the following two lemmata.
+
+\begin{lemma}
+Let $X$ and $Y$ be algebras on $\sig$.
+Then there is a displayed algebra $\constdisp \> Y$ on $X$ of which the underlying type family is $Y$ on each point of $X$.
+\end{lemma}
+
+\begin{lemma}
+Let $X$ be $Y$ be algebras on $\sig$.
+If we have a displayed algebra map from $X$ to $\constdisp \> Y$, then we have an algebra homomorphism from $X$ to $Y$.
+\end{lemma}
+
+\begin{corollary}
+If $X$ is a HIT for $\sig$, then for each algebra $Y$ we have an algebra map from $X$ to $Y$.
+\end{corollary}
+
+To show uniqueness, we use an alternative induction principle for families of propositions.
+More specifically, we use the following lemma.
+
+\begin{lemma}
+Let $H$ be a HIT of $\sig$ and suppose $Y$ is a family of propositions on $H$.
+If we have an operation
+\[
+c : \deprod{z}{\semP{\pointc{\sig}}{H}}{\polydact{\pointc{\sig}}{Y} \> z \rightarrow Y \> (\constrA{X} \> z)},
+\]
+then we have a map $\deprod{x}{H}{Y \> x}$.
+\end{lemma}
+
+To prove the uniqueness of the map, we use function extensionality and the previous lemma.
+This is sufficient to conclude that higher inductive types are initial objects.
+
+\begin{proposition}
+If $H$ is a HIT for $\sig$, then $H$ is an initial $\sig$-algebra.
+\end{proposition}
+
+Now we take advantage of Proposition \ref{prop:univalg} where we proved that the category of algebras is univalent.
+Since initial objects in a univalent category are unique up to equality, we can immediately conclude that HITs are actually unique up to equality.
+All in all, we get
+
+\begin{corollary}
+\label{cor:hit_unique}
+If $H_1$ and $H_2$ are HITs for $\sig$, then the underlying $\sig$-algebras of $H_1$ and $H_2$ are equal.
+\end{corollary}
+
+\subsection{Path Spaces of HITs}
+The construction of HITs also allows us to characterize the path space up to equivalence.
+For this, we first recall the characterization of the path space of the quotient type.
+
+\begin{proposition}[Lemma 10.1.8 from \cite{hottbook}]
+Let $X$ be a type and let $R$ be an equivalence relation on $X$.
+Then for each $x, y : X$, we have an equivalence $R \> x \> y \weq \classof \> x = \classof \> y$.
+\end{proposition}
+
+Now we specialize this theorem to HITs constructed according to Theorem \ref{thm:hit-exist}.
+This allows us to conclude that the path space of set truncated HITs is freely generated.
+
+\begin{corollary}
+\label{cor:hit_path}
+Let $\sig$ be a signature.
+Then for each $x, y : \CRC$ we have an equivalence $\CRR \> x \> y \weq \classof \> x = \classof \> y$ using $\CRC$ and $\CRR$ as defined in the previous section.
+\end{corollary}
+
+Hence, since HITs are unique, they must be equal to the HIT we constructed in the previous section, and this determines the path spaces of HITs.
+Note that this corollary gives an induction principle for the type $\classof \> x = \classof \> y$, because $\CRR$ is defined as the propositional truncation of an inductive type,
+For this reason, we conclude that the path space of higher inductive types are freely generated.
+
+\section{Conclusion and Further Work}
+\label{sec:conclusion}
+We have shown how to construct finitary set-truncated higher inductive types using the quotient and propositional truncation in Theorem \ref{thm:hit-exist}.
+Since truncations and the quotient can be constructed from non-recursive HITs, this proves that all finitary set-truncated HITs can be constructed from non-recursive ones.
+Besides that, we took advantage of this construction to show uniqueness of HITs in Corollary \ref{cor:hit_unique} and to characterize their path space in Corollary \ref{cor:hit_path}.
+
+The method used in this paper crucially relies on the polynomials being finitary.
+To show that Infinitary polynomials commute with quotients, one needs the axiom of choice \cite{DBLP:journals/mscs/ChapmanUV19}.
+Furthermore, Lumsdaine and Shulman gave an infinitary HIT which cannot be constructed from pushouts, and thus this result cannot be extended to infinitary polynomials.
+
+However, a possible extension would be by allowing the arguments of point constructors to depend on previous ones \cite{AltenkirchCDKF18}.
+For a construction of all finitary HITs, higher path constructors need to be allowed and the HITs need to be interpreted in some higher category.
+A first step towards that goal, would be adapting this construction to bicategory theory \cite{ahrens2019bicategories,capriotti2017univalent} and constructing higher inductive 1-types using Dybjer's and Moeneclaey's interpretation of those in groupoids \cite{DybjerM18}.
+For non-truncated types, a type theoretic definition of $\omega$-groupoid would be required \cite{DBLP:conf/csl/AltenkirchR12,capriotti2017univalent,DBLP:conf/lics/FinsterM17,DBLP:conf/tlca/HirschowitzHT15}.
+In both cases, one also needs to interpret the endpoints of homotopies.
+In addition, the path computation rules become relevant.
+Proving the induction principle from initiality is more difficult then, because equality becomes proof relevant giving nontrivial transports.
+In this setting, Corollary \ref{cor:hit_path} is more interesting, because the computation rules of path constructors become nontrivial.
+
+\begin{thebibliography}{10}
+	
+	\bibitem{ahrens2019bicategories}
+	Benedikt Ahrens, Dan Frumin, Marco Maggesi, and Niels van~der Weide.
+	\newblock {Bicategories in Univalent Foundations}.
+	\newblock {\em arXiv preprint arXiv:1903.01152}, 2019.
+	
+	\bibitem{AhrensKS15}
+	Benedikt Ahrens, Krzysztof Kapulkin, and Michael Shulman.
+	\newblock {Univalent Categories and the Rezk Completion}.
+	\newblock {\em Mathematical Structures in Computer Science}, 25(5):1010--1039,
+	2015.
+	
+	\bibitem{AhrensL19}
+	Benedikt Ahrens and Peter~LeFanu Lumsdaine.
+	\newblock {Displayed Categories}.
+	\newblock {\em Logical Methods in Computer Science}, 15(1), 2019.
+	
+	\bibitem{AltenkirchCDKF18}
+	Thorsten Altenkirch, Paolo Capriotti, Gabe Dijkstra, Nicolai Kraus, and
+	Fredrik~Nordvall Forsberg.
+	\newblock {Quotient Inductive-Inductive Types}.
+	\newblock In {\em Foundations of Software Science and Computation Structures -
+		21st International Conference, {FOSSACS} 2018, Held as Part of the European
+		Joint Conferences on Theory and Practice of Software, {ETAPS} 2018,
+		Thessaloniki, Greece, April 14-20, 2018, Proceedings}, pages 293--310, 2018.
+	
+	\bibitem{AltenkirchDK17}
+	Thorsten Altenkirch, Nils~Anders Danielsson, and Nicolai Kraus.
+	\newblock {Partiality, Revisited - The Partiality Monad as a Quotient
+		Inductive-Inductive Type}.
+	\newblock In {\em Foundations of Software Science and Computation Structures -
+		20th International Conference, {FOSSACS} 2017, Held as Part of the European
+		Joint Conferences on Theory and Practice of Software, {ETAPS} 2017, Uppsala,
+		Sweden, April 22-29, 2017, Proceedings}, pages 534--549, 2017.
+	
+	\bibitem{AltenkirchK16}
+	Thorsten Altenkirch and Ambrus Kaposi.
+	\newblock {Type Theory in Type Theory using Quotient Inductive Types}.
+	\newblock In {\em Proceedings of the 43rd Annual {ACM} {SIGPLAN-SIGACT}
+		Symposium on Principles of Programming Languages, {POPL} 2016, St.
+		Petersburg, FL, USA, January 20 - 22, 2016}, pages 18--29, 2016.
+	
+	\bibitem{DBLP:journals/lmcs/AltenkirchK17}
+	Thorsten Altenkirch and Ambrus Kaposi.
+	\newblock Normalisation by Evaluation for Type Theory, in Type Theory.
+	\newblock {\em Logical Methods in Computer Science}, 13(4), 2017.
+	
+	\bibitem{DBLP:conf/csl/AltenkirchR12}
+	Thorsten Altenkirch and Ondrej Rypacek.
+	\newblock {A Syntactical Approach to Weak $\omega$-Groupoids}.
+	\newblock In {\em Computer Science Logic (CSL'12) - 26th International
+		Workshop/21st Annual Conference of the EACSL, {CSL} 2012, September 3-6,
+		2012, Fontainebleau, France}, pages 16--30, 2012.
+	
+	\bibitem{AngiuliHW17}
+	Carlo Angiuli, Robert Harper, and Todd Wilson.
+	\newblock {Computational Higher-Dimensional Type Theory}.
+	\newblock In {\em Proceedings of the 44th {ACM} {SIGPLAN} Symposium on
+		Principles of Programming Languages, {POPL} 2017, Paris, France, January
+		18-20, 2017}, pages 680--693, 2017.
+	
+	\bibitem{AngiuliMLH16}
+	Carlo Angiuli, Edward Morehouse, Daniel~R. Licata, and Robert Harper.
+	\newblock {Homotopical Patch Theory}.
+	\newblock {\em J. Funct. Program.}, 26:e18, 2016.
+	
+	\bibitem{AwodeyGS12}
+	Steven Awodey, Nicola Gambino, and Kristina Sojakova.
+	\newblock {Inductive Types in Homotopy Type Theory}.
+	\newblock In {\em Proceedings of the 27th Annual {IEEE} Symposium on Logic in
+		Computer Science, {LICS} 2012, Dubrovnik, Croatia, June 25-28, 2012}, pages
+	95--104, 2012.
+	
+	\bibitem{BasoldGW17}
+	Henning Basold, Herman Geuvers, and Niels van~der Weide.
+	\newblock {Higher Inductive Types in Programming}.
+	\newblock {\em J. {UCS}}, 23(1):63--88, 2017.
+	
+	\bibitem{BezemCH13}
+	Marc Bezem, Thierry Coquand, and Simon Huber.
+	\newblock {A Model of Type Theory in Cubical Sets}.
+	\newblock In {\em 19th International Conference on Types for Proofs and
+		Programs, {TYPES} 2013, April 22-26, 2013, Toulouse, France}, pages 107--128,
+	2013.
+	
+	\bibitem{capriotti2017univalent}
+	Paolo Capriotti and Nicolai Kraus.
+	\newblock {Univalent Higher Categories via Complete Semi-Segal Types}.
+	\newblock {\em Proceedings of the ACM on Programming Languages}, 2(POPL):44,
+	2017.
+	
+	\bibitem{CavalloH19}
+	Evan Cavallo and Robert Harper.
+	\newblock {Higher Inductive Types in Cubical Computational Type Theory}.
+	\newblock {\em {PACMPL}}, 3({POPL}):1:1--1:27, 2019.
+	
+	\bibitem{DBLP:journals/mscs/ChapmanUV19}
+	James Chapman, Tarmo Uustalu, and Niccol{\`{o}} Veltri.
+	\newblock {Quotienting the Delay Monad by Weak Bisimilarity}.
+	\newblock {\em Mathematical Structures in Computer Science}, 29(1):67--92,
+	2019.
+	
+	\bibitem{CohenCHM16}
+	Cyril Cohen, Thierry Coquand, Simon Huber, and Anders M{\"{o}}rtberg.
+	\newblock {Cubical Type Theory: a Constructive Interpretation of the Univalence
+		Axiom}.
+	\newblock {\em CoRR}, abs/1611.02108, 2016.
+	
+	\bibitem{CoquandHM18}
+	Thierry Coquand, Simon Huber, and Anders M{\"{o}}rtberg.
+	\newblock {On Higher Inductive Types in Cubical Type Theory}.
+	\newblock In {\em Proceedings of the 33rd Annual {ACM/IEEE} Symposium on Logic
+		in Computer Science, {LICS} 2018, Oxford, UK, July 09-12, 2018}, pages
+	255--264, 2018.
+	
+	\bibitem{dybjer1994inductive}
+	Peter Dybjer.
+	\newblock {Inductive Families}.
+	\newblock {\em Formal aspects of computing}, 6(4):440--465, 1994.
+	
+	\bibitem{DybjerM18}
+	Peter Dybjer and Hugo Moeneclaey.
+	\newblock {Finitary Higher Inductive Types in the Groupoid Model}.
+	\newblock {\em Electr. Notes Theor. Comput. Sci.}, 336:119--134, 2018.
+	
+	\bibitem{DBLP:conf/lics/FinsterM17}
+	Eric Finster and Samuel Mimram.
+	\newblock {A Type-Theoretical Definition of Weak $\omega$-Categories}.
+	\newblock In {\em 32nd Annual {ACM/IEEE} Symposium on Logic in Computer
+		Science, {LICS} 2017, Reykjavik, Iceland, June 20-23, 2017}, pages 1--12,
+	2017.
+	
+	\bibitem{FruminGGW18}
+	Dan Frumin, Herman Geuvers, L{\'{e}}on Gondelman, and Niels van~der Weide.
+	\newblock {Finite Sets in Homotopy Type Theory}.
+	\newblock In {\em Proceedings of the 7th {ACM} {SIGPLAN} International
+		Conference on Certified Programs and Proofs, {CPP} 2018, Los Angeles, CA,
+		USA, January 8-9, 2018}, pages 201--214, 2018.
+	
+	\bibitem{hermida1998structural}
+	Claudio Hermida and Bart Jacobs.
+	\newblock {Structural Induction and Coinduction in a Fibrational Setting}.
+	\newblock {\em Information and computation}, 145(2):107--152, 1998.
+	
+	\bibitem{DBLP:conf/tlca/HirschowitzHT15}
+	Andr{\'{e}} Hirschowitz, Tom Hirschowitz, and Nicolas Tabareau.
+	\newblock {Wild $\omega$-Categories for the Homotopy Hypothesis in Type
+		Theory}.
+	\newblock In {\em 13th International Conference on Typed Lambda Calculi and
+		Applications, {TLCA} 2015, July 1-3, 2015, Warsaw, Poland}, pages 226--240,
+	2015.
+	
+	\bibitem{HofmannS94}
+	Martin Hofmann and Thomas Streicher.
+	\newblock {The Groupoid Model Refutes Uniqueness of Identity Proofs}.
+	\newblock In {\em Proceedings of the Ninth Annual Symposium on Logic in
+		Computer Science {(LICS} '94), Paris, France, July 4-7, 1994}, pages
+	208--212, 1994.
+	
+	\bibitem{KaposiK18}
+	Ambrus Kaposi and Andr{\'{a}}s Kov{\'{a}}cs.
+	\newblock {A Syntax for Higher Inductive-Inductive Types}.
+	\newblock In {\em 3rd International Conference on Formal Structures for
+		Computation and Deduction, {FSCD} 2018, July 9-12, 2018, Oxford, {UK}}, pages
+	20:1--20:18, 2018.
+	
+	\bibitem{KaposiKA19}
+	Ambrus Kaposi, Andr{\'{a}}s Kov{\'{a}}cs, and Thorsten Altenkirch.
+	\newblock {Constructing Quotient Inductive-Inductive Types}.
+	\newblock {\em {PACMPL}}, 3({POPL}):2:1--2:24, 2019.
+	
+	\bibitem{simpset}
+	Chris Kapulkin and Peter~LeFanu Lumsdaine.
+	\newblock {The Simplicial Model of Univalent Foundations (after Voevodsky)},
+	2012.
+	
+	\bibitem{Kraus16}
+	Nicolai Kraus.
+	\newblock {Constructions with Non-Recursive Higher Inductive Types}.
+	\newblock In {\em Proceedings of the 31st Annual {ACM/IEEE} Symposium on Logic
+		in Computer Science, {LICS} '16, New York, NY, USA, July 5-8, 2016}, pages
+	595--604, 2016.
+	
+	\bibitem{KrausRaumer}
+	Nicolai Kraus and Jakob von Raumer.
+	\newblock {Path Spaces of Higher Inductive Types in Homotopy Type Theory}.
+	\newblock {\em CoRR}, abs/1901.06022, 2019.
+	
+	\bibitem{LicataF14}
+	Daniel~R. Licata and Eric Finster.
+	\newblock {Eilenberg-MacLane Spaces in Homotopy Type Theory}.
+	\newblock In {\em Joint Meeting of the Twenty-Third {EACSL} Annual Conference
+		on Computer Science Logic {(CSL)} and the Twenty-Ninth Annual {ACM/IEEE}
+		Symposium on Logic in Computer Science (LICS), {CSL-LICS} '14, Vienna,
+		Austria, July 14 - 18, 2014}, pages 66:1--66:9, 2014.
+	
+	\bibitem{LicataS13}
+	Daniel~R. Licata and Michael Shulman.
+	\newblock {Calculating the Fundamental Group of the Circle in Homotopy Type
+		Theory}.
+	\newblock In {\em 28th Annual {ACM/IEEE} Symposium on Logic in Computer
+		Science, {LICS} 2013, New Orleans, LA, USA, June 25-28, 2013}, pages
+	223--232, 2013.
+	
+	\bibitem{lumsdaine2009weak}
+	Peter~LeFanu Lumsdaine.
+	\newblock {Weak $\omega$-categories from Intensional Type Theory}.
+	\newblock In {\em International Conference on Typed Lambda Calculi and
+		Applications}, pages 172--187. Springer, 2009.
+	
+	\bibitem{lumsdaine2017semantics}
+	Peter~LeFanu Lumsdaine and Mike Shulman.
+	\newblock {Semantics of Higher Inductive Types}.
+	\newblock {\em arXiv preprint arXiv:1705.07088}, 2017.
+	
+	\bibitem{mac2013categories}
+	Saunders Mac~Lane.
+	\newblock {\em {Categories for the Working Mathematician}}, volume~5.
+	\newblock Springer Science \& Business Media, 2013.
+	
+	\bibitem{moeneclaey2016schema}
+	Hugo Moeneclaey.
+	\newblock {A Schema for Higher Inductive Types of Level One and Its
+		Interpretation}.
+	\newblock {\em Internship report, supervised by Peter Dybjer, ENS
+		Paris-Saclay}, 2016.
+	
+	\bibitem{rijke2017join}
+	Egbert Rijke.
+	\newblock {The Join Construction}.
+	\newblock {\em arXiv preprint arXiv:1701.07538}, 2017.
+	
+	\bibitem{RijkeS15}
+	Egbert Rijke and Bas Spitters.
+	\newblock {Sets in Homotopy Type Theory}.
+	\newblock {\em Mathematical Structures in Computer Science}, 25(5):1172--1202,
+	2015.
+	
+	\bibitem{Sojakova15}
+	Kristina Sojakova.
+	\newblock {Higher Inductive Types as Homotopy-Initial Algebras}.
+	\newblock In {\em Proceedings of the 42nd Annual {ACM} {SIGPLAN-SIGACT}
+		Symposium on Principles of Programming Languages, {POPL} 2015, Mumbai, India,
+		January 15-17, 2015}, pages 31--42, 2015.
+	
+	\bibitem{street1972formal}
+	Ross Street.
+	\newblock {The Formal Theory of Monads}.
+	\newblock {\em Journal of Pure and Applied Algebra}, 2(2):149--168, 1972.
+	
+	\bibitem{hottbook}
+	{The Univalent Foundations Program}.
+	\newblock {\em {Homotopy Type Theory: Univalent Foundations of Mathematics}}.
+	\newblock \url{https://homotopytypetheory.org/book}, Institute for Advanced
+	Study, 2013.
+	
+	\bibitem{van2011types}
+	Benno Van Den~Berg and Richard Garner.
+	\newblock {Types are Weak $\omega$-Groupoids}.
+	\newblock {\em Proceedings of the London Mathematical Society},
+	102(2):370--394, 2011.
+	
+	\bibitem{Doorn16}
+	Floris van Doorn.
+	\newblock {Constructing the Propositional Truncation using Non-Recursive HITs}.
+	\newblock In {\em Proceedings of the 5th {ACM} {SIGPLAN} Conference on
+		Certified Programs and Proofs, Saint Petersburg, FL, USA, January 20-22,
+		2016}, pages 122--129, 2016.
+	
+	\bibitem{UniMath}
+	Vladimir Voevodsky, Benedikt Ahrens, Daniel Grayson, et~al.
+	\newblock {UniMath --- a computer-checked library of univalent mathematics}.
+	\newblock {available} at \url{https://github.com/UniMath/UniMath}.
+	
+\end{thebibliography}
+\end{document}
