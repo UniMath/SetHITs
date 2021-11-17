@@ -19,7 +19,7 @@ Section AlgebraFunctor.
            (n : F ∙ A₂ ⟹ A₁ ∙ F).
 
   Local Definition object_part
-    : FunctorAlg A₁ (homset_property _) → FunctorAlg A₂ (homset_property _).
+    : FunctorAlg A₁ → FunctorAlg A₂.
   Proof.
     intros X.
     use tpair.
@@ -28,13 +28,13 @@ Section AlgebraFunctor.
   Defined.
 
   Definition morphism_part
-             {X Y : FunctorAlg A₁ (homset_property _)}
+             {X Y : FunctorAlg A₁}
              (f : X --> Y)
     : D ⟦ F (pr1 X), F (pr1 Y) ⟧
     := #F (pr1 f).
 
   Definition morphism_part_is_morph
-             {X Y : FunctorAlg A₁ (homset_property _)}
+             {X Y : FunctorAlg A₁}
              (f : X --> Y)
     : is_algebra_mor A₂ (object_part X) (object_part Y) (morphism_part f).
   Proof.
@@ -54,7 +54,7 @@ Section AlgebraFunctor.
   Qed.
 
   Definition algebra_functor
-    : FunctorAlg A₁ (homset_property _) ⟶ FunctorAlg A₂ (homset_property _).
+    : FunctorAlg A₁ ⟶ FunctorAlg A₂.
   Proof.
     use make_functor.
     - use make_functor_data.
@@ -106,7 +106,7 @@ Section AlgebraNatTrans.
   Local Notation GA := (algebra_functor A₁ A₂ G nG).
 
   Definition nat_trans_is_algebra_mor
-             (X : FunctorAlg A₁ (homset_property _))
+             (X : FunctorAlg A₁)
     : is_algebra_mor A₂ (FA X) (GA X) (η (pr1 X)).
   Proof.
     unfold is_algebra_mor, alg_map.
@@ -133,7 +133,7 @@ Lemma nat_trans_is_algebra_mor_counit_help
       (nF : F ∙ A ⟹ A ∙ F)
       (η : F ⟹ functor_identity _)
       (H : ∏ (X : C), nF X · η (A X) = # A (η X))
-      (X : FunctorAlg A (homset_property _))
+      (X : FunctorAlg A)
   : is_algebra_mor A (algebra_functor A A F nF X) X (η (pr1 X)).
 Proof.
   refine (nat_trans_is_algebra_mor
@@ -160,7 +160,7 @@ Lemma nat_trans_is_algebra_mor_unit_help
       (nF : F ∙ A ⟹ A ∙ F)
       (η : functor_identity _ ⟹ F)
       (H : ∏ (X : C), η (A X) = # A (η X) · nF X)
-      (X : FunctorAlg A (homset_property _))
+      (X : FunctorAlg A)
   : is_algebra_mor A X (algebra_functor A A F nF X) (η (pr1 X)).
 Proof.
   pose (nat_trans_is_algebra_mor
@@ -234,7 +234,7 @@ Section PreAlgebraAdjunction.
   Definition lift_R := algebra_functor A₂ A₁ R nR.
   
   Definition nat_trans_is_algebra_mor_counit
-             (X : FunctorAlg A₂ (homset_property _))
+             (X : FunctorAlg A₂)
     : is_algebra_mor
         A₂
         (algebra_functor A₁ A₂ L nL (algebra_functor A₂ A₁ R nR X))
@@ -254,7 +254,7 @@ Section PreAlgebraAdjunction.
   Qed.
 
   Definition nat_trans_is_algebra_mor_unit
-             (X : FunctorAlg A₁ (homset_property _))
+             (X : FunctorAlg A₁)
     : is_algebra_mor
         A₁
         X
@@ -358,7 +358,7 @@ End PreAlgebraAdjunction.
 Next we show how to factor functors in full subcategories. We also show this gives rise to an adjunction when applied to an adjunction.
  *)
 Definition factor_functor_data
-           {C D : precategory}
+           {C D : category}
            (PC : hsubtype C)
            (PD : hsubtype D)
            (F : C ⟶ D)
@@ -374,7 +374,7 @@ Proof.
 Defined.
 
 Definition factor_functor_is_functor
-           {C D : precategory}
+           {C D : category}
            (PC : hsubtype C)
            (PD : hsubtype D)
            (F : C ⟶ D)
@@ -393,7 +393,7 @@ Proof.
 Qed.
 
 Definition factor_functor
-           {C D : precategory}
+           {C D : category}
            (PC : hsubtype C)
            (PD : hsubtype D)
            (F : C ⟶ D)
@@ -406,7 +406,7 @@ Proof.
 Defined.
 
 Section FactorFunctorAdjunction.
-  Context {C D : precategory}
+  Context {C D : category}
           {L : C ⟶ D}
           {R : D ⟶ C}.
   Variable (PC : hsubtype C)

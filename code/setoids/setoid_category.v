@@ -648,17 +648,15 @@ Definition idtoiso_setoid_cat
 Definition setoid_cat_is_univalent
   : is_univalent setoid_cat.
 Proof.
-  split.
-  - intros X Y.
-    use weqhomot.
-    + exact (idtoiso_setoid_cat X Y).
-    + intros p.
-      induction p.
-      use subtypePath.
-      {
+  intros X Y.
+  use weqhomot.
+  + exact (idtoiso_setoid_cat X Y).
+  + intros p.
+    induction p.
+    use subtypePath.
+    {
         intro.
         apply isaprop_is_iso.
-      }
-      reflexivity.
-  - apply setoid_cat.
+    }
+    reflexivity.
 Defined.
