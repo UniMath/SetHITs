@@ -43,9 +43,9 @@ Section InitialSetoidAlgebra.
     apply iscontraprop1.
     - apply invproofirrelevance.
       intros f g.
-      use subtypeEquality.
+      use subtypePath.
       { intro ; apply isapropunit. }
-      use subtypeEquality.
+      use subtypePath.
       { intro ; apply homset_property. }
       use setoid_morphism_eq.
       intros x.

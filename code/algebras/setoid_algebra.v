@@ -132,8 +132,9 @@ Definition setoid_prealgebras
   : univalent_category.
 Proof.
   use make_univalent_category.
-  - exact (FunctorAlg (⟨ P ⟩) (homset_property _)).
-  - exact (is_univalent_FunctorAlg (⟨ P ⟩) setoid_cat_is_univalent).
+  - exact (FunctorAlg (⟨ P ⟩)).
+  - apply is_univalent_FunctorAlg.
+    apply setoid_cat_is_univalent.
 Defined.
 
 (**
@@ -155,7 +156,7 @@ Forgetful functor of setoid prealgebras
 Definition prealgebra_setoid
            (P : poly_code)
   : setoid_prealgebras P ⟶ setoid_cat
-  := forget_algebras _ _.
+  := forget_algebras _ .
 
 (**
 Interpretation of endpoins
@@ -320,11 +321,11 @@ Definition algebra_map_eq
            (e : ∏ (x : alg_carrier X), alg_map_carrier f x = alg_map_carrier g x)
   : f = g.
 Proof.
-  use subtypeEquality.
+  use subtypePath.
   {
     intro ; exact isapropunit.
   }
-  use subtypeEquality.
+  use subtypePath.
   {
     intro ; simpl.
     apply setoid_cat.

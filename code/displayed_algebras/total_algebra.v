@@ -183,7 +183,7 @@ Section TotalAlgebra.
       poly_pr2 Q Y (set_endpoint e total_prealgebra x).
   Proof.
     refine (!_).
-    apply (@transportf_transpose _ (poly_dact Q Y)).
+    apply (@transportf_transpose_right _ (poly_dact Q Y)).
     refine (!_).    
     apply pr2_endpoint.
   Qed.

@@ -102,7 +102,7 @@ Definition setoid_morphism_eq
            (e : ∏ (x : X₁), f x = g x)
   : f = g.
 Proof.
-  use subtypeEquality.
+  use subtypePath.
   - intro.    
     do 3 (apply impred ; intro).
     apply isaprop_setoid_eq.

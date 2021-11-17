@@ -11,7 +11,7 @@ We first show how to interpret all syntactic elements in precategories with a ce
 `F` is needed to interpret the constant polynomial, and `el` for the constant constructor term.
  *)
 Section Semantics.
-  Variable (C : precategory)
+  Variable (C : category)
            (F : HSET ⟶ C)
            (prod_C : BinProducts C)
            (coprod_C : BinCoproducts C)
@@ -33,13 +33,13 @@ Section Semantics.
 
   Definition prealgebras
              (P : poly_code)
-    : precategory
-    := FunctorAlg (⟦ P ⟧) HC.
+    : category
+    := FunctorAlg (⟦ P ⟧).
 
   Definition prealgebra_carrier
              (P : poly_code)
     : prealgebras P ⟶ C
-    := forget_algebras (⟦ P ⟧) _.
+    := forget_algebras (⟦ P ⟧).
 
   Definition constr_nat_trans
              (P : poly_code)
@@ -88,8 +88,8 @@ Definition univalent_prealgebras
 Proof.
   use make_univalent_category.
   - use (prealgebras C) ; try assumption.
+  - apply (is_univalent_FunctorAlg).
     apply C.
-  - exact (is_univalent_FunctorAlg _ _).
 Defined.
 
 (**

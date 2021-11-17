@@ -40,7 +40,7 @@ Defined.
 Definition prealgebra_to_set
            (P : poly_code)
   : set_prealgebras P ⟶ HSET
-  := prealgebra_carrier HSET _ _ _ _ P.
+  := prealgebra_carrier HSET _ _ _ P.
 
 (**
 Algebras of HIT signatures in sets.
@@ -182,11 +182,11 @@ Definition algebra_map_eq
            (e : ∏ (x : alg_carrier X), alg_map_carrier f x = alg_map_carrier g x)
   : f = g.
 Proof.
-  use subtypeEquality.
+  use subtypePath.
   {
     intro ; exact isapropunit.
   }
-  use subtypeEquality.
+  use subtypePath.
   {
     intro ; simpl.
     apply SET.
