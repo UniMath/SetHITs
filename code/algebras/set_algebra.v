@@ -40,7 +40,7 @@ Defined.
 Definition prealgebra_to_set
            (P : poly_code)
   : set_prealgebras P ⟶ HSET
-  := prealgebra_carrier HSET _ _ _ _ P.
+  := prealgebra_carrier HSET _ _ _ P.
 
 (**
 Algebras of HIT signatures in sets.

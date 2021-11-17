@@ -9,7 +9,7 @@ Open Scope cat.
 Sum of two maps.
  *)
 Definition coprod_maps
-           {C : precategory}
+           {C : category}
            (BC : BinCoproducts C)
            {X₁ X₂ Y₁ Y₂ : C}
            (f₁ : X₁ --> Y₁)
@@ -25,7 +25,7 @@ Defined.
 If two maps are invertible, then so is their sum
  *)
 Definition coprod_maps_inverse
-           {C : precategory}
+           {C : category}
            (BC : BinCoproducts C)
            {X₁ X₂ Y₁ Y₂ : C}
            {f₁ : X₁ --> Y₁} {g₁ : Y₁ --> X₁}
@@ -55,7 +55,7 @@ Qed.
 Product of two maps.
  *)
 Definition prod_maps
-           {C : precategory}
+           {C : category}
            (BC : BinProducts C)
            {X₁ X₂ Y₁ Y₂ : C}
            (f₁ : X₁ --> Y₁)
@@ -71,7 +71,7 @@ Defined.
 If two maps are invertible, then so is their product.
  *)
 Definition prod_maps_inverse
-           {C : precategory}
+           {C : category}
            (BC : BinProducts C)
            {X₁ X₂ Y₁ Y₂ : C}
            {f₁ : X₁ --> Y₁} {g₁ : Y₁ --> X₁}
@@ -161,7 +161,7 @@ Defined.
 Pairing of natural transfomations.
  *)
 Section PairNatTrans.
-  Context {C₁ C₂ C₃ : precategory}
+  Context {C₁ C₂ C₃ : category}
           {F : C₁ ⟶ C₂}
           {G₁ G₂ G₃ : C₂ ⟶ C₃}.
   Variable (H : BinProducts C₃)

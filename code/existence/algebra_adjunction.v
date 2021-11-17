@@ -203,7 +203,7 @@ Definition quotient_sum
            (A B : setoid)
   : (quotient (sum_setoid A B))
       -->
-      BinCoproductObject HSET (BinCoproductsHSET (quotient A) (quotient B)).
+      BinCoproductObject (BinCoproductsHSET (quotient A) (quotient B)).
 Proof.
   use setquotuniv.
   - intros x.
@@ -220,7 +220,7 @@ Defined.
 
 Definition sum_quotient
            (A B : setoid)
-  : (BinCoproductObject HSET (BinCoproductsHSET (quotient A) (quotient B)))
+  : (BinCoproductObject (BinCoproductsHSET (quotient A) (quotient B)))
       -->
       quotient (sum_setoid A B).
 Proof.
