@@ -495,13 +495,12 @@ Proof.
     reflexivity.
 Qed.
 
-Definition quotient_counit_is_nat_iso
-  : is_nat_iso quotient_counit.
+Definition quotient_counit_is_nat_z_iso
+  : is_nat_z_iso quotient_counit.
 Proof.
   intros X.
-  use is_iso_qinv.
-  - exact (setquotpr _).
-  - exact (quotient_counit_is_inverse X).
+  exists (setquotpr _).
+  exact (quotient_counit_is_inverse X).
 Defined.
 
 (** The quotient is a left adjoint *)
@@ -554,14 +553,15 @@ Defined.
 
 Definition factor_idtoiso_3_map
            (X Y : setoid)
-  : (∑ (f : pr1 X ≃ pr1 Y), ∏ x y : X, x ≡ y ≃ f x ≡ f y) → @iso setoid_cat X Y.
+  : (∑ (f : pr1 X ≃ pr1 Y), ∏ x y : X, x ≡ y ≃ f x ≡ f y) → @z_iso setoid_cat X Y.
 Proof.
   intros f.
   use tpair.
   - use make_setoid_morphism.
     + exact (pr1 f).
     + apply f.
-  - use is_iso_qinv.
+  - cbn.
+    use tpair.
     + use make_setoid_morphism.
       * apply (invweq (pr1 f)).
       * intros x y r ; simpl.
@@ -583,30 +583,30 @@ Defined.
 
 Definition factor_idtoiso_3_inv
            (X Y : setoid)
-  : @iso setoid_cat X Y → (∑ (f : pr1 X ≃ pr1 Y), ∏ x y : X, x ≡ y ≃ f x ≡ f y).
+  : @z_iso setoid_cat X Y → (∑ (f : pr1 X ≃ pr1 Y), ∏ x y : X, x ≡ y ≃ f x ≡ f y).
 Proof.
   intros f.
   use tpair.
   - use make_weq.
     + exact (pr11 f).
     + use gradth.
-      * exact (pr1 (inv_from_iso f)).
-      * exact (eqtohomot (maponpaths pr1 (iso_inv_after_iso f))).
-      * exact (eqtohomot (maponpaths pr1 (iso_after_iso_inv f))).
+      * exact (pr1 (inv_from_z_iso f)).
+      * exact (eqtohomot (maponpaths pr1 (z_iso_inv_after_z_iso f))).
+      * exact (eqtohomot (maponpaths pr1 (z_iso_after_z_iso_inv f))).
   - intros x y ; simpl.
     use weqimplimpl.
     + exact (pr21 f x y).
     + intros r.
-      refine (_ @ pr2 (inv_from_iso f) (pr11 f x) (pr11 f y) r @ _)%setoid.
-      * exact (setoid_path (!(eqtohomot (maponpaths pr1 (iso_inv_after_iso f))) x)).
-      * exact (setoid_path ((eqtohomot (maponpaths pr1 (iso_inv_after_iso f))) y)).
+      refine (_ @ pr2 (inv_from_z_iso f) (pr11 f x) (pr11 f y) r @ _)%setoid.
+      * exact (setoid_path (!(eqtohomot (maponpaths pr1 (z_iso_inv_after_z_iso f))) x)).
+      * exact (setoid_path ((eqtohomot (maponpaths pr1 (z_iso_inv_after_z_iso f))) y)).
     + apply isaprop_setoid_eq.
     + apply isaprop_setoid_eq.
 Defined.
 
 Definition factor_idtoiso_3
            (X Y : setoid)
-  : (∑ (f : pr1 X ≃ pr1 Y), ∏ x y : X, x ≡ y ≃ f x ≡ f y) ≃ @iso setoid_cat X Y.
+  : (∑ (f : pr1 X ≃ pr1 Y), ∏ x y : X, x ≡ y ≃ f x ≡ f y) ≃ @z_iso setoid_cat X Y.
 Proof.
   use make_weq.
   - exact (factor_idtoiso_3_map X Y).
@@ -634,7 +634,7 @@ Proof.
       use subtypePath.
       {
         intro.
-        apply isaprop_is_iso.
+        apply isaprop_is_z_isomorphism.
       }
       use setoid_morphism_eq.
       reflexivity.
@@ -642,7 +642,7 @@ Defined.
 
 Definition idtoiso_setoid_cat
            (X Y : setoid_cat)
-  : X = Y ≃ iso X Y
+  : X = Y ≃ z_iso X Y
   := (factor_idtoiso_3 X Y ∘ factor_idtoiso_2 X Y ∘ factor_idtoiso_1 X Y)%weq.
 
 Definition setoid_cat_is_univalent
@@ -656,7 +656,7 @@ Proof.
     use subtypePath.
     {
         intro.
-        apply isaprop_is_iso.
+        apply isaprop_is_z_isomorphism.
     }
     reflexivity.
 Defined.

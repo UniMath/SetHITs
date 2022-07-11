@@ -201,5 +201,5 @@ Proof.
   {
     apply set_algebra.
   }
-  apply initial_iso ; apply HIT_is_initial.
+  apply initial_z_iso ; apply HIT_is_initial.
 Defined.
