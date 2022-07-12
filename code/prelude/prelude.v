@@ -214,16 +214,16 @@ End PairNatTrans.
 (**
 Initial objects are isomorphic
  *)
-Definition initial_iso
+Definition initial_z_iso
            {C : precategory}
            {X Y : C}
            (IX : isInitial _ X)
            (IY : isInitial _ Y)
-  : iso X Y.
+  : z_iso X Y.
 Proof.
-  use make_iso.
+  use tpair.
   - apply IX.
-  - use is_iso_qinv.
+  - use tpair.
     + apply IY.
     + split ; simpl.
       * exact (pr2 (IX X) _ @ !(pr2 (IX X) _)).
