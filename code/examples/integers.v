@@ -22,7 +22,7 @@ Definition Z_operations
   := I (* suc *) + I (* pred *) + C unitset (* zero *).
 
 (** Labels of group axioms *)
-Inductive Z_ax :=
+Inductive Z_ax : UU :=
 | PS : Z_ax
 | SP : Z_ax.
 

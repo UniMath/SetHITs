@@ -23,7 +23,7 @@ Definition semilattice_operations
      + C unitset (* empty *).
 
 (** Labels of group axioms *)
-Inductive semilattice_ax :=
+Inductive semilattice_ax : UU :=
 | nl : semilattice_ax
 | idem : semilattice_ax
 | com : semilattice_ax
