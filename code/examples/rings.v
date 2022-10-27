@@ -20,7 +20,7 @@ Definition ring_operations
      + C unitset (* one *).
 
 (** Labels of group axioms *)
-Inductive ring_ax :=
+Inductive ring_ax : UU :=
 | p_assoc : ring_ax
 | p_unit : ring_ax
 | p_inv : ring_ax
