@@ -23,7 +23,7 @@ Definition semilattice_operations
      + C unitset (* empty *).
 
 (** Labels of group axioms *)
-Inductive semilattice_ax : UU :=
+Inductive semilattice_ax :=
 | nl : semilattice_ax
 | idem : semilattice_ax
 | com : semilattice_ax
@@ -130,7 +130,7 @@ Section JoinSemiLatticeProjections.
     : join_semilattice_carrier → join_semilattice_carrier → join_semilattice_carrier
     := λ x₁ x₂, pr21 S (inl (x₁ ,, x₂)).
 
-  Local Notation "x₁ ∪ x₂" := (join x₁ x₂) (at level 45).
+  Local Notation "x₁ ∪ x₂" := (join x₁ x₂) (at level 40, left associativity).
 
   Definition empty
     : join_semilattice_carrier
