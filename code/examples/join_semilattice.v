@@ -130,7 +130,7 @@ Section JoinSemiLatticeProjections.
     : join_semilattice_carrier → join_semilattice_carrier → join_semilattice_carrier
     := λ x₁ x₂, pr21 S (inl (x₁ ,, x₂)).
 
-  Local Notation "x₁ ∪ x₂" := (join x₁ x₂) (at level 45).
+  Local Notation "x₁ ∪ x₂" := (join x₁ x₂) (at level 40, left associativity).
 
   Definition empty
     : join_semilattice_carrier
