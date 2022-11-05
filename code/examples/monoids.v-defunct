@@ -176,8 +176,8 @@ Definition list_free_monoid
            (X : hSet)
   : set_algebra (free_signature monoid_signature X).
 Proof.
-  use mk_algebra.
-  - use hSetpair.
+  use make_algebra.
+  - use make_hSet.
     + exact (list X).
     + apply isofhlevellist.
       apply X.
@@ -275,7 +275,7 @@ Definition list_free_monoid_map
 Proof.
   pose (M' := free_alg_to_alg _ M).
   pose (f := (λ x, alg_operation M (inl x)) : X → alg_carrier M).
-  use mk_algebra_map.
+  use make_algebra_map.
   - exact (list_to_monoid M' f).
   - intros x.
     induction x as [x | l].
@@ -333,7 +333,7 @@ Proof.
   {
     apply (set_algebra (free_signature monoid_signature X)).
   }
-  apply initial_iso.
+  apply initial_z_iso.
   - apply HIT_is_initial.
   - apply list_free_monoid_isInitial.
 Defined.

@@ -1,5 +1,9 @@
-COQC = coqc COQDEP = coqdep
+COQC = coqc
+COQDEP = coqdep
 -R . "sem"
+
+-arg "-type-in-type"
+
 prelude/imports.v
 prelude/adjunction_constructions.v
 prelude/prelude.v
@@ -34,5 +38,6 @@ examples/join_semilattice.v
 examples/truncation.v
 examples/mod2.v
 examples/rings.v
+examples/monoids.v
 examples/integers.v
 examples/polynomials.v
