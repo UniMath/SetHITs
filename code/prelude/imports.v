@@ -24,5 +24,3 @@ Require Export UniMath.CategoryTheory.Adjunctions.Core.
 
 Require Export UniMath.CategoryTheory.Chains.All.
 Require Export UniMath.CategoryTheory.limits.graphs.colimits.
-
-Require Export UniMath.Tactics.EnsureStructuredProofs.
