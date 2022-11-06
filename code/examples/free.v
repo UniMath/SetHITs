@@ -431,7 +431,7 @@ Section FreeAlgebra.
   Proof.
     use make_weq.
     - exact (free_algebra_hom_l A B).
-    - use gradth.
+    - use isweq_iso.
       + exact (free_algebra_hom_r A B).
       + exact (free_algebra_hom_left_inv A B).
       + exact (free_algebra_hom_right_inv A B).

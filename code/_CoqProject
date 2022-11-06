@@ -1,8 +1,9 @@
-COQC = coqc
-COQDEP = coqdep
+COQC = /Users/niels/Code/altUniMath/UniMath/sub/coq/bin/coqc
+COQDEP = /Users/niels/Code/altUniMath/UniMath/sub/coq/bin/coqdep
 -R . "sem"
 
 -arg "-type-in-type"
+-arg "-w -notation-overridden"
 
 prelude/imports.v
 prelude/adjunction_constructions.v

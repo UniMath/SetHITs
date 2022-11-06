@@ -15,10 +15,11 @@ Definition make_eq_rel
   : eqrel X
   := rel ,, ((istrans_rel ,, isrefl_rel) ,, issymm_rel).
 
+Declare Scope setoid_scope.
+Delimit Scope setoid_scope with setoid.
 Notation "'id' g" := (eqrelrefl _ g) (at level 30) : setoid_scope.
 Notation "! p" := (eqrelsymm _ _ _ p) : setoid_scope.
 Notation "p @ q" := (eqreltrans _ _ _ _ p q) : setoid_scope.
-Delimit Scope setoid_scope with setoid.
 
 (**
 A setoid is just a pair of a set and an equivalence relation.

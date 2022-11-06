@@ -262,7 +262,7 @@ Definition mod2_equiv_bool
 Proof.
   use make_weq.
   - exact mod2_to_bool.
-  - use gradth.
+  - use isweq_iso.
     + exact bool_to_mod2.
     + exact mod2_to_bool_to_mod2.
     + exact bool_to_mod2_to_bool.
