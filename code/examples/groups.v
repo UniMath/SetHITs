@@ -16,7 +16,7 @@ Definition group_operations
   := (I * I) + I + C unitset.
 
 (** Labels of group axioms *)
-Inductive group_ax :=
+Inductive group_ax : UU :=
 | assoc : group_ax
 | unit_l : group_ax
 | unit_r : group_ax

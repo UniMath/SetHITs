@@ -589,7 +589,7 @@ Proof.
   use tpair.
   - use make_weq.
     + exact (pr11 f).
-    + use gradth.
+    + use isweq_iso.
       * exact (pr1 (inv_from_z_iso f)).
       * exact (eqtohomot (maponpaths pr1 (z_iso_inv_after_z_iso f))).
       * exact (eqtohomot (maponpaths pr1 (z_iso_after_z_iso_inv f))).
@@ -610,7 +610,7 @@ Definition factor_idtoiso_3
 Proof.
   use make_weq.
   - exact (factor_idtoiso_3_map X Y).
-  - use gradth.
+  - use isweq_iso.
     + exact (factor_idtoiso_3_inv X Y).
     + intros f.
       use subtypePath.
