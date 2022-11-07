@@ -22,7 +22,7 @@ Definition monoid_operations
   := (I * I) + C unitset.
 
 (** Labels of monoid axioms *)
-Inductive monoid_ax : UU :=
+Inductive monoid_ax :=
 | assoc : monoid_ax
 | unit_l : monoid_ax
 | unit_r : monoid_ax.

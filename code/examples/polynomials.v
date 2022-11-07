@@ -26,7 +26,7 @@ Section PolynomialRing.
     := C (alg_carrier R) + C A + ring_operations.
 
   (** Labels of polynomial axioms *)
-  Inductive polynomial_ax_help : UU :=
+  Inductive polynomial_ax_help :=
   | R_plus : polynomial_ax_help
   | R_times : polynomial_ax_help
   | R_one : polynomial_ax_help.

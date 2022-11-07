@@ -2,7 +2,6 @@ COQC = coqc
 COQDEP = coqdep
 -R . "sem"
 
--arg "-type-in-type"
 -arg "-w -notation-overridden"
 
 prelude/imports.v
