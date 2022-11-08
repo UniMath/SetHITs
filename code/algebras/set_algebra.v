@@ -79,11 +79,9 @@ Definition set_algebra
   : univalent_category.
 Proof.
   use make_univalent_category.
-  - use (full_sub_precategory _).
-    + exact (set_prealgebras (point_arg Σ)).
-    + exact (is_set_algebra Σ).
+  - exact (full_sub_precategory (is_set_algebra Σ)).
   - apply is_univalent_full_subcat.
-    apply set_prealgebras.
+    apply univalent_category_is_univalent.
 Defined.
 
 (**
