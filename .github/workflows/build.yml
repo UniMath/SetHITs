@@ -9,20 +9,28 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    # Run this workflow at 02:15 UTC every Tuesday to keep the cache from being
+    # evicted. A typical run with everything cached should take less than 10
+    # minutes.
+    - cron: 15 2 * * TUE
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  # Set this to the version of Coq that should be used.
+  coq-version: 8.16.0
+  dune-version: 3.5.0
+  DUNE_CACHE_STORAGE_MODE: copy
+
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    name: Build SetHITs (Coq 8.15.0)
-    # The type of runner that the job will run on
+    name: Build SetHITs
     runs-on: ubuntu-22.04
 
     steps:
-      # Then checkout UniMath in this folder
+      # Checkout UniMath into the working directory
       - name: Checkout UniMath.
         uses: actions/checkout@v3
         with:
@@ -30,26 +38,26 @@ jobs:
           clean: false
           path: .
 
-      # Checkout SetHITs into SetHITs/
+      # Checkout the current branch into SetHITs/
       - name: Checkout SetHITs.
         uses: actions/checkout@v3
         with:
           path: SetHITs
 
+      # Ideally we would use docker-coq. A setup currently takes about 7min
+      # before it starts compiling, with OCaml cached.
       - name: Install OCaml.
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: ocaml-base-compiler.4.14.0
+          ocaml-compiler: ocaml-variants.4.14.0+options,ocaml-option-flambda
           dune-cache: true
-      - run: opam pin add dune 3.5.0
-        # We need to set DUNE_CACHE_STORAGE_MODE to copy,
-        # otherwise we have to recompile coq every run (opam sandboxing issue).
-      - name: Install Coq 8.15.0.
-        run: |
-          sudo apt-get update
-          sudo apt-get install coq
-          coqc --version
+          opam-disable-sandboxing: true
+
+      - name: Install Dune
+        run: opam pin add dune ${{ env.dune-version }}
+      - name: Install Coq
+        run: opam pin add coq ${{ env.coq-version }}
 
         # SetHITs is built using the flags specified in code/dune.
       - name: Compile SetHITs.
-        run: opam exec -- dune build SetHITs --display=short --cache=enabled --error-reporting=twice
+        run: opam exec -- dune build SetHITs --display=short --error-reporting=twice

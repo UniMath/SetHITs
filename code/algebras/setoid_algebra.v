@@ -212,10 +212,8 @@ Definition setoid_algebra
   : univalent_category.
 Proof.
   use make_univalent_category.
-  - use (full_sub_precategory _).
-    + exact (setoid_prealgebras (point_arg Σ)).
-    + exact (is_setoid_algebra Σ).
-  - use is_univalent_full_subcat.
+  - exact (full_sub_precategory (is_setoid_algebra Σ)).
+  - apply is_univalent_full_subcat.
     apply univalent_category_is_univalent.
 Defined.
 
