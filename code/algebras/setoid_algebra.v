@@ -213,7 +213,7 @@ Definition setoid_algebra
 Proof.
   use make_univalent_category.
   - exact (full_sub_precategory (is_setoid_algebra Σ)).
-  - apply is_univalent_full_subcat.
+  - apply is_univalent_full_sub_category.
     apply univalent_category_is_univalent.
 Defined.
 
