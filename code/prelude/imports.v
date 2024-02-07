@@ -8,11 +8,11 @@ Require Export UniMath.CategoryTheory.Core.Univalence.
 Require Export UniMath.CategoryTheory.Core.Functors.
 Require Export UniMath.CategoryTheory.Core.NaturalTransformations.
 
-Require Export UniMath.CategoryTheory.limits.bincoproducts.
-Require Export UniMath.CategoryTheory.limits.binproducts.
-Require Export UniMath.CategoryTheory.limits.initial.
+Require Export UniMath.CategoryTheory.Limits.BinCoproducts.
+Require Export UniMath.CategoryTheory.Limits.BinProducts.
+Require Export UniMath.CategoryTheory.Limits.Initial.
 
-Require Export UniMath.CategoryTheory.categories.HSET.All.
+Require Export UniMath.CategoryTheory.Categories.HSET.All.
 Require Export UniMath.CategoryTheory.FunctorAlgebras.
 Require Export UniMath.CategoryTheory.whiskering.
 
@@ -23,4 +23,4 @@ Require Export UniMath.CategoryTheory.exponentials.
 Require Export UniMath.CategoryTheory.Adjunctions.Core.
 
 Require Export UniMath.CategoryTheory.Chains.All.
-Require Export UniMath.CategoryTheory.limits.graphs.colimits.
+Require Export UniMath.CategoryTheory.Limits.Graphs.Colimits.
