@@ -13,7 +13,7 @@ Open Scope cat.
 Definition setoid_cat_ob_mor
   : precategory_ob_mor.
 Proof.
-  use make_precategory_ob_mor. 
+  use make_precategory_ob_mor.
   - exact setoid.
   - exact setoid_morphism.
 Defined.
@@ -105,7 +105,7 @@ Defined.
 
 Definition sum_setoid (X Y : setoid_cat)
   : setoid_cat
-  := make_setoid (sum_rel (carrier_eq X) (carrier_eq Y)).
+  := make_setoid (sum_rel (carrier_eqrel X) (carrier_eqrel Y)).
 
 Definition setoid_inl
            (X₁ X₂ : setoid_cat)
@@ -193,7 +193,7 @@ Defined.
 
 Definition prod_setoid (X Y : setoid_cat)
   : setoid_cat
-  := make_setoid (prod_rel (carrier_eq X) (carrier_eq Y)).
+  := make_setoid (prod_rel (carrier_eqrel X) (carrier_eqrel Y)).
 
 Definition setoid_pr1
            (X₁ X₂ : setoid_cat)
@@ -391,7 +391,7 @@ Proof.
     + exact f.
     + exact (λ x y p, maponpaths f p).
 Defined.
-      
+
 Definition path_setoid : SET ⟶ setoid_cat.
 Proof.
   use make_functor.
@@ -412,7 +412,7 @@ Definition quotient_setoid_ob
 Proof.
   use setquotinset.
   - exact X.
-  - exact (carrier_eq X).
+  - exact (carrier_eqrel X).
 Defined.
 
 Definition quotient_setoid_mor
@@ -483,7 +483,7 @@ Defined.
 
 Definition quotient_counit_is_inverse
            (X : SET)
-  : is_inverse_in_precat (quotient_counit X) (setquotpr (carrier_eq (path_setoid X))).
+  : is_inverse_in_precat (quotient_counit X) (setquotpr (carrier_eqrel (path_setoid X))).
 Proof.
   split.
   - use funextsec.

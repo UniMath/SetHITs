@@ -21,7 +21,7 @@ Definition poly_eq_rel
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (path_rel T).
-  - exact (carrier_eq X).
+  - exact (carrier_eqrel X).
   - exact (sum_rel IHP₁ IHP₂).
   - exact (prod_rel IHP₁ IHP₂).
 Defined.
@@ -223,7 +223,7 @@ Projections of algebras
 Section AlgebraProjections.
   Context {Σ : hit_signature}.
   Variable (X : setoid_algebra Σ).
-  
+
   Definition alg_to_prealg
     : setoid_prealgebras (point_arg Σ)
     := pr1 X.
@@ -275,7 +275,7 @@ Proof.
   - exact X.
   - exact c.
 Defined.
-           
+
 Definition make_algebra
            {Σ : hit_signature}
            (X : setoid)

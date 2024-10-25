@@ -360,7 +360,7 @@ Proof.
   intro X.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (quotient_counit T).
-  - exact (idfun (setquot (carrier_eq X))).
+  - exact (idfun (setquot (carrier_eqrel X))).
   - exact ((quotient_sum _ _) · coprod_maps BinCoproductsHSET IHP₁ IHP₂).
   - exact ((quotient_prod _ _) · prod_maps BinProductsHSET IHP₁ IHP₂).
 Defined.
@@ -396,7 +396,7 @@ Proof.
     + intros x.
       apply dirprod_paths.
       * exact (eqtohomot IHP₁ (setquotpr _ (pr1 x))).
-      * exact (eqtohomot IHP₂ (setquotpr _ (pr2 x))).      
+      * exact (eqtohomot IHP₂ (setquotpr _ (pr2 x))).
 Qed.
 
 Definition quotient_commute
@@ -429,7 +429,7 @@ Definition quotient_commute_is_inverse
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (quotient_counit_is_inverse T).
-  - exact (@is_inverse_in_precat_identity HSET (setquotinset (carrier_eq X))).
+  - exact (@is_inverse_in_precat_identity HSET (setquotinset (carrier_eqrel X))).
   - exact (is_inverse_in_precat_comp
              (quotient_sum_are_inverses (⟨ P₁ ⟩ X) (⟨ P₂ ⟩ X))
              (coprod_maps_inverse BinCoproductsHSET IHP₁ IHP₂)).
@@ -477,7 +477,7 @@ Definition quotient_prealgebras_unit_help_point
            (P : poly_code)
            (X : setoid_cat)
            (x : pr1 (⟨ P ⟩ X))
-  : setquotpr (carrier_eq (⟨ P ⟩ X)) x
+  : setquotpr (carrier_eqrel (⟨ P ⟩ X)) x
     =
     quotient_commute_inv_comp
       P X
