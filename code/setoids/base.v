@@ -38,19 +38,19 @@ Definition make_setoid
 
 Coercion carrier (X : setoid) : hSet := pr1 X.
 
-Definition carrier_eq
+Definition carrier_eqrel
            (X : setoid)
   : eqrel X
   := pr2 X.
 
-Notation "x ≡ y" := (carrier_eq _ x y) (at level 70).
+Notation "x ≡ y" := (carrier_eqrel _ x y) (at level 70).
 
 Definition isaprop_setoid_eq
            {X : setoid}
            (x y : X)
   : isaprop (x ≡ y).
 Proof.
-  apply (pr1 (carrier_eq X)).
+  apply (pr1 (carrier_eqrel X)).
 Defined.
 
 Definition setoid_path
@@ -104,7 +104,7 @@ Definition setoid_morphism_eq
   : f = g.
 Proof.
   use subtypePath.
-  - intro.    
+  - intro.
     do 3 (apply impred ; intro).
     apply isaprop_setoid_eq.
   - apply funextsec.
