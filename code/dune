@@ -2,6 +2,6 @@
 
 (coq.theory
  (name SetHITs)
- (flags -w -notation-overridden)
+ (flags -w -notation-overridden -type-in-type)
  (theories UniMath))
 
