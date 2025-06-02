@@ -19,7 +19,7 @@ Require Export UniMath.CategoryTheory.whiskering.
 Require Export UniMath.CategoryTheory.Subcategory.Core.
 Require Export UniMath.CategoryTheory.Subcategory.Full.
 
-Require Export UniMath.CategoryTheory.exponentials.
+Require Export UniMath.CategoryTheory.Exponentials.
 Require Export UniMath.CategoryTheory.Adjunctions.Core.
 
 Require Export UniMath.CategoryTheory.Chains.All.
