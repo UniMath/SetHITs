@@ -1,7 +1,9 @@
 (include_subdirs qualified)
 
-(coq.theory
+(rocq.theory
  (name SetHITs)
- (flags -w -notation-overridden -type-in-type)
+ (flags :standard
+  ;;       -type-in-type
+        -w -notation-overridden)
  (theories UniMath))
 
